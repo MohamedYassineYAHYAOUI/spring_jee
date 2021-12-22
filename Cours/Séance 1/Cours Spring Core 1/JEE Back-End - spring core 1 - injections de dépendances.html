@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<!-- saved from url=(0073)http://www-igm.univ-mlv.fr/~carayol/coursJEEM2/slides/dependencies.html#/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+<title>JEE Back-End - Introduction</title>
+
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="./JEE Back-End - spring core 1 - injections de dépendances_files/reveal.css">
+<link rel="stylesheet" href="./JEE Back-End - spring core 1 - injections de dépendances_files/white.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="./JEE Back-End - spring core 1 - injections de dépendances_files/zenburn.css">
+<link rel="stylesheet" href="./JEE Back-End - spring core 1 - injections de dépendances_files/reveal-override.css">
+<link href="./JEE Back-End - spring core 1 - injections de dépendances_files/prettify.css" type="text/css" rel="stylesheet">
+<!-- Printing and PDF exports -->
+<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script><link rel="stylesheet" type="text/css" href="./JEE Back-End - spring core 1 - injections de dépendances_files/paper.css">
+<script type="text/javascript" src="./JEE Back-End - spring core 1 - injections de dépendances_files/prettify.js.téléchargement"></script>
+<style type="text/css">
+.reveal h2 {
+	color: steelblue;
+}
+
+.reveal h1 {
+	color: steelblue;
+}
+
+.reveal p {
+	text-align: left;
+}
+
+.reveal lu {
+	text-align: left;
+	list-style-position: inside;
+}
+
+.reveal span.red {
+	color: salmon;
+}
+
+.reveal p.red {
+	color: salmon;
+}
+
+.reveal span.blue,.reveal p.blue {
+	color: steelblue;
+}
+</style>
+<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+</head>
+
+<body onload="prettyPrint()">
+
+
+	<div class="reveal slide center" role="application" data-transition-speed="default" data-background-transition="fade">
+
+<div class="footer"><p>
+    <a href="http://www-igm.univ-mlv.fr/~carayol/coursJEEM2/index.html"><img src="./JEE Back-End - spring core 1 - injections de dépendances_files/home.png" width="30em"></a></p>
+      </div>
+
+		<!-- Any section element inside of this container is displayed as a slide -->
+		<div class="slides" style="width: 960px; height: 700px; zoom: 0.948857;">
+			<section style="top: 211.5px; display: block;" class="present">
+
+				<h1>JEE Back-end</h1>
+				
+				<h2>Spring Core : Injections de dépendances</h2>
+				
+				
+			</section>
+
+		<section style="top: 155.5px; display: block;" hidden="" aria-hidden="true" class="future">
+				<h2>Spring est un pur fruit des design patterns</h2>
+
+<p>On retrouve les principes <span class="red">SOLID</span>:</p>
+
+			<ul>
+				<li>Programmer pour une interface, non pour une implémentation</li>
+				<li>Préférer la composition d'objet à l'héritage de classes</li>
+				<li>Les classes doivent être ouvertes aux extensions et fermées aux modifications</li>
+			</ul>
+
+			
+			</section>
+			
+			
+			<section style="top: 124.5px; display: block;" hidden="" aria-hidden="true" class="future">
+				<h2>Spring est un pur fruit des design patterns</h2>
+
+				<p>L'<span class="blue">idée clée</span> est de pouvoir faire évoluer l'application sans toucher à une ligne de code déjà écrite (mais en rajoutant éventuellement de nouvelles classes).
+				</p><ul>
+					<li>rajouter un nouveau code promotionnel,</li>
+					<li>changer la méthode de validation des mots de passe,</li>
+					<li>rallonger les délais de livraisons indicatifs</li>
+				</ul>
+			<p></p>
+			</section>
+
+            <section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+            	<h2>Inversion of Control (IoC)</h2>
+
+<div class="flex-container">
+<div style="flex-basis: 2000px">
+<pre class="prettyprint prettyprinted" style="font-size: 18px;"><span class="lit">@FunctionalInterface</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">interface</span><span class="pln"> </span><span class="typ">PasswordChecker</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+	</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">boolean</span><span class="pln"> check</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> pwd</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="kwd">public</span><span class="pln"> </span><span class="typ">RegularPasswordChecker</span><span class="pln"> </span><span class="kwd">implements</span><span class="pln"> </span><span class="typ">PasswordChecker</span><span class="pun">{</span><span class="pln">
+	</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">boolean</span><span class="pln"> check</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> pwd</span><span class="pun">){</span><span class="pln">
+ 		</span><span class="kwd">return</span><span class="pln"> pwd</span><span class="pun">.</span><span class="pln">length</span><span class="pun">&gt;=</span><span class="lit">8</span><span class="pun">;</span><span class="pln">	
+ 	</span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="kwd">public</span><span class="pln"> </span><span class="typ">SecurePasswordChecker</span><span class="pln"> </span><span class="kwd">implements</span><span class="pln"> </span><span class="typ">PasswordChecker</span><span class="pun">{</span><span class="pln">
+ 	</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">boolean</span><span class="pln"> check</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> pwd</span><span class="pun">){</span><span class="pln">
+ 		</span><span class="kwd">return</span><span class="pln"> pwd</span><span class="pun">.</span><span class="pln">length</span><span class="pun">&gt;=</span><span class="lit">12</span><span class="pun">;</span><span class="pln">	
+ 	</span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>	
+</div>
+<div style="flex-shrink: 1.2">
+<pre class="prettyprint prettyprinted" style="font-size: 18px;"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">App</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+	</span><span class="pun">...</span><span class="pln">
+	</span><span class="typ">String</span><span class="pln"> password </span><span class="pun">=</span><span class="pln"> </span><span class="pun">...</span><span class="pln">
+	</span><span class="typ">PasswordChecker</span><span class="pln"> pc </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">RegularPasswordChecker</span><span class="pun">();</span><span class="pln">
+	</span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">pc</span><span class="pun">.</span><span class="pln">check</span><span class="pun">(</span><span class="pln">password</span><span class="pun">)){</span><span class="pln">
+		</span><span class="pun">....</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+</div>
+</div>
+
+<p>Le <span class="red">new</span> implique que si l'on veut changer de <code>PasswordChecker</code>, il faudra aller modifier le code de <code>App</code>.</p>
+</section>
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+	<h2>Inversion de Control (IoC)</h2>
+
+<p><span class="red">Solution:</span> on délègue <span class="blue">la création</span> à un objet appelé <i>conteneur</i> qui va lire les information dans <span class="blue">un fichier XML</span> ou dans <span class="blue">une classe de configuration</span>.</p>
+
+<p>Le fichier <tt>MyConfig.xml</tt>:</p>
+<pre class="prettyprint prettyprinted" style=""><span class="pun">&lt;?</span><span class="pln">xml version</span><span class="pun">=</span><span class="str">"1.0"</span><span class="pln"> encoding</span><span class="pun">=</span><span class="str">"UTF-8"</span><span class="pun">?&gt;</span><span class="pln">
+	</span><span class="tag">&lt;beans&gt;</span><span class="pln">	 
+	   </span><span class="tag">&lt;bean</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"verificateur"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"fr.uge.RegularChecker"</span><span class="tag">/&gt;</span><span class="pln">    
+	</span><span class="tag">&lt;/beans&gt;</span><span class="pln">
+</span><span class="tag">&lt;/xml&gt;</span><span class="pln">	</span></pre>
+
+<p>L'application en Spring avec IoC</p>
+<pre class="prettyprint prettyprinted" style="font-size: 16px;"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Application</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+	</span><span class="typ">ApplicationContext</span><span class="pln"> applicationContext </span><span class="pun">=</span><span class="pln"> 
+	      </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">ClassPathXmlApplicationContext</span><span class="pun">(</span><span class="str">"MyConfig.xml"</span><span class="pun">);</span><span class="pln">
+
+	</span><span class="typ">PasswordChecker</span><span class="pln"> pc </span><span class="pun">=</span><span class="pln"> 
+		</span><span class="pun">(</span><span class="typ">PasswordChecker</span><span class="pun">)</span><span class="pln"> applicationContext</span><span class="pun">.</span><span class="pln">getBean</span><span class="pun">(</span><span class="str">"verificateur"</span><span class="pun">);</span><span class="pln">
+	</span><span class="typ">String</span><span class="pln"> password </span><span class="pun">=</span><span class="pln"> </span><span class="pun">...</span><span class="pln">
+	</span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">pc</span><span class="pun">.</span><span class="pln">check</span><span class="pun">(</span><span class="pln">password</span><span class="pun">)){</span><span class="pln">
+		</span><span class="pun">....</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+	<h2>Composant logiciel</h2>
+
+<p>Un <span class="blue">bean</span> est un objet qui est instancié, assemblé ou géré par le <span class="red">conteneur IoC</span>.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="tag">&lt;bean</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"verificateur"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"fr.uge.RegularChecker"</span><span class="tag">/&gt;</span><span class="pln">    </span></pre>
+
+<ul>
+	<li><span class="blue">identifiant</span> : <tt>verificateur</tt>, </li>
+	<li><span class="blue">classe</span> : <tt>fr.uge.RegularChecker</tt>.
+</li></ul>
+
+<p>Un <span class="red">composant logiciel</span> est une <span class="blue">interface</span> + les <span class="red">différents beans</span> qui fournissent cette interface. </p>
+
+</section>
+
+			<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+				<h2>Le coeur de Spring</h2>
+
+			<ul>
+			<li><span class="blue">Conteneur léger</span> <br>
+				Gére l'instantiation de certains objets (les beans) et tout leur cycle de vie. 
+			</li>
+			<li><span class="blue">Injection de dépendances</span> <br>
+				Gère les dépendances entre les composants. Spring injecte les composants dont dépent un composant dans ce composant.
+			</li>
+			<li><span class="blue">Programmation Orientée Aspect</span> (cf. séance prochaine)</li>
+			</ul>				
+
+
+			</section>
+
+			 
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Construction des beans</h2>
+
+<p>Par défaut, les beans sont pour l'instant crées en appelant <span class="blue">leur constructeur sans paramètre</span>.</p>
+
+<pre class="prettyprint prettyprinted" style="font-size: 16px;"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">UGEPasswordChecker</span><span class="pln"> </span><span class="kwd">implements</span><span class="pln"> </span><span class="typ">PasswordChecker</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> minSize</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">UGEPasswordChecker</span><span class="pun">(){</span><span class="pln">
+        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">minSize</span><span class="pun">=</span><span class="lit">8</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">UGEPasswordChecker</span><span class="pun">(</span><span class="kwd">int</span><span class="pln"> minSize</span><span class="pun">){</span><span class="pln">
+        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">minSize</span><span class="pun">=</span><span class="pln">minSize</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p>On peut fournir des paramètres pour le constructeur:</p>
+<pre class="prettyprint prettyprinted" style="font-size: 16px;"><span class="tag">&lt;bean</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"verificateur"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"fr.uge.jee.UGEPasswordChecker"</span><span class="tag">&gt;</span><span class="pln">
+        </span><span class="tag">&lt;constructor-arg</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"12"</span><span class="tag">/&gt;</span><span class="pln">
+    </span><span class="tag">&lt;/bean&gt;</span></pre>
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+		<h2>getBean</h2>
+
+<ul>
+	<li><code><span class="blue">applicationContext.getBean(String name) : Object</span></code></li>
+	<li><code><span class="blue">applicationContext.getBean(String name,Class&lt;T&gt;) : T</span></code></li>
+	<li><code><span class="blue">applicationContext.getBean(Class&lt;T&gt;) : T</span></code> <br>
+	<span class="red">Attention</span> il ne doit y avoir qu'un seul bean de type T.</li>
+</ul>
+</section>
+
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+	<h2>Injection de dépendances</h2>
+
+<p>Le conteneur IoC peut injecter dans les beans qu'il construit:</p>
+<ul>
+	<li>des valeurs</li>
+	<li>d'autres beans</li>
+</ul>
+
+<p><span class="blue">Ces injections</span> peuvent se faire:</p>
+<ul>
+<li> soit par  <span class="blue">constructueur</span>, </li>
+<li> soit par un <span class="blue">champ</span> via <span class="red">un setter</span> </li>
+</ul>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+   <h2>Injection par le constructeur (1/2)</h2>
+
+<pre class="prettyprint prettyprinted" style="font-size: 15px;"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Address</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> number</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> street</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">Address</span><span class="pun">(</span><span class="kwd">int</span><span class="pln"> number</span><span class="pun">,</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> street</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">number </span><span class="pun">=</span><span class="pln"> number</span><span class="pun">;</span><span class="pln">
+        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">street </span><span class="pun">=</span><span class="pln"> street</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> toString</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{...};</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p>On crée un bean <span class="red"><tt>addressBob</tt></span> en injectant des <span class="blue">valeurs</span> par le constructeur.</p>
+
+<pre class="prettyprint prettyprinted" style="font-size: 18px;"><span class="tag">&lt;bean</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"addressBob"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"fr.uge.jee.injections.Address"</span><span class="tag">&gt;</span><span class="pln">
+        </span><span class="tag">&lt;constructor-arg</span><span class="pln">  </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"5"</span><span class="tag">/&gt;</span><span class="pln">
+        </span><span class="tag">&lt;constructor-arg</span><span class="pln">  </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"Rue des Lilas"</span><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;/bean&gt;</span></pre>
+</section>
+
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+   <h2>Injection par le constructeur (2/2)</h2>
+
+<pre class="prettyprint prettyprinted" style="font-size: 15px;"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Person</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> name</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span class="typ">Address</span><span class="pln"> address</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">Person</span><span class="pun">(</span><span class="typ">Address</span><span class="pln"> address</span><span class="pun">,</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> name</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">address </span><span class="pun">=</span><span class="pln"> address</span><span class="pun">;</span><span class="pln">
+        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">name </span><span class="pun">=</span><span class="pln"> name</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> toString</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{...};</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p>On crée un bean <span class="red"><tt>boss</tt></span> en injectant une valeur et le bean <span class="red"><tt>addressBob</tt></span>.</p>
+
+<pre class="prettyprint prettyprinted" style="font-size: 18px;"><span class="tag">&lt;bean</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"boss"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"fr.uge.jee.injections.Person"</span><span class="tag">&gt;</span><span class="pln">
+    </span><span class="tag">&lt;constructor-arg</span><span class="pln">  </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"Bob"</span><span class="tag">/&gt;</span><span class="pln">
+    </span><span class="tag">&lt;constructor-arg</span><span class="pln">  </span><mark><span class="atn">ref</span><span class="pun">=</span><span class="atv">"addressBob"</span></mark><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;/bean&gt;</span></pre>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+   <h2>Injection par setter (1/3)</h2>
+
+<pre class="prettyprint prettyprinted" style="font-size: 16px;"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Client</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> name</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Address</span><span class="pln"> address</span><span class="pun">;</span><span class="pln">
+
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">Client</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> name</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">name </span><span class="pun">=</span><span class="pln"> name</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> setAddress</span><span class="pun">(</span><span class="typ">Address</span><span class="pln"> address</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">address </span><span class="pun">=</span><span class="pln"> address</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> toString</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{...};</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p>On veut créer un bean<span class="red"> <tt>lea</tt></span> pour une cliente nommée <span class="blue"><tt>Léa</tt></span> et qui habite au <span class="blue"><tt>53 Bvd Copernic</tt></span>. </p>
+
+</section>
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+   <h2>Injection par setter (2/3)</h2>
+<p>On crée un bean <tt>addressLea</tt> pour son adresse.</p>
+<pre class="prettyprint prettyprinted" style="font-size: 18px;"><span class="tag">&lt;bean</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"addressLea"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"fr.uge.jee.injections.Address"</span><span class="tag">&gt;</span><span class="pln">
+    </span><span class="tag">&lt;constructor-arg</span><span class="pln">  </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"53"</span><span class="tag">/&gt;</span><span class="pln">
+    </span><span class="tag">&lt;constructor-arg</span><span class="pln">  </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"Bvd Copernic"</span><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;/bean&gt;</span><span class="pln">   </span></pre>
+<p></p>
+
+<p>On injecte le nom par le constructeur et l'adresse par le <span class="red">setter</span>:</p>
+
+<pre class="prettyprint prettyprinted" style="font-size: 18px;"><span class="tag">&lt;bean</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"lea"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"fr.uge.jee.injections.Client"</span><span class="tag">&gt;</span><span class="pln">
+    </span><span class="tag">&lt;constructor-arg</span><span class="pln">  </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"Léa"</span><span class="tag">/&gt;</span><span class="pln">
+    </span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"address"</span><span class="pln"> </span><span class="atn">ref</span><span class="pun">=</span><span class="atv">"addressLea"</span><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;/bean&gt;</span></pre>
+
+</section>
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Injection par setter (3/3)</h2>
+
+<pre class="prettyprint prettyprinted" style="font-size: 18px;"><span class="pln">    </span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"address"</span><span class="pln"> </span><span class="atn">ref</span><span class="pun">=</span><span class="atv">"addressLea"</span><span class="tag">/&gt;</span></pre>
+
+<ul>
+	<li><tt>name="address"</tt> est le nom du champ dans la classe <span class="blue"><code>Client</code></span></li>
+	<li>Spring va chercher une méthode <code>setAddress</code> et lui passer le bean  <span class="red"><tt>addressLea</tt></span></li>
+</ul>
+
+<p><span class="red">Le nom du setter est dérivé du nom du champ</span> : s'il y a un typo dans le nom du setter, il y a aura une exception!</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+	<h2>List, Set et Map</h2>
+
+<p>Spring fournit un moyen pour injecter des <span class="blue">collections</span> Java.</p>
+
+<pre class="prettyprint prettyprinted" style="font-size: 18px;"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Client</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> name</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Address</span><span class="pln"> address</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">List</span><span class="pun">&lt;</span><span class="typ">String</span><span class="pun">&gt;</span><span class="pln"> emails</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">Client</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> name</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">name </span><span class="pun">=</span><span class="pln"> name</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> setEmails</span><span class="pun">(</span><span class="typ">List</span><span class="pun">&lt;</span><span class="typ">String</span><span class="pun">&gt;</span><span class="pln"> emails</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">emails </span><span class="pun">=</span><span class="pln"> </span><span class="typ">List</span><span class="pun">.</span><span class="pln">copyOf</span><span class="pun">(</span><span class="pln">emails</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+     </span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span></pre>
+</section>
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+	<h2>List, Set et Map</h2>
+
+<pre class="prettyprint prettyprinted" style="font-size: 18px;"><span class="tag">&lt;bean</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"lea"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"fr.uge.jee.injections.Client"</span><span class="tag">&gt;</span><span class="pln">
+   </span><span class="tag">&lt;constructor-arg</span><span class="pln">  </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"Léa"</span><span class="tag">/&gt;</span><span class="pln">
+   </span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"address"</span><span class="pln"> </span><span class="atn">ref</span><span class="pun">=</span><span class="atv">"addressLea"</span><span class="tag">/&gt;</span><span class="pln">
+   </span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"emails"</span><span class="tag">&gt;</span><span class="pln">
+       </span><span class="tag">&lt;list&gt;</span><span class="pln">
+           </span><span class="tag">&lt;value&gt;</span><span class="pln">toto@gmail.com</span><span class="tag">&lt;/value&gt;</span><span class="pln">
+           </span><span class="tag">&lt;value&gt;</span><span class="pln">titi@gmail.com</span><span class="tag">&lt;/value&gt;</span><span class="pln">
+       </span><span class="tag">&lt;/list&gt;</span><span class="pln">
+   </span><span class="tag">&lt;/property&gt;</span><span class="pln">
+</span><span class="tag">&lt;/bean&gt;</span></pre>
+<p>On peut utiliser une syntaxe similaire pour <code>Set</code> et <code>Map</code>.</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+   <h2>List, Set et Map</h2>
+
+<p>On peut injecter des collections de beans et pas seulement des valeurs.</p>
+
+<pre class="prettyprint prettyprinted" style="font-size: 16px;"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Book</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> title</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> </span><span class="kwd">ref</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">Book</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> title</span><span class="pun">,</span><span class="kwd">long</span><span class="pln"> </span><span class="kwd">ref</span><span class="pun">){...};</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Library</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">Book</span><span class="pun">&gt;</span><span class="pln"> books</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">Library</span><span class="pun">(</span><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">Book</span><span class="pun">&gt;</span><span class="pln"> books</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{...};</span><span class="pln">
+
+     </span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span></pre>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+   <h2>List, Set et Map</h2>
+
+<pre class="prettyprint prettyprinted" style="font-size: 18px;"><span class="tag">&lt;bean</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"book1"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"Book"</span><span class="tag">&gt;</span><span class="pln">
+    </span><span class="tag">&lt;constructor-arg</span><span class="pln">  </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"Le livre de la jungle"</span><span class="tag">/&gt;</span><span class="pln">
+    </span><span class="tag">&lt;constructor-arg</span><span class="pln">  </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"55453"</span><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;/bean&gt;</span><span class="pln">
+</span><span class="tag">&lt;bean</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"book2"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"Book"</span><span class="tag">&gt;</span><span class="pln">
+    </span><span class="tag">&lt;constructor-arg</span><span class="pln">  </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"Le lion"</span><span class="tag">/&gt;</span><span class="pln">
+    </span><span class="tag">&lt;constructor-arg</span><span class="pln">  </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"554545"</span><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;/bean&gt;</span><span class="pln">
+</span><span class="tag">&lt;bean</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"library"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"Library"</span><span class="tag">&gt;</span><span class="pln">
+    </span><span class="tag">&lt;constructor-arg&gt;</span><span class="pln">
+        </span><span class="tag">&lt;set&gt;</span><span class="pln">
+            </span><span class="tag">&lt;ref</span><span class="pln"> </span><span class="atn">bean</span><span class="pun">=</span><span class="atv">"book1"</span><span class="tag">/&gt;</span><span class="pln">
+            </span><span class="tag">&lt;ref</span><span class="pln"> </span><span class="atn">bean</span><span class="pun">=</span><span class="atv">"book2"</span><span class="tag">/&gt;</span><span class="pln">
+        </span><span class="tag">&lt;/set&gt;</span><span class="pln">
+    </span><span class="tag">&lt;/constructor-arg&gt;</span><span class="pln">
+</span><span class="tag">&lt;/bean&gt;</span><span class="pln">    </span></pre>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+	<h2>Autowire</h2>
+
+<p>Pour l'instant, nous dépendons des <span class="red"><tt>id</tt></span> des beans pour déterminer les beans à injecter.</p>
+
+<p>Avec <span class="red">Autowire</span>, <span class="blue">Spring</span> offre plusieurs moyens pour inférer les beans à injecter.</p>
+
+<ul>
+	<li><span class="blue"><tt>autowire="byName"</tt></span> <br>
+		Pour chaque champs avec un setter, le conteneur cherche un bean ayant pour <span class="red">id</span> le <span class="blue">nom du champs</span> et il l'injecte.
+	</li>
+	<li><span class="blue"><tt>autowire="byType"</tt></span> <br>
+			Pour chaque champs avec un setter, le conteneur cherche un bean ayant le même type que le champs.<br>
+			<span class="red">⇛</span> Attention si plusieurs beans ont le même type, on a une exception.
+	</li>
+	<li><span class="blue"><tt>autowire="constructor"</tt></span> <br>
+	Comme pour <tt>autowire="byType"</tt> mais avec le constructeur.</li>
+</ul>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+	<h2>Autowire byName</h2>
+
+<pre class="prettyprint prettyprinted" style="font-size: 18px;"><span class="tag">&lt;bean</span><span class="pln"> </span><mark><span class="atn">id</span><span class="pun">=</span><span class="atv">"addressLea"</span></mark><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"fr.uge.jee.injections.Address"</span><span class="tag">&gt;</span><span class="pln">
+    </span><span class="tag">&lt;constructor-arg</span><span class="pln">  </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"53"</span><span class="tag">/&gt;</span><span class="pln">
+    </span><span class="tag">&lt;constructor-arg</span><span class="pln">  </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"Bvd Copernic"</span><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;/bean&gt;</span><span class="pln">   
+
+</span><span class="tag">&lt;bean</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"lea"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"fr.uge.jee.injections.Client"</span><span class="tag">&gt;</span><span class="pln">
+    </span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"address"</span><span class="pln"> </span><mark><span class="atn">ref</span><span class="pun">=</span><span class="atv">"addressLea"</span></mark><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;/bean&gt;</span></pre>
+
+</section>
+
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+	<h2>Autowire byName</h2>
+
+<pre class="prettyprint prettyprinted" style="font-size: 18px;"><span class="tag">&lt;bean</span><span class="pln"> </span><mark><span class="atn">id</span><span class="pun">=</span><span class="atv">"address"</span></mark><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"fr.uge.jee.injections.Address"</span><span class="tag">&gt;</span><span class="pln">
+    </span><span class="tag">&lt;constructor-arg</span><span class="pln">  </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"53"</span><span class="tag">/&gt;</span><span class="pln">
+    </span><span class="tag">&lt;constructor-arg</span><span class="pln">  </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"Bvd Copernic"</span><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;/bean&gt;</span><span class="pln">   
+
+</span><span class="tag">&lt;bean</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"lea"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"fr.uge.jee.injections.Client"</span><span class="tag">&gt;</span><span class="pln">
+    </span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"address"</span><span class="pln"> </span><mark><span class="atn">ref</span><span class="pun">=</span><span class="atv">"address"</span></mark><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;/bean&gt;</span></pre>
+
+<p>L'<span class="red"><tt>id</tt></span> du bean est égal au nom du champ de <span class="blue"><code>Client</code></span>.</p>
+
+<pre class="prettyprint prettyprinted" style="font-size: 18px;"><span class="tag">&lt;bean</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"lea"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"fr.uge.jee.injections.Client"</span><span class="pln"> </span><span class="atn">autowire</span><span class="pun">=</span><span class="atv">"ByName"</span><span class="tag">/&gt;</span></pre>
+
+</section>
+
+<section style="top: 94px; display: block;" hidden="" aria-hidden="true" class="future">
+	<h2>Autowire byType</h2>
+
+<pre class="prettyprint prettyprinted" style="font-size: 18px;"><span class="tag">&lt;bean</span><span class="pln"> </span><mark><span class="atn">id</span><span class="pun">=</span><span class="atv">"addressLea"</span></mark><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"fr.uge.jee.injections.Address"</span><span class="tag">&gt;</span><span class="pln">
+    </span><span class="tag">&lt;constructor-arg</span><span class="pln">  </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"53"</span><span class="tag">/&gt;</span><span class="pln">
+    </span><span class="tag">&lt;constructor-arg</span><span class="pln">  </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"Bvd Copernic"</span><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;/bean&gt;</span><span class="pln">   
+
+</span><span class="tag">&lt;bean</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"lea"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"fr.uge.jee.injections.Client"</span><span class="tag">&gt;</span><span class="pln">
+    </span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"address"</span><span class="pln"> </span><mark><span class="atn">ref</span><span class="pun">=</span><span class="atv">"addressLea"</span></mark><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;/bean&gt;</span></pre>
+
+<p>Si le bean <span class="red"><tt>addressLea</tt></span> est  le seul bean du type <span class="blue"><code>fr.uge.jee.injections.Address</code></span> alors: 
+
+</p><pre class="prettyprint prettyprinted" style="font-size: 18px;"><span class="tag">&lt;bean</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"lea"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"fr.uge.jee.injections.Client"</span><span class="pln"> </span><span class="atn">autowire</span><span class="pun">=</span><span class="atv">"ByType"</span><span class="tag">/&gt;</span></pre>
+
+</section>
+
+<section style="top: 166px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>En résumé et en simplifié</h2>
+
+<p>Le conteur IoC lit dans <span class="red">fichier XML</span> la description d'un certain nombre de <span class="blue">beans</span>.</p>
+
+<p>En utilisant la réflexion ou la réécriture de bytecode, il fait les appels à <span class="blue">new</span>.</p>
+
+</section>
+
+<section style="top: 42.5px; display: block;" hidden="" aria-hidden="true" class="future">
+	<h2>Mais monsieur ...</h2>
+
+<p>Nous sommes en train de coder du <span class="red">Java</span> dans un <span class="blue">fichier XML</span>, est-ce que c'est vraiment mieux ?</p>
+
+<p>Il existe une autre approche basée sur les annotations Java qui évite ce problème et que nous allons utiliser dans le reste du cours.</p>
+
+<p>On commence avec la <span class="red">configuration XML</span> car:</p>
+<ul>
+	<li>elle permet de démystifier l'injection de dépendances,</li>
+	<li>avec les annotations, on se retrouve avec une classe qui code un fichier XML,<p></p>
+	</li><li>elle est encore utilisée dans la vraie vie !</li>
+</ul>
+
+</section>
+
+
+		</div>
+
+	<div class="backgrounds"><div class="slide-background present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div></div><div class="progress" style="display: block;"><span style="width: 0px;"></span></div><aside class="controls" style="display: block;"><div class="navigate-left"></div><div class="navigate-right enabled"></div><div class="navigate-up"></div><div class="navigate-down"></div></aside><div class="slide-number"></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px);">
+
+				JEE Back-end
+				
+				Spring Core : Injections de dépendances
+				
+				
+			</div></div>
+
+
+
+	<script src="./JEE Back-End - spring core 1 - injections de dépendances_files/head.min.js.téléchargement"></script>
+	<script src="./JEE Back-End - spring core 1 - injections de dépendances_files/reveal.js.téléchargement"></script>
+
+	<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script><script type="text/javascript" src="./JEE Back-End - spring core 1 - injections de dépendances_files/zoom.js.téléchargement"></script><script type="text/javascript" src="./JEE Back-End - spring core 1 - injections de dépendances_files/notes.js.téléchargement"></script>
+
+
+
+</body></html>

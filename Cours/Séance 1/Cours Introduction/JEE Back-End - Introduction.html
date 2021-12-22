@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<!-- saved from url=(0076)http://www-igm.univ-mlv.fr/~carayol/coursJEEM2/slides/introductionApp.html#/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+<title>JEE Back-End - Introduction</title>
+
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="./JEE Back-End - Introduction_files/reveal.css">
+<link rel="stylesheet" href="./JEE Back-End - Introduction_files/white.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="./JEE Back-End - Introduction_files/zenburn.css">
+<link rel="stylesheet" href="./JEE Back-End - Introduction_files/reveal-override.css">
+<link href="./JEE Back-End - Introduction_files/prettify.css" type="text/css" rel="stylesheet">
+<!-- Printing and PDF exports -->
+<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script><link rel="stylesheet" type="text/css" href="./JEE Back-End - Introduction_files/paper.css">
+<script type="text/javascript" src="./JEE Back-End - Introduction_files/prettify.js.téléchargement"></script>
+<style type="text/css">
+.reveal h2 {
+	color: steelblue;
+}
+
+.reveal h1 {
+	color: steelblue;
+}
+
+.reveal p {
+	text-align: left;
+}
+
+.reveal lu {
+	text-align: left;
+	list-style-position: inside;
+}
+
+.reveal span.red {
+	color: salmon;
+}
+
+.reveal p.red {
+	color: salmon;
+}
+
+.reveal span.blue,.reveal p.blue {
+	color: steelblue;
+}
+</style>
+<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+</head>
+
+<body onload="prettyPrint()">
+
+
+	<div class="reveal slide center" role="application" data-transition-speed="default" data-background-transition="fade">
+
+<div class="footer"><p>
+    <a href="http://www-igm.univ-mlv.fr/~carayol/coursJEEM2/index.html"><img src="./JEE Back-End - Introduction_files/home.png" width="30em"></a></p>
+      </div>
+
+		<!-- Any section element inside of this container is displayed as a slide -->
+		<div class="slides" style="width: 960px; height: 700px; zoom: 0.948857;">
+			<section style="top: 211px; display: block;" class="present">
+
+				<h1>JEE Back-end</h1>
+				
+				<h2>Introduction</h2>
+				
+				
+			</section>
+
+			<section style="top: 0px; display: block;" hidden="" aria-hidden="true" class="future">
+			
+			<h2> Introduction JEE </h2>
+			
+				<img src="./JEE Back-End - Introduction_files/jee.png" width="60%" style="border:0;box-shadow:none">
+			</section>
+			<section style="top: 73px; display: block;" hidden="" aria-hidden="true" class="future">
+				<h2>Java Entrepise Edition (JEE)</h2>
+
+				<p><span class="blue">JEE</span> est une plate-forme logiciel qui définit:</p>
+				 <ul>
+				 	<li>des spécifications</li>
+				 	<li>des APIs</li>
+				 </ul>
+
+				<p>... pour écrire des applications Java <span class="red">pour l'entreprise</span>.</p>
+
+				<ul>
+				<li>La version courante de JEE est 1.8.</li>
+				<li>JavaEE = Java SE + un grand nombre de bibliothèques </li>
+				<li>De nombreux frameworks implémentent tout ou partie de ces spécifications.</li>
+				</ul>
+			</section>
+			 
+			 <section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+			 	<h2>Pour qui ? Pourquoi ?</h2>
+			 	<ul>
+			 		<li>pour des projets d'envergure qui doivent évoluer sur une longue période (banque, ...)</li>
+			 		<li>évolutions technologiques inévitables et difficilement anticipables (applications mobiles, big data,...)</li>
+			 		<li>en contre-partie, un code beaucoup plus compliqué ...</li>
+			 	</ul>
+			 	</section>
+              <section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+              	<h2> Avantages JEE</h2>
+              	<ul>
+              	<li>une architecture d'applications basée sur les composants 
+              		<ul> <li>découpage de l'application</li> 
+              		<li>séparation des rôles</li>
+              		</ul>
+              	</li>
+              	
+
+		<li> interfaçage possible avec de nombreuses API : JDBC, JPA, JSP...</li>
+
+		<li>choix des outils de développement et des serveurs d'applications utilisés</li>
+
+		<li>Découpage de l'application : client/métier/données, MVC</li>
+	</ul>
+              	
+              </section>
+              
+              
+
+			<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+				<h2>Une vue d'ensemble</h2>
+
+
+				<ul>
+					<li>Front-end : clients </li>
+					<li>Back-end : midleware + BDD</li>
+					<li>Contrôleurs : Point d'entrée/sortie client midleware</li>
+				</ul>
+
+           
+			</section>
+
+			<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+				<h2>Une vue d'ensemble</h2>
+				<img src="./JEE Back-End - Introduction_files/jee-big-picture.png" width="80%" style="border:0;box-shadow:none">
+			
+			</section>
+
+			<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+				<h2>Spring</h2>
+
+				<p>Spring est un <span class="blue">framework</span> Java libre qui implémente les spécifications JEE et fournit d'autres modules qui ne sont pas dans la spécification. </p>
+
+				<ul>
+					<li>Rod Johnson (2002)</li>
+					<li>Version 5 actuellement</li>
+					<li>Très modulaire</li>
+					<li>Simple : point de vue unifié</li>
+					<li>Rapide : serveur léger (<span class="red">Attention au passage à l'échelle</span>)</li>
+					<li>Testable</li>
+				</ul>
+			</section>
+
+     
+			<section style="top: 26.5px; display: block;" hidden="" aria-hidden="true" class="future">
+			
+			<h2>Schéma architecture Spring</h2>
+			
+			<img src="./JEE Back-End - Introduction_files/spring.png" width="60%" style="border:0;box-shadow:none">
+			</section>
+
+     <section style="top: 31.5px; display: block;" hidden="" aria-hidden="true" class="future">
+     <h2>Plan du cours</h2>
+
+<p>Les <span class="blue">6 premières séances</span> serviront à faire le tour des composants principaux de Spring. </p>
+
+<ul>
+	<li><span class="red">Spring Core</span> (2 séances)</li>
+  <li><span class="red">Controlleurs REST et SpringMVC</span> (2 séances)</li>
+  <li><span class="red">Hibernate et Spring Data</span> (2 séances)</li>
+</ul>
+
+<p>Les <span class="blue">5 séances suivantes</span> seront à dédiées à des sujets plus pointus : </p>
+<ul>
+<li>sécurité</li>
+<li>authentification (Rest et Web)</li>
+<li>performance d'Hibernate</li>
+<li>...</li>
+</ul>
+     </section>
+
+<section style="top: 144.5px; display: block;" hidden="" aria-hidden="true" class="future">
+	<h2>Evaluation</h2>
+
+<ul>
+	<li>Vous déposerez votre code sur elearning avant chaque nouvelle séance.</li>
+	<li>Un <span class="red">projet</span> à réaliser par groupe de 4 maximum (donné à la 7ème séance).</li>
+	<li>Une <span class="red">note de controle continu</span> basée sur les Quizz de début de cours et sur les rendus.</li>
+</ul>
+</section>
+
+		</div>
+
+	<div class="backgrounds"><div class="slide-background present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div></div><div class="progress" style="display: block;"><span style="width: 0px;"></span></div><aside class="controls" style="display: block;"><div class="navigate-left"></div><div class="navigate-right enabled"></div><div class="navigate-up"></div><div class="navigate-down"></div></aside><div class="slide-number"></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px);">
+
+				JEE Back-end
+				
+				Introduction
+				
+				
+			</div></div>
+
+
+
+	<script src="./JEE Back-End - Introduction_files/head.min.js.téléchargement"></script>
+	<script src="./JEE Back-End - Introduction_files/reveal.js.téléchargement"></script>
+
+	<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script><script type="text/javascript" src="./JEE Back-End - Introduction_files/zoom.js.téléchargement"></script><script type="text/javascript" src="./JEE Back-End - Introduction_files/notes.js.téléchargement"></script>
+
+
+
+</body></html>
