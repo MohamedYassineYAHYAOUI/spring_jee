@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<form action="#" th:action="@{/rectangle}" th:object="${rectangle}" method="post">
+    <h2>Rectangle area calculator</h2>
+    <div>
+        <label for="h">Height:</label>
+        <input id="h" type="text" th:field="*{height}" />
+        <p th:if="${#fields.hasErrors('height')}" th:errors="*{height}">height Error</p>
+
+    </div>
+
+    <div>
+        <label for="w">Width:</label>
+        <input id="w" type="text" th:field="*{width}" />
+        <p th:if="${#fields.hasErrors('width')}" th:errors="*{width}">width Error</p>
+
+    </div>
+    <div><button type="submit">Compute</button></div>
+</form>
+</html>

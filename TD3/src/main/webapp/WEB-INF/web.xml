@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<servlet>
+    <servlet-name>Rectangle</servlet-name>
+    <servlet-class>fr.uge.jee.servlet.rectangle.Rectangle</servlet-class>
+    <init-param>
+        <param-name>rectangleFormTemplate</param-name>
+        <param-value>/WEB-INF/templates/rectangle-form.html</param-value>
+    </init-param>
+
+
+</servlet>
