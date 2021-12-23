@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <form action="#" th:action="@{/pokematch}" th:object="${user}" method="post">
+        <h2>Please inter your name :</h2>
+        <div>
+            <label for="first_name">First name:</label>
+            <input id="first_name" type="text" th:field="*{firstName}" />
+            <span  th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">Invalid first name</span>
+        </div>
+
+
+        <div>
+            <label for="last_name">Last name:</label>
+            <input id="last_name" type="text" th:field="*{lastName}" />
+            <span  th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Invalid last name</span>
+        </div>
+
+        <div>
+            <button type="submit">Find my pokemon</button>
+        </div>
+    </form>
+
+
+    <div th:if="${user.hasPokemon() and !#fields.hasErrors('${user.*}')}">
+        <h3>Your pokemon match is : </h3>
+        <p th:text="${user.getPokemon()}"/>
+        <img th:src="*{'data:image/png;base64,'+user.getUserImage()}" alt="${user.getPokemon()}" />
+
+    </div>
+
+    <div th:if="${!topPokemons.isEmpty()}">
+        <h3>Top Pokemons checked by different users :</h3>
+        <div th:each="pok : ${topPokemons}">
+            <p th:text="${pok.toString()}"/>
+            <img th:src="*{'data:image/png;base64,'+pok.getImageBase64()}" alt="${pok.toString()}" />
+        </div>
+    </div>
+</body>
+
+</html>
