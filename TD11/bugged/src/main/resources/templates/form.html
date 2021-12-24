@@ -1,0 +1,13 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Getting Started: Serving Web Content</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<form th:action="@{/directoryAction}" method="post">
+  <h2>Your search</h2>
+  <div><label for="h">Last:</label>
+    <input id="h" type="text" name="lastName"></div>
+  <div><button type="submit">Search</button></div>
+</form>
+</html>
