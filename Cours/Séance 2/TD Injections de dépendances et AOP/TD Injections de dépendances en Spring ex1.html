@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<!-- saved from url=(0058)https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td02.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<!-- Required meta tags -->
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Javascripts --> 
+	<script type="text/javascript" src="./TD Injections de dépendances en Spring_files/prettify.js.téléchargement"></script>
+	<script type="text/javascript" src="./TD Injections de dépendances en Spring_files/jquery-3.2.1.slim.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./TD Injections de dépendances en Spring_files/popper.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./TD Injections de dépendances en Spring_files/bootstrap.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./TD Injections de dépendances en Spring_files/hack.js.téléchargement"></script>
+
+	<!-- Bootstrap CSS -->
+
+	<link href="./TD Injections de dépendances en Spring_files/bootstrap.css" type="text/css" rel="stylesheet">
+
+   <!-- Syntaxt highlighter CSS -->
+   
+	<link href="./TD Injections de dépendances en Spring_files/prettify.css" type="text/css" rel="stylesheet">
+
+	<!-- Fonts for the icons -->
+
+   <link href="./TD Injections de dépendances en Spring_files/fontawesome-all.min.css" rel="stylesheet">
+
+<title>source</title>
+  </head>
+  <body onload="prettyPrint()">
+
+
+<!-- Title of the exercice sheet
+ 
+<h1>
+		TITLE
+		<a href="index.html" style="float:right"><span class="fa fa-home"></span></a>
+ </h1>
+ -->
+
+<h1>
+	Injections de dépendances en Spring
+	<a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/index.html" style="float:right"><span class="fa fa-home"></span></a>
+</h1>
+
+
+   
+   
+<!-- TABLE OF CONTENT OF THE EXERCICES
+ 
+ <ul class="nav nav-tabs">
+ <li class="nav-item">
+ <a class="nav-link active" data-toggle="tab" href="#exercice1">Exercice 1</a>
+ </li>
+ <li class="nav-item">
+ <a class="nav-link" data-toggle="tab" href="#exercice2">Exercice 2</a>
+ </li>
+ </ul>
+
+   -->
+
+
+<!---
+
+					TABLE OF CONTENT
+					
+-->
+
+<ul class="nav nav-tabs">
+  
+<li class="nav-item">
+	<a class="nav-link active" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td02.html#exercice1">Exercice 1</a>
+</li>
+
+<li class="nav-item">
+	<a class="nav-link" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td02.html#exercice2">Exercice 2</a>
+</li>
+
+<li class="nav-item">
+	<a class="nav-link" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td02.html#exercice3">Exercice 3</a>
+</li>
+
+</ul>
+
+
+
+<div id="myTabContent" class="tab-content">
+
+<div class="tab-pane fade show active" id="exercice1">
+<h2>Configuration utilisant les annotations</h2>
+<!---
+
+					EXERCICE 2
+
+-->
+<p class="info alert alert-info">Toutes vos classes doivent être dans le package <tt>fr.uge.jee.annotations.onlineshope</tt>.</p>
+
+<p class="question">Créez un nouveau projet Maven avec le même <tt>pom.xml</tt> que dans le TD précédent.</p> 
+
+<p class="question">Reprenez les classes du dernier exercice du TD précédent. Asssemblez le magasin Amazon décrit dans l'exercice précédent en utilisant uniquement une classe de configuration (pas de <code>@Autowire</code>et pas de <code>@Component</code>).</p>
+
+<pre class="console">AhMaZone
+Delivery options
+  Standard Delivery with a delay of 999 days
+Insurance options
+  Return insurance
+  Thief insurance
+</pre>
+
+<p class="question">Réalisez le même assemblage en utilisant la classe de configuration reduite à son strict minimum. Vous utiliserez <span class="blue"><code>@Component</code></span>, <span class="blue"><code>@Value</code></span> et <span class="blue"><code>@Autowired</code></span></p>
+
+<p class="info alert alert-info">Mettez votre classe de configuration de la question précédente en commentaire.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Configure</span><span class="pln">
+</span><span class="lit">@ComponentScan</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Config</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p class="question">Modifiez votre injection pour que les valeurs: nom, delay, ... soient lues dans une fichier nommé <span class="blue"><tt>onlineshop.properties</tt></span> qui se trouvera dans le répertoire <span class="blue"><tt>resources</tt></span>.</p>
+
+<pre class="console">onlineshop.name=AmaZone
+onlineshop.standarddelivery.delay=999
+onlineshop.returninsurance.membersonly=false
+</pre>
+
+<p class="attention alert alert-warning">Lisez la <a href="https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#validation">documentation</a> de <span class="blue"><code>@Value</code></span>.</p>
+
+</div>
+
+
+ <!-- End of the exercise -->
+<div class="tab-pane fade" id="exercice2">
+<h2>Où cacher son token ?</h2>
+
+<p class="info alert alert-info">Toutes vos classes doivent être dans le package <tt>fr.uge.jee.annotations.messenger</tt>.</p>
+
+<p>Le code ci-dessous montre le code simplifié d'une application qui utilise un token pour accéder à une API pour envoyer des messages.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Configuration</span><span class="pln">
+</span><span class="lit">@ComponentScan</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Application</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> main</span><span class="pun">(</span><span class="typ">String</span><span class="pun">[]</span><span class="pln"> args</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">var</span><span class="pln"> applicationContext </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">AnnotationConfigApplicationContext</span><span class="pun">(</span><span class="typ">Application</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span class="pln">
+        </span><span class="kwd">var</span><span class="pln"> messenger </span><span class="pun">=</span><span class="pln"> applicationContext</span><span class="pun">.</span><span class="pln">getBean</span><span class="pun">(</span><span class="typ">Messenger</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span class="pln">
+        messenger</span><span class="pun">.</span><span class="pln">send</span><span class="pun">(</span><span class="str">"Hello !"</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+    
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="lit">@Component</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Messenger</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@Value</span><span class="pun">(</span><span class="str">"A123G32G234H34245234"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> token</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> send</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> message</span><span class="pun">){</span><span class="pln">
+        </span><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="str">"Using the super secret token "</span><span class="pun">+</span><span class="pln">token</span><span class="pun">+</span><span class="str">" to send the message : "</span><span class="pun">+</span><span class="pln">message</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+
+<p>Le problème avec cette approche est que le token est accessible dans le git qui héberge le code source. Une bonne pratique est de stocker le token que sur le serveur de production. Cela peut se faire par exemple en passant 
+le token par une variable d'environement.</p>
+
+<p class="question">Modifiez le code pour récuréper le token dans une variable d'environment nommée <span class="blue"><tt>MESSENGER_TOKEN</tt></span>.</p>
+
+<p>Pour tester votre code, il faut pouvoir lancer votre application depuis la ligne de commande. Vous pouvez voir comment faire <a href="https://www.baeldung.com/maven-java-main-method">ici</a>.</p>
+
+<p>Une fois Maven configuré, vous pouvez tester dans un terminal avec:</p>
+
+<pre class="console">$ export MESSENGER_TOKEN=....
+$ mvn exec:java
+</pre>
+
+</div>
+
+
+
+<div class="tab-pane fade" id="exercice3">
+
+<h2>AOP in action</h2>
+
+<p class="info alert alert-info">Toutes vos classes doivent être dans le package <tt>fr.uge.jee.aop.students</tt>.</p>
+
+<p>Dans cet exercice, on part d'une application qui n'est pas gérée par Spring et qui gère l'inscription des élèves à des cours. Pour des raisons de simplicité, elle simule les accès à la base de donnée. Cette application se trouve dans l'archive <a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td02/studentversion.tgz">studentversion.tgz</a>.</p>
+
+<p class="attention alert alert-warning">Notre but est d'utiliser l'AOP pour logger et auditer les performances de cette application.</p>
+
+
+<p>Il faut rajouter les dépenses suivantes dans votre fichier <tt>pom.xml</tt> et rajouter:</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="tag">&lt;dependency&gt;</span><span class="pln">
+  </span><span class="tag">&lt;groupId&gt;</span><span class="pln">org.springframework</span><span class="tag">&lt;/groupId&gt;</span><span class="pln">
+  </span><span class="tag">&lt;artifactId&gt;</span><span class="pln">spring-aop</span><span class="tag">&lt;/artifactId&gt;</span><span class="pln">
+  </span><span class="tag">&lt;version&gt;</span><span class="pln">5.2.9.RELEASE</span><span class="tag">&lt;/version&gt;</span><span class="pln">
+</span><span class="tag">&lt;/dependency&gt;</span><span class="pln">
+</span><span class="tag">&lt;dependency&gt;</span><span class="pln">
+  </span><span class="tag">&lt;groupId&gt;</span><span class="pln">org.aspectj</span><span class="tag">&lt;/groupId&gt;</span><span class="pln">
+  </span><span class="tag">&lt;artifactId&gt;</span><span class="pln">aspectjweaver</span><span class="tag">&lt;/artifactId&gt;</span><span class="pln">
+  </span><span class="tag">&lt;version&gt;</span><span class="pln">1.8.9</span><span class="tag">&lt;/version&gt;</span><span class="pln">
+</span><span class="tag">&lt;/dependency&gt;</span></pre>
+
+<p class="question">Dans un premier temps, injectez un code qui affiche:
+  </p><ul>
+    <li><code>"Before create"</code> avant chaque appel aux méthodes <code>RegistrationService.createLecture</code> 
+  et <code>RegistrationService.createStudent</code>,</li>
+  <li><code>"After create"</code> après chaque appel aux méthodes <code>RegistrationService.createLecture</code> 
+  et <code>RegistrationService.createStudent</code>.</li>
+</ul>
+<p></p>
+
+<p class="attention alert alert-warning"> Vous allez devoir injecter ce code
+  dans <code>RegistrationService</code>, il faut donc que <code>RegistrationService</code>
+   soit géré le conteneur IoC de Spring. </p>
+
+<p class="question">Modifiez votre injection de code pour obtenir l'affichage suivant:</p>
+
+<pre class="console">Calling createStudent with arguments [Harry,Potter]
+Return id 0 by createStudent
+Calling createStudent with arguments [Hermione,Granger]
+Return id 1 by createStudent
+Calling createStudent with arguments [Ron,Wesley]
+Return id 2 by createStudent
+Calling createLecture with arguments [Potions]
+Return id 0 by createLecture
+Calling createStudent with arguments [Draco,Malfoy]
+Return id 3 by createStudent
+Calling createLecture with arguments [Detention]
+Return id 1 by createLecture
+</pre>
+
+<p class="question">On veut maintenant chronométrer par AOP toutes méthodes <code>saveToDB</code> et <code>loadFromDB</code>. On veut un affichage du type suivant à la fin de l'exécution de <code>Application</code>:</p>
+
+<pre class="console">DB timing report:
+  saveToDB
+    Mesured access times : [204, 201, 203]
+    Average time :202.66666666666666
+  loadFromDB
+    Mesured access times : [114, 101]
+    Average time :107.5  
+</pre>
+
+</div>
+ <!-- End of the exercise -->
+
+<div class="tab-pane fade" id="exercice4">
+
+<h2>Caching on demand</h2>
+
+<p class="info alert alert-info">Toutes vos classes doivent être dans le package <tt>fr.uge.jee.aop.caching</tt>.</p>
+
+<p>Spring offre la possibilité de réaliser le tissage sur les méthodes marquées par une annotation que nous aurons défini.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Target</span><span class="pun">(</span><span class="typ">ElementType</span><span class="pun">.</span><span class="pln">METHOD</span><span class="pun">)</span><span class="pln">
+</span><span class="lit">@Retention</span><span class="pun">(</span><span class="typ">RetentionPolicy</span><span class="pun">.</span><span class="pln">RUNTIME</span><span class="pun">)</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="lit">@interface</span><span class="pln"> </span><span class="typ">SayHello</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+</span><span class="pun">}</span></pre>
+
+<p>Ce code définit une annotation <code>SayHello</code>.
+  L'annotation <code>@Target</code> indique que l'annotation que s'applique uniquement à des méthodes. </p>
+
+</div>
+
+</div> <!-- End of div tab-content -->
+	  
+
+</body></html>

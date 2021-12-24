@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<!-- saved from url=(0058)https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td05.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<!-- Required meta tags -->
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Javascripts --> 
+	<script type="text/javascript" src="./TD -- Spring MVC ex1_files/prettify.js.téléchargement"></script>
+	<script type="text/javascript" src="./TD -- Spring MVC ex1_files/jquery-3.2.1.slim.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./TD -- Spring MVC ex1_files/popper.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./TD -- Spring MVC ex1_files/bootstrap.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./TD -- Spring MVC ex1_files/hack.js.téléchargement"></script>
+
+	<!-- Bootstrap CSS -->
+
+	<link href="./TD -- Spring MVC ex1_files/bootstrap.css" type="text/css" rel="stylesheet">
+
+   <!-- Syntaxt highlighter CSS -->
+   
+	<link href="./TD -- Spring MVC ex1_files/prettify.css" type="text/css" rel="stylesheet">
+
+	<!-- Fonts for the icons -->
+
+   <link href="./TD -- Spring MVC ex1_files/fontawesome-all.min.css" rel="stylesheet">
+
+<title>TD -- Spring MVC</title>
+  </head>
+  <body onload="prettyPrint()">
+
+
+<!-- Title of the exercice sheet
+ 
+<h1>
+		TITLE
+		<a href="index.html" style="float:right"><span class="fa fa-home"></span></a>
+ </h1>
+ -->
+
+<h1>
+	Spring MVC
+	<a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/index.html" style="float:right"><span class="fa fa-home"></span></a>
+</h1>
+
+
+   
+   
+<!-- TABLE OF CONTENT OF THE EXERCICES
+ 
+ <ul class="nav nav-tabs">
+ <li class="nav-item">
+ <a class="nav-link active" data-toggle="tab" href="#exercice1">Exercice 1</a>
+ </li>
+ <li class="nav-item">
+ <a class="nav-link" data-toggle="tab" href="#exercice2">Exercice 2</a>
+ </li>
+ </ul>
+
+   -->
+
+
+<!---
+
+					TABLE OF CONTENT
+					
+-->
+
+<ul class="nav nav-tabs">
+  
+<li class="nav-item">
+	<a class="nav-link active show" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td05.html#exercice1">Exercice 1</a>
+</li>
+
+<li class="nav-item">
+	<a class="nav-link" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td05.html#exercice2">Exercice 2</a>
+</li>
+
+
+
+</ul>
+
+
+
+<div id="myTabContent" class="tab-content">
+
+<div class="tab-pane fade active show" id="exercice1">
+<h2>Hello</h2>
+<!---
+
+					EXERCICE 2
+
+-->
+<p class="info alert alert-info">Toutes vos classes doivent être dans le package <tt>fr.uge.jee.springmvc.reststudents</tt>.</p>
+
+<p class="question">Créez un projet Maven avec ce <a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td05/pom.xml"><tt>pom.xml</tt></a>.</p>
+
+<p class="question">Créer une application qui contient 
+quelques étudiants comme dans le cours et qui permet de recupérer un étudiant par son id en Rest avec la route
+<tt>/students/id</tt>.</p>
+<!--
+<p class="question">Rajoutez une image à votre page.</p>
+-->
+
+<p class="question">Testez votre application en tapant dans votre terminal:</p>
+
+<pre class="console">$ curl -X GET http://localhost:8080/students/1
+</pre>
+
+<p class="question">Testez le cas où l'id de l'étudiant n'est pas présent.</p>
+
+<p class="question">En utilisant un <span class="red">CommandLineRunner</span> récupérer l'étudiant avec l'id 1 comme un objet Java et affichez le dans la console.</p>
+
+<p class="attention alert alert-warning">Votre CommandLineRunner doit faire un requête GET sur localhost! C'est juste pour vérifier que vous arrivez bien à consommer une API Rest.</p>
+
+
+<p class="question">Modifiez votre application pour que sur la route <tt>/students</tt>, elle renvoie la liste de tous les étudiants et modifiez votre <code>CommandLineRunner</code> pour qu'il récupère et affiche la liste </p>
+
+</div>
+
+
+ <!-- End of the exercise -->
+<div class="tab-pane fade" id="exercice2">
+<h2>PokéMatch</h2>
+
+<p class="info alert alert-info">Toutes vos classes doivent être dans le package <tt>fr.uge.jee.springmvc.pokematch</tt>.</p>
+
+<p>Cet exercice est une sorte de mini projet. On veut réaliser une application web qui permet à un visiteur de rentrer son nom et son prénom et qui va lui afficher (sur la même page) son pokémon fétiche. Pour trouver le pokémon fétiche de l'utilisateur on cherchera le pokémon dont le hashcode du nom est le plus proche en valeur absolue du hashcode du nom+prénom du visiteur.</p>
+
+<p>L'application récupèrera au démarrage la liste de tous les pokémons sur l'excellente API rest <a href="https://pokeapi.co/api/v2/">https://pokeapi.co/api/v2/</a>.</p>
+
+<p class="attention alert alert-warning">Pendant le développement de votre application, ne récupérer que les 40 premiers pokemons de manière à ne pas surcharger l'API.</p>
+
+<p class="attention alert alert-warning">La classe <code>WebClient</code>
+utilise un buffer de taille fixe pour lire les réponses HTTP. Si la réponse ne tient pas dans le buffer, vous obtiendrez une exception. Pour éviter ce problème, on peut configurer le WebClient à sa création:
+</p><pre class="prettyprint prettyprinted" style=""><span class="lit">@Bean</span><span class="pln">
+</span><span class="typ">WebClient</span><span class="pln"> getWebClient</span><span class="pun">(</span><span class="typ">WebClient</span><span class="pun">.</span><span class="typ">Builder</span><span class="pln"> defaultBuilder</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> defaultBuilder</span><span class="pun">.</span><span class="pln">exchangeStrategies</span><span class="pun">(</span><span class="typ">ExchangeStrategies</span><span class="pun">.</span><span class="pln">builder</span><span class="pun">()</span><span class="pln">
+            </span><span class="pun">.</span><span class="pln">codecs</span><span class="pun">(</span><span class="pln">configurer </span><span class="pun">-&gt;</span><span class="pln"> configurer
+                    </span><span class="pun">.</span><span class="pln">defaultCodecs</span><span class="pun">()</span><span class="pln">
+                    </span><span class="pun">.</span><span class="pln">maxInMemorySize</span><span class="pun">(</span><span class="lit">16</span><span class="pln"> </span><span class="pun">*</span><span class="pln"> </span><span class="lit">1024</span><span class="pln"> </span><span class="pun">*</span><span class="pln"> </span><span class="lit">1024</span><span class="pun">)).</span><span class="pln">build</span><span class="pun">()).</span><span class="pln">build</span><span class="pun">();</span><span class="pln">
+</span><span class="pun">}</span></pre>
+<p>SpringBoot possède un bean de type <code>WebClient.Builder</code> qui est déjà pré-configuré. Et l'on rajoute notre agrandissement du buffer de réception à cette configuration. </p>
+<p></p>
+
+<p class="question">Réalisez cette application. On vous demande de vérifier que les noms et prénoms entrés par l'utilisateur ne comporte que des lettres minuscules ou majuscules.</p>
+
+<p> On veut maintenant que le site affiche les 10 pokémons qui ont été le plus souvent désignés comme <i>pokémon fétiche</i> sur tous les visiteurs du serveur. La valeur 10 est un constante de l'application qui doit pouvoir être modifiée dans un fichier de propriétés.</p>
+
+<p class="attetion">Pensez bien à rendre vos classe  <i>thread-safe</i> quand c'est nécessaire.</p>
+
+<p class="question">Faites évoluer l'application.</p>
+
+<p>On veut enfin que le site affiche l'image du pokémon fétiche. On utilisera l'image dont le url se trouve dans le champ <tt>front_default</tt> du champ <tt>sprites</tt> des informations détaillées du pokémon. Les pokémons qui n'ont pas cette image seront ignorés.</p> 
+
+<p class="question">Faites évoluer l'application.</p>
+
+<p>Idéalement, on voudrait que les images soient servies aux clients par notre site et pas par le site de l'API Pokémon. On va donc faire un cache des images. On ne veut pas télécharger toutes les images au démarrage. Quand un client nous demande une image pour la première fois, on l'a télécharge et on la stocke en mémoire. La prochaine fois qu'un client demande cette image, on lui renvoie l'image stockée en mémoire.</p>
+
+<p class="question">Faites évoluer l'application.</p>
+
+<p class="question"><strong>Bonus</strong> Il y a plusieurs endroits où l'on peut rendre notre code efficace d'un point de vue algorithmique. La recherche du Pokémon fétiche peut se faire en <i>O(ln(n))</i> où <i>n</i> est le nombre total de pokémons. L'incrément du nombre de fois qu'un Pokémon a été choisi comme Pokémon fétiche peut se faire en <i>O(1)</i> et le calcul du <i>N</i> Pokémons les plus choisis peut se faire en <i>O(N)</i> mais ce n'est pas facile.</p>
+
+<p class="question"><strong>Bonus</strong> La récupération des informations détaillées des pokémons est assez longue. En effet, on demande les informations les unes après les autres. On peut tirer partie du fait que WebClient est non-bloquant pour demander plusieurs images en même temps. L'idée est
+de créer un Flux à partir de toutes les requêtes grâce à <code> Flux.merge</code>.</p>
+
+</div>
+ <!-- End of the exercise -->
+
+
+</div> <!-- End of div tab-content -->
+	  
+
+</body></html>

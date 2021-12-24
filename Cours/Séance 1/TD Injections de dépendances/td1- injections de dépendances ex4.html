@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td01.html#exercice5 -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<!-- Required meta tags -->
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Javascripts --> 
+	<script type="text/javascript" src="./td1- injections de dépendances ex4_files/prettify.js.téléchargement"></script>
+	<script type="text/javascript" src="./td1- injections de dépendances ex4_files/jquery-3.2.1.slim.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./td1- injections de dépendances ex4_files/popper.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./td1- injections de dépendances ex4_files/bootstrap.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./td1- injections de dépendances ex4_files/hack.js.téléchargement"></script>
+
+	<!-- Bootstrap CSS -->
+
+	<link href="./td1- injections de dépendances ex4_files/bootstrap.css" type="text/css" rel="stylesheet">
+
+   <!-- Syntaxt highlighter CSS -->
+   
+	<link href="./td1- injections de dépendances ex4_files/prettify.css" type="text/css" rel="stylesheet">
+
+	<!-- Fonts for the icons -->
+
+   <link href="./td1- injections de dépendances ex4_files/fontawesome-all.min.css" rel="stylesheet">
+
+<title>source</title>
+  </head>
+  <body onload="prettyPrint()">
+
+
+<!-- Title of the exercice sheet
+ 
+<h1>
+		TITLE
+		<a href="index.html" style="float:right"><span class="fa fa-home"></span></a>
+ </h1>
+ -->
+
+<h1>
+	Injections de dépendances en Spring
+	<a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/index.html" style="float:right"><span class="fa fa-home"></span></a>
+</h1>
+
+
+   
+   
+<!-- TABLE OF CONTENT OF THE EXERCICES
+ 
+ <ul class="nav nav-tabs">
+ <li class="nav-item">
+ <a class="nav-link active" data-toggle="tab" href="#exercice1">Exercice 1</a>
+ </li>
+ <li class="nav-item">
+ <a class="nav-link" data-toggle="tab" href="#exercice2">Exercice 2</a>
+ </li>
+ </ul>
+
+   -->
+
+
+<!---
+
+					TABLE OF CONTENT
+					
+-->
+
+<ul class="nav nav-tabs">
+  
+<li class="nav-item">
+	<a class="nav-link" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td01.html#exercice1">Maven</a>
+</li>
+
+<li class="nav-item">
+	<a class="nav-link" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td01.html#exercice2">Exercice 1</a>
+</li>
+
+<li class="nav-item">
+	<a class="nav-link" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td01.html#exercice3">Exercice 2</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td01.html#exercice4">Exercice 3</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link active show" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td01.html#exercice5">Exercice 4</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td01.html#exercice6">Exercice 5</a>
+</li>
+
+</ul>
+
+
+
+<div id="myTabContent" class="tab-content">
+
+<div class="tab-pane fade" id="exercice1">
+
+<!---
+
+					EXERCICE 1
+
+-->
+
+<h2>Maven</h2>
+		<p class="info alert alert-info">Ces instructions sont à refaire chez vous sur votre ordinateur pour pouvoir travailler chez vous.</p>
+
+		<p>Pour utiliser Spring, il nous faut récupérer les jars de Spring dont nous aurons besoin. Plutôt que de le faire <i>à la main</i>, nous allons utiliser
+			<a href="https://maven.apache.org/download.cgi">Maven</a>.</p>
+
+		<p class="question">Vérifiez que Maven est bien installé avec la commande:
+</p><pre class="console">$ mvn -v
+</pre>
+Si ce n'est pas le cas installez-le depuis ce <a href="https://maven.apache.org/download.cgi">site</a>. 
+<p></p>
+
+<p>Nous n'allons pas utiliser Maven directement mais plutôt l'IDE IntelliJ qui fournit une très bonne intégration avec Maven</p>
+
+<ul>
+<li>Ouvrez IntelliJ et créez un nouveau projet <tt>File &gt; New &gt; Project..</tt>.</li>
+<li> Dans le menu de gauche, sélectionnez Maven et le SDK 8, 11 ou 13. <strong>Attention, Spring utilisant la réécriture de byte-code, il n'est pas encore compatible avec le SDK 14 et 15.</strong>
+</li>
+<li>Entrez le nom du projet "tp1" et dans <tt>Artifact Coordinates</tt>, mettez <tt>groupId</tt> à <tt>fr.uge.jee</tt>.</li>
+</ul>
+
+<p>IntelliJ a créer la structure d'un projet Maven. Votre code ira dans <tt>src/main/java</tt>. Il y a aussi un fichier XML <tt>pom.xml</tt> qui contient les paramètres de configuration de Maven.</p>
+
+<p>Nous allons maintenant indiquer à Maven que nous voulons utiliser une partie du framework <code>Spring</code>. Pour cela, il faut rajouter dans le fichier  <tt>pom.xml</tt> les dépendances suivantes. <strong>Il faut rajouter au-dessus de la balise <code>&lt;/project&gt;</code></strong></p>
+
+
+<p class="attention alert alert-warning">Si le fichier <tt>pom.xml</tt> proposé par IntelliJ contient déjà une balise <tt>properties</tt>, il faut la supprimer pour la remplacer par la balise fournie ci-dessous.</p>
+
+<pre class="prettyprint lang-xml prettyprinted" style=""><span class="tag">&lt;properties&gt;</span><span class="pln">
+    </span><span class="tag">&lt;org.springframework.version&gt;</span><span class="pln">5.2.9.RELEASE</span><span class="tag">&lt;/org.springframework.version&gt;</span><span class="pln">
+    </span><span class="tag">&lt;project.build.sourceEncoding&gt;</span><span class="pln">UTF-8</span><span class="tag">&lt;/project.build.sourceEncoding&gt;</span><span class="pln">
+    </span><span class="tag">&lt;maven.compiler.target&gt;</span><span class="pln">11</span><span class="tag">&lt;/maven.compiler.target&gt;</span><span class="pln">
+    </span><span class="tag">&lt;maven.compiler.source&gt;</span><span class="pln">11</span><span class="tag">&lt;/maven.compiler.source&gt;</span><span class="pln">
+</span><span class="tag">&lt;/properties&gt;</span><span class="pln">
+
+</span><span class="tag">&lt;dependencies&gt;</span><span class="pln">
+    </span><span class="tag">&lt;dependency&gt;</span><span class="pln">
+        </span><span class="tag">&lt;groupId&gt;</span><span class="pln">org.springframework</span><span class="tag">&lt;/groupId&gt;</span><span class="pln">
+        </span><span class="tag">&lt;artifactId&gt;</span><span class="pln">spring-context</span><span class="tag">&lt;/artifactId&gt;</span><span class="pln">
+        </span><span class="tag">&lt;version&gt;</span><span class="pln">${org.springframework.version}</span><span class="tag">&lt;/version&gt;</span><span class="pln">
+    </span><span class="tag">&lt;/dependency&gt;</span><span class="pln">
+</span><span class="tag">&lt;/dependencies&gt;</span></pre>
+<p class="attention alert alert-warning">Si vous utilisez une autre version du SDK, il faut adapter les champs <tt>maven.compiler</tt>.</p>
+
+<p>Pour qu'IntelliJ télécharge les librairies correspondant aux balises <tt>dependency</tt>, il faut
+cliquer sur l'icone <img src="./td1- injections de dépendances ex4_files/maven-reload.png">.</p>
+
+<p>Si vous allez dans <tt>File &gt; Project Structure &gt; Librairies</tt>, vous devriez voir que IntelliJ a téléchargé les librairies de Spring.</p>
+	
+</div>
+
+
+ <!-- End of the exercise -->
+<div class="tab-pane fade" id="exercice2">
+
+<h2>Mon premier bean</h2>
+<!---
+
+					EXERCICE 2
+
+-->
+<p class="info alert alert-info">Toutes vos classes doivent être dans le package <tt>fr.uge.jee.printers</tt>.</p>
+
+
+<p>Le <code>main</code> de la classe <code>Application</code> ci-dessous crée un <code>SimpleMessagePrinter</code> et appelle sa méthode <code>printMessage</code>.</p>
+	
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">SimpleMessagePrinter</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> printMessage</span><span class="pun">(){</span><span class="pln">
+        </span><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="str">"Hello World!"</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Application</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> main</span><span class="pun">(</span><span class="typ">String</span><span class="pun">[]</span><span class="pln"> args</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">var</span><span class="pln"> printer </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">SimpleMessagePrinter</span><span class="pun">();</span><span class="pln">
+        printer</span><span class="pun">.</span><span class="pln">printMessage</span><span class="pun">();</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p>On veut que <code>SimpleMessagePrinter</code> soit géré par le conteneur IoC 
+de Spring.</p>
+<p class="question">Créer un fichier <code>config-printers.xml</code> où vous allez déclarer le bean correspondant à <code>SimpleMessagePrinter</code>. Vous pouvez partir du fichier ci-dessous:</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="pun">&lt;?</span><span class="pln">xml version</span><span class="pun">=</span><span class="str">"1.0"</span><span class="pln"> encoding</span><span class="pun">=</span><span class="str">"UTF-8"</span><span class="pun">?&gt;</span><span class="pln">
+</span><span class="tag">&lt;beans</span><span class="pln"> </span><span class="atn">xmlns</span><span class="pun">=</span><span class="atv">"http://www.springframework.org/schema/beans"</span><span class="pln">
+       </span><span class="atn">xmlns:xsi</span><span class="pun">=</span><span class="atv">"http://www.w3.org/2001/XMLSchema-instance"</span><span class="pln">
+       </span><span class="atn">xmlns:context</span><span class="pun">=</span><span class="atv">"http://www.springframework.org/schema/context"</span><span class="pln">
+       </span><span class="atn">xsi:schemaLocation</span><span class="pun">=</span><span class="atv">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"</span><span class="tag">&gt;</span><span class="pln">
+
+    </span><span class="tag">&lt;bean</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"..."</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"..."</span><span class="tag">/&gt;</span><span class="pln">
+
+</span><span class="tag">&lt;/beans&gt;</span></pre>
+
+<p>Le fichier <code>config-printers.xml</code> doit se trouver dans le répertoire <tt>src/main/resources/</tt>.</p>
+
+<p>Une fois le bean déclaré, il faut créer un conteneur IoC de Spring à partir du fichier <tt>config-printers.xml</tt> avec le code suivant:</p>
+<pre class="prettyprint prettyprinted" style=""><span class="typ">ApplicationContext</span><span class="pln"> context </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">ClassPathXmlApplicationContext</span><span class="pun">(</span><span class="str">"config-printers.xml"</span><span class="pun">);</span></pre>
+
+<p class="question"> Modifiez la classe <code>Application</code> comme demandé.</p>
+</div>
+
+
+ <!-- End of the exercise -->
+<div class="tab-pane fade" id="exercice3">
+
+<!---
+
+					EXERCICE 3
+
+-->
+
+<h2>Plusieurs afficheurs de messages</h2>
+
+<p class="info alert alert-info">Cet exercice continu l'exercice précédent. Toutes vos classes doivent être dans le package <tt>fr.uge.jee.printers</tt>.</p>
+
+<p>Nous voulons définir plusieurs afficheurs de message.</p>
+
+<p class="question">Créez une interface <code>MessagePrinter</code> et faites en sorte que <code>SimpleMessagePrinter</code> implémente de cette interface.</p>
+
+<p class="question">Créez une classe <code>FrenchMessagePrinter</code> qui implémente cette interface et qui affiche le message en français.</p>
+	
+<p class="question">Faites changer votre afficheur de message pour un <code>FrenchMessagePrinter</code> en utilisant seulement le fichier <code>config-printers.xml</code></p>
+
+<p class="question">Changez votre fichier de configuration <code>config-printers.xml</code> pour avoir un bean pour chacun des <code>MessagePrinter</code>. Modifiez ensuite votre classe <code>Application</code> pour instantier chacun de ces beans et appeler leur méthode <code>printMessage</code>.</p>
+
+
+<p>La classe <code>CustomizableMessagePrinter</code> a un constructeur qui permet configurer le message afficher. </p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">package</span><span class="pln"> fr</span><span class="pun">.</span><span class="pln">uge</span><span class="pun">.</span><span class="pln">jee</span><span class="pun">.</span><span class="pln">printers</span><span class="pun">;</span><span class="pln">
+
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">CustomizableMessagePrinter</span><span class="pln"> </span><span class="kwd">implements</span><span class="pln"> </span><span class="typ">MessagePrinter</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> message</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">CustomizableMessagePrinter</span><span class="pun">(){</span><span class="pln">
+        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">message</span><span class="pun">=</span><span class="str">"Custom Hello World"</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">CustomizableMessagePrinter</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> message</span><span class="pun">){</span><span class="pln">
+        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">message</span><span class="pun">=</span><span class="pln">message</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="lit">@Override</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> printMessage</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="pln">message</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p class="question">Changez votre <tt>config-printers.xml</tt> pour rajouter un bean pour   <code>CustomizableMessagePrinter</code>. Dans votre classe <code>Application</code>, instanciez le bean correspondant à la classe <code>CustomizableMessagePrinter</code>. Quel constructeur est appelé ?</p>
+
+<p> Il est possible de passer un argument pour le constructeur au moment de la création du bean. Pour cela, il faut rajouter dans <code>config-printers.xml</code>  la propriété suivante dans le bean concerné.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="tag">&lt;bean</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"..."</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"..."</span><span class="tag">&gt;</span><span class="pln">
+  </span><span class="tag">&lt;constructor-arg</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"Argument for the constructor"</span><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;/bean&gt;</span></pre>
+
+<p class="question">Changez votre <tt>config-printers.xml</tt> pour qu'il définisse un bean pour la classe <code>CustomizableMessagePrinter</code> créé avec le message <code>"Hello from the config.xml"</code>.</p>
+</div>
+
+
+
+<div class="tab-pane fade" id="exercice4">
+
+<h2>Singleton et lazyness</h2>
+
+<p class="info alert alert-info">Cet exercice continue les deux exercices précédents. Toutes vos classes doivent être dans le package <tt>fr.uge.jee.printers</tt>.</p>
+
+<p>On continue l'exercice précédent. On va dans un premier temps rajouter une classe <code>CountMessagePrinter</code> qui quand on appelle <code>printMessage</code> affiche un
+message du type <code>"This message number 1"</code> et
+incrémente ce nombre au prochain appel.</p>
+
+<p class="question">Dans votre fichier de configuration, rajoutez un bean pour <code>CountMessagePrinter</code>.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="pln">        </span><span class="typ">MessagePrinter</span><span class="pln"> printer </span><span class="pun">=</span><span class="pln"> context</span><span class="pun">.</span><span class="pln">getBean</span><span class="pun">(</span><span class="str">"printerServiceC   ount"</span><span class="pun">,</span><span class="typ">MessagePrinter</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span class="pln">
+        printer</span><span class="pun">.</span><span class="pln">printMessage</span><span class="pun">();</span><span class="pln">
+        printer</span><span class="pun">.</span><span class="pln">printMessage</span><span class="pun">();</span><span class="pln">
+        printer</span><span class="pun">.</span><span class="pln">printMessage</span><span class="pun">();</span><span class="pln">
+        </span><span class="typ">MessagePrinter</span><span class="pln"> printer2 </span><span class="pun">=</span><span class="pln">  context</span><span class="pun">.</span><span class="pln">getBean</span><span class="pun">(</span><span class="str">"printerServiceCount"</span><span class="pun">,</span><span class="typ">MessagePrinter</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span class="pln">
+        printer2</span><span class="pun">.</span><span class="pln">printMessage</span><span class="pun">();</span></pre>
+
+<p class="question">Expliquez l'affichage ci-dessous ? Quel design pattern est mis en oeuvre par le conteneur IoC ? </p>
+
+<pre class="console">This is message number 0
+This is message number 1
+This is message number 2
+This is message number 3
+</pre>
+
+<p> On peut changer la façon dont le conteneur IoC crée les beans en changeant le scope du bean. Pour plus d'information sur les scopes d'un bean, vous pouvez vous référer à la <a href="https://docs.spring.io/spring-framework/docs/5.3.x-SNAPSHOT/reference/html/core.html#beans-factory-scopes">documentation de Spring</a>.</p>
+
+<p class="question">Changez votre fichier de configuration pour qu'un <code>CountMessagePrinter</code> différent soit crée à chaque appel à <code>getBean</code>.</p>
+
+<p>Le but de la fin de l'exercice est comprendre quand les beans sont instantiés. Est-ce que c'est au moment de la création de <code>ApplicationContext</code> ou au moment de l'appel au premier <code>getBean</code> pour ce bean ?</p>
+
+<p class="question">Ecrivez une classe <code>SlowConstructionMessagePrinter</code> qui simule un bean lent à instantié en attendant 5 secondes dans le constructeur. Definissez un bean correspondant dans le fichier de configuration.</p>
+
+<p class="question">A quel moment sont instantiés les beans ?</p>
+
+<p class="question">En regardant la <a href="https://docs.spring.io/spring-framework/docs/5.3.x-SNAPSHOT/reference/html/core.html#beans-factory-lazy-init">documentation de Spring</a>, faites en sorte que le bean correspondant à <code>SlowConstructionMessagePrinter</code> ne soit instantié à la création de <code>ApplicationContext</code>.</p> 
+
+<p class="question">Quel est l'inconvéniant majeur de déférer l'instantition des beans ?</p>
+
+</div>
+
+
+<!-- End of the exercise -->
+<div class="tab-pane fade active show" id="exercice5">
+
+<!---
+
+                    EXERCICE 3
+
+-->
+
+<h2>Autowire et Collections</h2>
+
+<p class="info alert alert-info">Cet exercice continue les deux exercices précédents. Toutes vos classes doivent être dans le package <tt>fr.uge.jee.bookstore</tt>. Votre fichier de configuration se nommera <code>config-bookstore.xml</code>.</p>
+
+<p class="question">Codez l'exemple du cours sur <code>Library</code> et <code>Book</code>. Dans votre fichier de configuration XML, créez 3 beans pour 3 livres et une <code>Library</code> qui contient deux de ces livres. Créez un classe <code>Application</code> pour créez le bean de la <code>Library</code> et l'afficher avec sa méthode <code>toString</code>.</p>
+
+<p class="question">Utilisez  <code>autowire="constructor"</code> pour définir le bean associé à <code>Library</code> en pensant bien à supprimer
+    les arguments! Qu'observez vous ?</p>
+
+
+</div>
+
+<div class="tab-pane fade" id="exercice6">
+
+<h2>Online Shopping</h2>
+
+<p class="info alert alert-info">Toutes vos classes doivent être dans le package <tt>fr.uge.jee.onlineshop</tt> et votre fichier XML doit s'appeler <tt>config-online.xml</tt>.</p>
+
+<p>Dans cet exercice, on veut faire un sorte de modéliser un magasin en ligne. Le but est simplement de faire construire par le conteneur IoC de Spring un bean pour <code>OnlineShop</code> que l'on puisse entièrement configurer. La classe <code>OnlineShop</code> ne fait rien à part afficher sa configuration.</p>
+
+<p>Le magasin peut avoir jusqu'à deux modes de livraison: le mode classique et le mode par drone.
+  Le mode classique a un délai de livraison moyen qui sera injecté depuis le fichier de configuration. De plus, le magasin offre jusqu'à deux assurances : l'assurance pour les retours (qui peut être soit uniquement réservée aux membres soit ouverte à tous) et l'assurance contre le vol. </p>
+
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">OnlineShop</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> name</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">Delivery</span><span class="pun">&gt;</span><span class="pln"> deliveryOptions</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">Insurance</span><span class="pun">&gt;</span><span class="pln"> insurances</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="pun">....</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> printDescription</span><span class="pun">(){</span><span class="pln">
+        </span><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="pln">name</span><span class="pun">);</span><span class="pln">
+        </span><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="str">"Delivery options"</span><span class="pun">);</span><span class="pln">
+        deliveryOptions</span><span class="pun">.</span><span class="pln">forEach</span><span class="pun">(</span><span class="pln">opt </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="str">"\t"</span><span class="pun">+</span><span class="pln">opt</span><span class="pun">.</span><span class="pln">getDescription</span><span class="pun">()));</span><span class="pln">
+        </span><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="str">"Insurance options"</span><span class="pun">);</span><span class="pln">
+        insurances</span><span class="pun">.</span><span class="pln">forEach</span><span class="pun">(</span><span class="pln">insurance </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="str">"\t"</span><span class="pun">+</span><span class="pln">insurance</span><span class="pun">.</span><span class="pln">getDescription</span><span class="pun">()));</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p class="question">Ecrivez les classes et les interfaces nécessaires et complétez
+la classe OnlineShope. La seule contrainte est que toutes les injections doivent être réalisées <strong>par les setters</strong>.</p>
+
+<p class="question">Ecrivez un fichier XML et une classe <code>Application</code> dont le <code>main</code> utilise le conteneur IoC de Spring pour créer un magasin et affiche sa description. On veut le résultat ci-dessous:</p>
+
+<pre class="console">Amazon
+Delivery options
+  Delivery by drone
+  Standard Delivery with a delay of 5 days
+Insurance options
+  Return insurance only for members  
+</pre>
+
+<p class="question">En modifiant uniquement votre fichier XML faites en sorte que la configuration du magasin change pour obtenir l'affichage ci-dessous. Copiez votre fichier de configuration dans <code>config-onlineshopv2.xml</code>.</p>
+
+<pre class="console">AhMaZone
+Delivery options
+  Standard Delivery with a delay of 999 days
+Insurance options
+  Return insurance
+  Thief insurance
+</pre>
+
+<p class="question">Modifier votre fichier de configuration pour ne pas avoir besoin de vous baser
+sur le nom des beans. Copiez votre fichier de configuration dans <code>config-onlineshopv3.xml</code>.</p>
+
+<p class="attention alert alert-warning">Il est possible d'omettre le champ <code>id</code> dans la définition d'un bean. Votre fichier <code>config-onlineshopv3.xml</code> ne doit contenir aucune <code>id</code>.</p>
+
+</div>
+ <!-- End of the exercise -->
+
+</div> <!-- End of div tab-content -->
+	  
+
+</body></html>

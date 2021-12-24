@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<!-- saved from url=(0078)https://igm.univ-mlv.fr//~carayol/coursJEEM2/slides/spring-mvc-advanced.html#/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+<title>JEE Back-End - Spring MVC Advanced topics</title>
+
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="./Spring MVC et Rest_files/reveal.css">
+<link rel="stylesheet" href="./Spring MVC et Rest_files/white.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="./Spring MVC et Rest_files/zenburn.css">
+<link rel="stylesheet" href="./Spring MVC et Rest_files/reveal-override.css">
+<link href="./Spring MVC et Rest_files/prettify.css" type="text/css" rel="stylesheet">
+<!-- Printing and PDF exports -->
+<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script><link rel="stylesheet" type="text/css" href="./Spring MVC et Rest_files/paper.css">
+<script type="text/javascript" src="./Spring MVC et Rest_files/prettify.js.téléchargement"></script>
+<style type="text/css">
+.reveal h2 {
+	color: steelblue;
+}
+
+.reveal h1 {
+	color: steelblue;
+}
+
+.reveal p {
+	text-align: left;
+}
+
+.reveal lu {
+	text-align: left;
+	list-style-position: inside;
+}
+
+.reveal span.red {
+	color: salmon;
+}
+
+.reveal p.red {
+	color: salmon;
+}
+
+.reveal span.blue,.reveal p.blue {
+	color: steelblue;
+}
+</style>
+<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+</head>
+
+<body onload="prettyPrint()">
+
+
+	<div class="reveal slide center" role="application" data-transition-speed="default" data-background-transition="fade">
+
+<div class="footer"><p>
+    <a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/index.html"><img src="./Spring MVC et Rest_files/home.png" width="30em"></a></p>
+      </div>
+
+		<!-- Any section element inside of this container is displayed as a slide -->
+		<div class="slides" style="width: 960px; height: 700px; zoom: 0.853714;">
+			<section style="top: 211.5px; display: block;" class="present">
+
+				<h1>JEE Back-end</h1>
+				
+				<h2>Spring MVC et Rest</h2>
+			</section>
+
+<section style="top: 94px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Plan de la séance</h2>
+<p><span class="blue">Dans cette séance</span>, nous allons couvrir plusieurs thèmes avancés de <span class="red">Spring MVC</span>.</p>
+
+	<ul>
+		<li><span class="blue">Validation</span> des formulaires</li>
+		<li>Accès à la <span class="blue">session HTTP</span></li>
+		<li><span class="blue">Ecriture</span> d'une API Rest</li>
+		<li><span class="blue">Consommer des API</span> depuis le back-end</li>
+	</ul>
+
+<p>Avant de commencer, nous allons revenir sur les beans que gère Spring.</p>
+
+</section>
+
+<section style="top: 0px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Rappel</h2>
+
+<img src="./Spring MVC et Rest_files/mvc.png">
+
+<p style="align-right">Source: Documentation de Spring MVC</p>
+</section>
+
+
+			<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Les beans gérés par Spring (1/2)</h2>
+
+<pre class="prettyprint prettyprinted" style="font-size: 16px;"><span class="lit">@SpringBootApplication</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Application</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+ 
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> main</span><span class="pun">(</span><span class="typ">String</span><span class="pun">[]</span><span class="pln"> args</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="typ">SpringApplication</span><span class="pun">.</span><span class="pln">run</span><span class="pun">(</span><span class="typ">Application</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">,</span><span class="pln"> args</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+ 
+    </span><span class="lit">@Bean</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">CommandLineRunner</span><span class="pln"> printAllBeans</span><span class="pun">(</span><span class="typ">ApplicationContext</span><span class="pln"> applicationContext</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> args </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="typ">Arrays</span><span class="pun">.</span><span class="pln">stream</span><span class="pun">(</span><span class="pln">applicationContext</span><span class="pun">.</span><span class="pln">getBeanDefinitionNames</span><span class="pun">())</span><span class="pln">
+            	</span><span class="pun">.</span><span class="pln">forEach</span><span class="pun">(</span><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">::</span><span class="pln">println</span><span class="pun">);</span><span class="pln">
+        </span><span class="pun">};</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+</span><span class="pun">}</span></pre>
+
+<ul>
+<li><span class="blue"><code>ApplicationContext</code></span> est le conteneur IoC,</li>
+<li>il est injecté dans le bean <span class="blue"><code>printAllBeans</code></span> (le <span class="blue"><code>@Autowire</code></span> est implicite),</li>
+<li>les beans du type <span class="blue"><code>CommandLineRunner</code></span> sont exécutés au démarrage de l'application (après la création de tous les beans).</li>
+</ul>
+
+			</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+	<h2>Les beans gérés par Spring (2/2)</h2>
+
+<p>Il y a <span class="blue">164 beans</span> dans le <span class="red">conteneur IoC</span>.</p>
+
+<pre class="console">...
+rectangleController
+...
+dispatcherServlet
+...
+mvcViewResolver
+...
+</pre>
+
+<p>On retrouve notre <span class="blue">controlleur</span>, le <span class="blue">servlet dispatcher</span>, le <span class="blue">viewResolver</span> ... </p>
+
+<p>Les beans injectés par Spring sont par défaut des  et correspondent à des <span class="red">composants logiciels</span>.</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Validation des formulaires</h2>
+
+<pre class="prettyprint prettyprinted" style="font-size: 16px;"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Rectangle</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="lit">@Min</span><span class="pun">(</span><span class="pln">value</span><span class="pun">=</span><span class="lit">0</span><span class="pun">,</span><span class="pln">message</span><span class="pun">=</span><span class="str">"Width must be positive"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> width</span><span class="pun">;</span><span class="pln">
+    </span><span class="lit">@Min</span><span class="pun">(</span><span class="pln">value</span><span class="pun">=</span><span class="lit">0</span><span class="pun">,</span><span class="pln">message</span><span class="pun">=</span><span class="str">"Height must be positive"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> height</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<pre class="prettyprint prettyprinted" style="font-size: 14px;"><span class="lit">@PostMapping</span><span class="pun">(</span><span class="str">"/rectanglevalidation"</span><span class="pun">)</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> rectangleFormProcess</span><span class="pun">(</span><span class="lit">@Valid</span><span class="pln"> </span><span class="lit">@ModelAttribute</span><span class="pun">(</span><span class="str">"rectangleAttribute"</span><span class="pun">)</span><span class="pln"> </span><span class="typ">Rectangle</span><span class="pln"> parameter</span><span class="pun">,</span><span class="pln">
+                                   </span><span class="typ">BindingResult</span><span class="pln"> bindingResult</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Model</span><span class="pln"> model</span><span class="pun">){</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">bindingResult</span><span class="pun">.</span><span class="pln">hasErrors</span><span class="pun">()){</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"rectangle-validation"</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+    model</span><span class="pun">.</span><span class="pln">addAttribute</span><span class="pun">(</span><span class="str">"area"</span><span class="pun">,</span><span class="pln"> parameter</span><span class="pun">.</span><span class="pln">area</span><span class="pun">());</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"rectangle-validation-result"</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p>Les <span class="red">messages d'erreurs</span> définis dans le schéma de validation sont accessibles depuis <span class="blue">la vue</span> en cas d'erreur de validation.</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Validation des formulaires</h2>
+<pre class="prettyprint prettyprinted" style="font-size: 14px;"><span class="tag">&lt;form</span><span class="pln"> </span><span class="atn">action</span><span class="pun">=</span><span class="atv">"#"</span><span class="pln"> </span><span class="atn">th:action</span><span class="pun">=</span><span class="atv">"@{/rectanglevalidation}"</span><span class="pln"> </span><span class="atn">method</span><span class="pun">=</span><span class="atv">"post"</span><span class="pln"> </span><span class="atn">th:object</span><span class="pun">=</span><span class="atv">"${rectangleAttribute}"</span><span class="tag">&gt;</span><span class="pln">
+    </span><span class="tag">&lt;h2&gt;</span><span class="pln">Rectangle area calculator</span><span class="tag">&lt;/h2&gt;</span><span class="pln">
+    </span><span class="tag">&lt;div&gt;&lt;label</span><span class="pln"> </span><span class="atn">for</span><span class="pun">=</span><span class="atv">"h"</span><span class="tag">&gt;</span><span class="pln">Height:</span><span class="tag">&lt;/label&gt;</span><span class="pln">
+        </span><span class="tag">&lt;input</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"h"</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text"</span><span class="pln"> </span><span class="atn">th:field</span><span class="pun">=</span><span class="atv">"*{height}"</span><span class="tag">&gt;</span><span class="pln"> 
+        </span><span class="tag">&lt;span</span><span class="pln">  </span><span class="atn">th:if</span><span class="pun">=</span><span class="atv">"${#fields.hasErrors('height')}"</span><span class="pln"> </span><span class="atn">th:errors</span><span class="pun">=</span><span class="atv">"*{height}"</span><span class="tag">&gt;</span><span class="pln">Invalid height</span><span class="tag">&lt;/span&gt;&lt;/div&gt;</span><span class="pln">
+
+    </span><span class="tag">&lt;div&gt;&lt;label</span><span class="pln"> </span><span class="atn">for</span><span class="pun">=</span><span class="atv">"w"</span><span class="tag">&gt;</span><span class="pln">Width:</span><span class="tag">&lt;/label&gt;</span><span class="pln">
+        </span><span class="tag">&lt;input</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text"</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"w"</span><span class="pln"> </span><span class="atn">th:field</span><span class="pun">=</span><span class="atv">"*{width}"</span><span class="tag">&gt;</span><span class="pln"> 
+        </span><span class="tag">&lt;span</span><span class="pln">  </span><span class="atn">th:if</span><span class="pun">=</span><span class="atv">"${#fields.hasErrors('width')}"</span><span class="pln"> </span><span class="atn">th:errors</span><span class="pun">=</span><span class="atv">"*{width}"</span><span class="tag">&gt;</span><span class="pln">Invalid width</span><span class="tag">&lt;/span&gt;&lt;/div&gt;</span><span class="pln">
+
+    </span><span class="tag">&lt;div&gt;&lt;button</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"submit"</span><span class="tag">&gt;</span><span class="pln">Compute</span><span class="tag">&lt;/button&gt;&lt;/div&gt;</span><span class="pln">
+</span><span class="tag">&lt;/form&gt;</span><span class="pln">	</span></pre>
+
+<ul>
+	<li>Les valeurs de l'attribut <span class="blue"><code>rectangleAttribute</code></span> du <span class="red">Model</span> sont injectés dans le formulaire.</li>
+	<li>En cas d'erreur, le message défini dans le schéma de validation est récupéré.</li>
+</ul>
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Validation des formulaires (1/2)</h2>
+
+<img width="70%" src="./Spring MVC et Rest_files/normal-error.png">
+
+<p>Tout se passe comme prévu!</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Validation des formulaires (2/2)</h2>
+
+<img width="70%" src="./Spring MVC et Rest_files/binding-error.png">
+
+<p>Le problème ici est qu'il y a<span class="blue"> une erreur au binding</span> et pas à la <span class="red">validation</span>.</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Deux solutions</h2>
+
+<ul>
+	<li>Mettre les champs de <span class="blue"><code>Rectangle</code></span> en <span class="blue"><code>String</code></span> et valider avec <span class="blue"><code>@Pattern</code></span> que ce sont bien des chaînes représentant des entiers.<br>
+	Cela marche mais <span class="red">on perd l'abstraction</span>.
+	</li>
+	<li>On peut modifier les messages par défaut en cas de <i>type mismatch</i> au moment du binding.<br>
+		Plus lourd à mettre en oeuvre mais <span class="red">on garde l'abstraction</span>.<br>
+		Pour cela, il faut lire des messages d'erreurs depuis un fichier.
+	</li>
+</ul>
+	
+</section>
+
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Messages d'erreur dans un fichier (1/3)</h2>
+
+<p>On peut définir des messages dans un fichier <span class="blue"><tt>messages.properties</tt></span>.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="pln">height</span><span class="pun">.</span><span class="pln">positive</span><span class="pun">=</span><span class="typ">Height</span><span class="pln"> must be a positive number</span><span class="pun">.</span><span class="pln">
+width</span><span class="pun">.</span><span class="pln">positive</span><span class="pun">=</span><span class="typ">Width</span><span class="pln"> must be a positive number</span><span class="pun">.</span><span class="pln">
+typeMismatch</span><span class="pun">.</span><span class="pln">rectangleAttribute</span><span class="pun">.</span><span class="pln">height</span><span class="pun">=</span><span class="typ">Heigh</span><span class="pln"> must be an integer number
+typeMismatch</span><span class="pun">.</span><span class="pln">rectangleAttribute</span><span class="pun">.</span><span class="pln">width</span><span class="pun">=</span><span class="typ">Heigh</span><span class="pln"> must be an integer number</span></pre>
+
+<p>Pour les messages d'erreur au binding, on se base sur le nom de l'attribut dans le <span class="red">Modele</span>. Dans notre cas, c'est <tt>rectangleAttribut</tt>.</p>
+
+<p>Les autres messages peuvent être utilisé dans les schémas de validation.</p>
+
+<p>On peut alors facilement définir des messages dans plusieurs langues dans des fichiers  <span class="blue"><tt>messages_FR.properties</tt></span>,  <span class="blue"><tt>messages_ES.properties</tt></span>.</p>
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Messages d'erreur dans un fichier (2/3)</h2>
+
+<p>Il faut dire à Spring d'utiliser notre fichier de messages pour la validation.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@SpringBootApplication</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Application</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+   </span><span class="lit">@Bean</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">MessageSource</span><span class="pln"> messageSource</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+         </span><span class="typ">ReloadableResourceBundleMessageSource</span><span class="pln"> messageSource
+            </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">ReloadableResourceBundleMessageSource</span><span class="pun">();</span><span class="pln">
+
+        messageSource</span><span class="pun">.</span><span class="pln">setBasename</span><span class="pun">(</span><span class="str">"classpath:messages"</span><span class="pun">);</span><span class="pln">
+        messageSource</span><span class="pun">.</span><span class="pln">setDefaultEncoding</span><span class="pun">(</span><span class="str">"UTF-8"</span><span class="pun">);</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> messageSource</span><span class="pun">;</span><span class="pln">
+     </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="lit">@Bean</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">LocalValidatorFactoryBean</span><span class="pln"> getValidator</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="typ">LocalValidatorFactoryBean</span><span class="pln"> bean </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">LocalValidatorFactoryBean</span><span class="pun">();</span><span class="pln">
+        bean</span><span class="pun">.</span><span class="pln">setValidationMessageSource</span><span class="pun">(</span><span class="pln">messageSource</span><span class="pun">());</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> bean</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+</span><span class="pun">}</span></pre>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Messages d'erreur dans un fichier (3/3)</h2>
+
+<p><span class="red">Bonus 1</span> : on peut utiliser nos messages pour la validation !</p>
+
+<p><span class="red">Bonus 2</span> : on peut traduire notre application sans toucher au code !</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Rectangle</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="lit">@Min</span><span class="pun">(</span><span class="pln">value</span><span class="pun">=</span><span class="lit">0</span><span class="pun">,</span><span class="pln">message</span><span class="pun">=</span><span class="str">"{height.positive}"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> width</span><span class="pun">;</span><span class="pln">
+    </span><span class="lit">@Min</span><span class="pun">(</span><span class="pln">value</span><span class="pun">=</span><span class="lit">0</span><span class="pun">,</span><span class="pln">message</span><span class="pun">=</span><span class="str">"{width.positive}"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> height</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span></pre>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Accéder à la session HTTP en Spring MVC</h2>
+
+<p>Nous allons voir 3 méthodes:</p>
+
+<ul>
+<li>récupérer la <span class="blue"><code>HttpSession</code></span> depuis la <span class="blue"><code>HTTPRequest</code></span>,</li>
+<li>jouer sur le Scope du controlleur,</li>
+<li>utiliser <span class="blue"><code>@AttributeSession</code></span>.</li>
+</ul>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Préparation</h2>
+
+<p>Pour illustrer, on reprend l'exercice sur l'application <span class="blue"><code>Rectangle</code></span> du TD.</p>
+
+<pre class="prettyprint prettyprinted" style="font-size: 12px;"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">History</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span class="typ">ArrayDeque</span><span class="pun">&lt;</span><span class="typ">String</span><span class="pun">&gt;</span><span class="pln"> computations </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">ArrayDeque</span><span class="pun">&lt;&gt;();</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> addComputation</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> computation</span><span class="pun">){...}</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">boolean</span><span class="pln"> isEmpty</span><span class="pun">(){...}</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> getLatest</span><span class="pun">(){...}</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">List</span><span class="pun">&lt;</span><span class="typ">String</span><span class="pun">&gt;</span><span class="pln"> getPastComputations</span><span class="pun">(){...}</span><span class="pln">
+
+</span><span class="pun">}</span></pre>
+
+<p><span class="red">Un concept = Un objet</span></p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>La vue</h2>
+
+<pre class="prettyprint prettyprinted" style="font-size: 12px;"><span class="tag">&lt;form</span><span class="pln"> </span><span class="atn">action</span><span class="pun">=</span><span class="atv">"#"</span><span class="pln"> </span><span class="atn">th:action</span><span class="pun">=</span><span class="atv">"@{/rectanglesession}"</span><span class="pln"> </span><span class="atn">method</span><span class="pun">=</span><span class="atv">"post"</span><span class="pln"> </span><span class="atn">th:object</span><span class="pun">=</span><span class="atv">"${rectangleAttribute}"</span><span class="tag">&gt;</span><span class="pln">
+...
+</span><span class="tag">&lt;/form&gt;</span><span class="pln">
+
+</span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">th:if</span><span class="pun">=</span><span class="atv">"${!history.isEmpty() and !#fields.hasErrors('${rectangleAttribute.*}')}"</span><span class="tag">&gt;</span><span class="pln">
+</span><span class="tag">&lt;div&gt;</span><span class="pln">
+    </span><span class="tag">&lt;h2&gt;</span><span class="pln">Result</span><span class="tag">&lt;/h2&gt;</span><span class="pln">
+    </span><span class="tag">&lt;p</span><span class="pln"> </span><span class="atn">th:text</span><span class="pun">=</span><span class="atv">"${history.latest}"</span><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;/div&gt;</span><span class="pln">
+</span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">th:if</span><span class="pun">=</span><span class="atv">"${!history.pastComputations.isEmpty()}"</span><span class="tag">&gt;</span><span class="pln">
+</span><span class="tag">&lt;h2&gt;</span><span class="pln">Previous computations</span><span class="tag">&lt;/h2&gt;</span><span class="pln">
+</span><span class="tag">&lt;ul&gt;</span><span class="pln">
+</span><span class="tag">&lt;li</span><span class="pln"> </span><span class="atn">th:each</span><span class="pun">=</span><span class="atv">"line : ${history.pastComputations}"</span><span class="pln"> </span><span class="atn">th:text</span><span class="pun">=</span><span class="atv">"${line}"</span><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;/ul&gt;</span><span class="pln">
+</span><span class="tag">&lt;/div&gt;</span><span class="pln">
+</span><span class="tag">&lt;/div&gt;</span></pre>
+
+<ul>
+	<li>Le <span class="red">Modèle</span> doit contenir un attribut <span class="blue">rectangleAttribut</span> et un attribut <span class="blue">history</span>.</li>
+
+	<li>La <span class="red">vue ne changera pas</span> quelque soit la gestion de la session (MVC).</li>
+</ul>
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Avec <span class="blue"><code>HttpSession</code></span></h2>
+
+<pre class="prettyprint prettyprinted" style="font-size: 14px;"><span class="pln">    </span><span class="lit">@PostMapping</span><span class="pun">(</span><span class="str">"/rectanglesession1"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> form</span><span class="pun">(</span><span class="pln">
+					   </span><span class="lit">@Valid</span><span class="pln"> 
+    				   </span><span class="lit">@ModelAttribute</span><span class="pun">(</span><span class="str">"rectangleAttribute"</span><span class="pun">)</span><span class="pln"> 
+    				   </span><span class="typ">Rectangle</span><span class="pln"> parameter</span><span class="pun">,</span><span class="pln"> 
+    				   </span><span class="typ">BindingResult</span><span class="pln"> bindingResult</span><span class="pun">,</span><span class="pln"> 
+    				   </span><mark><span class="typ">HttpSession</span><span class="pln"> session</span></mark><span class="pun">,</span><span class="pln">
+    				   </span><span class="typ">Model</span><span class="pln"> model</span><span class="pun">){</span><span class="pln">
+        </span><span class="kwd">var</span><span class="pln"> history </span><span class="pun">=</span><span class="pln"> getOrCreateHistoryFromSession</span><span class="pun">(</span><span class="pln">session</span><span class="pun">);</span><span class="pln">
+        model</span><span class="pun">.</span><span class="pln">addAttribute</span><span class="pun">(</span><span class="str">"history"</span><span class="pun">,</span><span class="pln">history</span><span class="pun">);</span><span class="pln">
+        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">bindingResult</span><span class="pun">.</span><span class="pln">hasErrors</span><span class="pun">()){</span><span class="pln">
+            </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"rectangle-session"</span><span class="pun">;</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+        history</span><span class="pun">.</span><span class="pln">addComputation</span><span class="pun">(</span><span class="pln">parameter</span><span class="pun">.</span><span class="pln">getWidth</span><span class="pun">()+</span><span class="str">"x"</span><span class="pun">+</span><span class="pln">parameter</span><span class="pun">.</span><span class="pln">getHeight</span><span class="pun">()+</span><span class="str">"="</span><span class="pun">+</span><span class="pln">parameter</span><span class="pun">.</span><span class="pln">area</span><span class="pun">());</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"rectangle-session"</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="pun">}</span></pre>
+
+<p>Facile à mettre en oeuvre mais on gère explicitement la <span class="blue">Map</span> de <span class="red">HttpSession</span>.</p>
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>En jouant sur le scope du Controller (1/2)</h2>
+
+<p>Par défaut, il y a un unique controlleur pour tous les clients (Singleton). On peut demander Spring de créer un controlleur par session HTTP.</p>
+
+<pre class="prettyprint prettyprinted" style="font-size: 14px;"><span class="lit">@Controller</span><span class="pln">
+</span><mark><span class="lit">@Scope</span><span class="pun">(</span><span class="pln">value </span><span class="pun">=</span><span class="pln"> </span><span class="typ">WebApplicationContext</span><span class="pun">.</span><span class="pln">SCOPE_SESSION</span><span class="pun">)</span></mark><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">RectangleSessionWithSessionScopeWorst</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><mark><span class="kwd">private</span><span class="pln"> </span><span class="typ">History</span><span class="pln"> history </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">History</span><span class="pun">();</span></mark><span class="pln">
+
+    </span><span class="lit">@GetMapping</span><span class="pun">(</span><span class="str">"/rectanglesession"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> rectangleForm</span><span class="pun">(</span><span class="typ">Model</span><span class="pln"> model</span><span class="pun">){</span><span class="pln">
+        model</span><span class="pun">.</span><span class="pln">addAttribute</span><span class="pun">(</span><span class="str">"history"</span><span class="pun">,</span><span class="pln">history</span><span class="pun">);</span><span class="pln">
+        model</span><span class="pun">.</span><span class="pln">addAttribute</span><span class="pun">(</span><span class="str">"rectangleAttribute"</span><span class="pun">,</span><span class="kwd">new</span><span class="pln"> </span><span class="typ">Rectangle</span><span class="pun">());</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"rectangle-session"</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p><span class="blue">Facile à mettre en oeuvre</span> mais <span class="red">potentiellement couteux</span> si le controlleur est complexe. De plus, pas moyen de partager des données de session avec un autre controlleur.<br>
+<span class="red">A éviter globalement.</span></p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>En jouant sur le scope du Controller (2/2)</h2>
+
+<p>Mieux, on peut définir un bean <span class="blue">History</span> dont le scope est la session HTTP tout en gardant un seul controlleur.</p>
+
+<pre class="prettyprint prettyprinted" style="font-size: 12px;"><span class="lit">@SpringBootApplication</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Application</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+   </span><span class="pun">...</span><span class="pln">
+   </span><span class="lit">@Bean</span><span class="pln">
+   </span><span class="lit">@Scope</span><span class="pun">(</span><span class="pln">value </span><span class="pun">=</span><span class="pln"> </span><span class="typ">WebApplicationContext</span><span class="pun">.</span><span class="pln">SCOPE_SESSION</span><span class="pun">,</span><span class="pln">proxyMode </span><span class="pun">=</span><span class="pln"> </span><span class="typ">ScopedProxyMode</span><span class="pun">.</span><span class="pln">TARGET_CLASS</span><span class="pun">)</span><span class="pln">
+   </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">History</span><span class="pln"> beanHistory</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+       </span><span class="kwd">return</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">History</span><span class="pun">();</span><span class="pln">
+   </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+
+<pre class="prettyprint prettyprinted" style="font-size: 12px;"><span class="lit">@Controller</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">RectangleSessionWithSessionScope</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@Autowired</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">History</span><span class="pln"> history</span><span class="pun">;</span><span class="pln">
+
+</span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p>Pourquoi faut-il passer par un proxy ?</p>
+
+<p><span class="blue">Un peu plus difficile  à mettre en oeuvre</span> que <span class="blue"><code>HttpSession</code></span> mais en gagne en abstraction au prix des indirections du proxy.</p>
+</section>
+
+<section style="top: 98px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>@SessionAttribute</h2>
+<pre class="prettyprint prettyprinted" style="font-size: 12px;"><span class="lit">@Controller</span><span class="pln">
+</span><span class="lit">@SessionAttributes</span><span class="pun">(</span><span class="str">"history"</span><span class="pun">)</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">RectangleSessionWithSessionAttribute</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@ModelAttribute</span><span class="pun">(</span><span class="str">"history"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">History</span><span class="pln"> history</span><span class="pun">(){</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">History</span><span class="pun">();</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="pun">...</span><span class="pln">
+
+    </span><span class="lit">@PostMapping</span><span class="pun">(</span><span class="str">"/rectanglesession"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> form</span><span class="pun">(</span><span class="lit">@Valid</span><span class="pln"> 
+			           </span><span class="lit">@ModelAttribute</span><span class="pun">(</span><span class="str">"rectangleAttribute"</span><span class="pun">)</span><span class="pln"> 
+			           </span><span class="typ">Rectangle</span><span class="pln"> parameter</span><span class="pun">,</span><span class="pln">
+			           </span><span class="typ">BindingResult</span><span class="pln"> bindingResult</span><span class="pun">,</span><span class="pln">
+			           </span><span class="typ">Model</span><span class="pln"> model</span><span class="pun">,</span><span class="pln">
+			           </span><span class="lit">@ModelAttribute</span><span class="pun">(</span><span class="str">"history"</span><span class="pun">)</span><span class="pln"> </span><span class="typ">History</span><span class="pln"> history</span><span class="pun">){</span><span class="pln">
+    	</span><span class="pun">...</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+</span><span class="pun">}</span></pre>
+</section>
+
+<section style="top: 54.5px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Controlleur API Rest</h2>
+
+<pre class="prettyprint prettyprinted" style="font-size: 12px;"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Student</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> uid</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> firstName</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> lastName</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<pre class="prettyprint prettyprinted" style="font-size: 12px;"><mark><span class="lit">@RestController</span></mark><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">HelloRestController</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span class="typ">Map</span><span class="pun">&lt;</span><span class="typ">Long</span><span class="pun">,</span><span class="typ">Student</span><span class="pun">&gt;</span><span class="pln"> STUDENTS_MAP </span><span class="pun">=</span><span class="pln"> </span><span class="typ">Map</span><span class="pun">.</span><span class="pln">of</span><span class="pun">(...);</span><span class="pln">
+
+    </span><span class="lit">@GetMapping</span><span class="pun">(</span><span class="str">"/students/{id}"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><mark><span class="typ">Student</span></mark><span class="pln"> getStudent</span><span class="pun">(</span><span class="lit">@PathVariable</span><span class="pun">(</span><span class="str">"id"</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> id</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">var</span><span class="pln"> student </span><span class="pun">=</span><span class="pln"> STUDENTS_MAP</span><span class="pun">.</span><span class="kwd">get</span><span class="pun">(</span><span class="pln">id</span><span class="pun">);</span><span class="pln">
+        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">student</span><span class="pun">==</span><span class="kwd">null</span><span class="pun">){</span><span class="pln">
+            </span><span class="kwd">throw</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">ResponseStatusException</span><span class="pun">(</span><span class="pln">
+                    </span><span class="typ">HttpStatus</span><span class="pun">.</span><span class="pln">NOT_FOUND</span><span class="pun">,</span><span class="pln"> </span><span class="str">"No student with id ("</span><span class="pun">+</span><span class="pln">id</span><span class="pun">+</span><span class="str">")"</span><span class="pun">);</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">else</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">return</span><span class="pln"> student</span><span class="pun">;</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p>Spring utilise convertie automatiquement le type renvoyé en JSON.</p>
+
+</section>
+
+<section style="top: 140.5px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Consommation d'une API Rest</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="typ">WebClient</span><span class="pln"> webClient </span><span class="pun">=</span><span class="pln"> </span><span class="typ">WebClient</span><span class="pun">.</span><span class="pln">create</span><span class="pun">();</span><span class="pln">
+</span><span class="typ">Student</span><span class="pln"> student </span><span class="pun">=</span><span class="pln"> webClient</span><span class="pun">.</span><span class="kwd">get</span><span class="pun">()</span><span class="pln">
+                           </span><span class="pun">.</span><span class="pln">uri</span><span class="pun">(</span><span class="str">"http://localhost:8080/students/1"</span><span class="pun">)</span><span class="pln">
+                           </span><span class="pun">.</span><span class="pln">retrieve</span><span class="pun">()</span><span class="pln">
+                           </span><span class="pun">.</span><span class="pln">bodyToMono</span><span class="pun">(</span><span class="typ">Student</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">)</span><span class="pln">
+                           </span><span class="pun">.</span><span class="pln">block</span><span class="pun">();</span></pre>
+
+<p><span class="blue"><code>RestTemplate</code></span> est <span class="red">deprecated</span>. Il faut maintenant utiliser <span class="blue">WebClient</span> qui permet de faire des requêtes HTTP en bloquant ou en non-bloquant.</p> 
+
+</section>
+
+
+</div>
+
+	<div class="backgrounds"><div class="slide-background present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div></div><div class="progress" style="display: block;"><span style="width: 0px;"></span></div><aside class="controls" style="display: block;"><div class="navigate-left"></div><div class="navigate-right enabled"></div><div class="navigate-up"></div><div class="navigate-down"></div></aside><div class="slide-number"></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px);">
+
+				JEE Back-end
+				
+				Spring MVC et Rest
+			</div></div>
+
+
+
+	<script src="./Spring MVC et Rest_files/head.min.js.téléchargement"></script>
+	<script src="./Spring MVC et Rest_files/reveal.js.téléchargement"></script>
+
+	<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script><script type="text/javascript" src="./Spring MVC et Rest_files/zoom.js.téléchargement"></script><script type="text/javascript" src="./Spring MVC et Rest_files/notes.js.téléchargement"></script>
+
+
+
+</body></html>

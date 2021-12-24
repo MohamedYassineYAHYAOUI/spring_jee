@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<!-- saved from url=(0058)https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td03.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<!-- Required meta tags -->
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Javascripts --> 
+	<script type="text/javascript" src="./td HttpServlets ex1_files/prettify.js.téléchargement"></script>
+	<script type="text/javascript" src="./td HttpServlets ex1_files/jquery-3.2.1.slim.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./td HttpServlets ex1_files/popper.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./td HttpServlets ex1_files/bootstrap.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./td HttpServlets ex1_files/hack.js.téléchargement"></script>
+
+	<!-- Bootstrap CSS -->
+
+	<link href="./td HttpServlets ex1_files/bootstrap.css" type="text/css" rel="stylesheet">
+
+   <!-- Syntaxt highlighter CSS -->
+   
+	<link href="./td HttpServlets ex1_files/prettify.css" type="text/css" rel="stylesheet">
+
+	<!-- Fonts for the icons -->
+
+   <link href="./td HttpServlets ex1_files/fontawesome-all.min.css" rel="stylesheet">
+
+<title>source</title>
+  </head>
+  <body onload="prettyPrint()">
+
+
+<!-- Title of the exercice sheet
+ 
+<h1>
+		TITLE
+		<a href="index.html" style="float:right"><span class="fa fa-home"></span></a>
+ </h1>
+ -->
+
+<h1>
+	HttpServlets
+	<a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/index.html" style="float:right"><span class="fa fa-home"></span></a>
+</h1>
+
+
+   
+   
+<!-- TABLE OF CONTENT OF THE EXERCICES
+ 
+ <ul class="nav nav-tabs">
+ <li class="nav-item">
+ <a class="nav-link active" data-toggle="tab" href="#exercice1">Exercice 1</a>
+ </li>
+ <li class="nav-item">
+ <a class="nav-link" data-toggle="tab" href="#exercice2">Exercice 2</a>
+ </li>
+ </ul>
+
+   -->
+
+
+<!---
+
+					TABLE OF CONTENT
+					
+-->
+
+<ul class="nav nav-tabs">
+  
+<li class="nav-item">
+	<a class="nav-link active show" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td03.html#exercice1">Exercice 1</a>
+</li>
+
+<li class="nav-item">
+	<a class="nav-link" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td03.html#exercice2">Exercice 2</a>
+</li>
+
+<li class="nav-item">
+	<a class="nav-link" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td03.html#exercice3">Exercice 3</a>
+</li>
+
+</ul>
+
+
+
+<div id="myTabContent" class="tab-content">
+
+<div class="tab-pane fade active show" id="exercice1">
+<h2>HelloServlet</h2>
+<!---
+
+					EXERCICE 2
+
+-->
+<p class="info alert alert-info">Toutes vos classes doivent être dans le package <tt>fr.uge.jee.servlet.hello</tt>.</p>
+
+<p class="question">Installez <a href="https://tomcat.apache.org/download-10.cgi">Tomcat 10</a> (il faut prendre la version Core pour votre OS) et
+rendez-le exécutable:</p> 
+<pre class="console">$ cd apache-tomcat-10.0.12
+$ cd bin
+$ chmod +x catalina.sh
+</pre>
+
+<p class="question">Démarrer Tomcat avec la commande:</p>
+<pre class="console">$./catalina.sh run &amp;
+</pre>
+
+<p class="question">Créer un nouveau projet Maven en partant de ce <a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td03/pom.xml">pom.xml</a>.</p>
+
+<p class="attention alert alert-warning">Si <code>IntelliJ</code> se plaint de ne pas connaître le plugin, il faut:</p>
+<ul>
+<li>utiliser le plugin registery (<tt>Preferences &gt; Build, Excecution, Deployement &gt; Build Tools &gt; Maven</tt>)</li>.
+<li>invalider le cache et redémarrer (<tt>File &gt; Invalidate Cache &amp; Restart</tt>)
+  </li></ul>
+ lui dire d'utiliser le plugin repository et invalider les caches et redémarrer.<p></p>
+
+<p class="question">Ecrivez le servlet <code>HelloServlet</code>.</p>
+
+<p class="question">Rajoutez à votre projet un répertoire <span class="blue"><tt>webapp</tt></span> contenant un répertoire vide <span class="blue"><tt>WEB-INF</tt></span> comme ci-dessous:</p>
+
+<center>
+<img width="20%" src="./td HttpServlets ex1_files/structure.png">
+</center>
+<p class="question">Packagez votre servlet en un <span class="blue">war</span> avec la commande en ligne:</p>
+
+<pre class="console">$ mvn compile war:war
+</pre>
+
+
+<p class="question">Copiez votre war dans le répertoire <tt>webapps</tt> de Tomcat.</p>
+
+<p class="question">Testez que le servlet <span class="blue">HelloServlet</span> est bien installé en visitant  l'adresse <span class="blue"><tt>localhost:8080/App/hello</tt></span> avec votre navigateur favori.</p>
+
+</div>
+
+
+ <!-- End of the exercise -->
+<div class="tab-pane fade" id="exercice2">
+<h2>Rectangle</h2>
+
+<p class="info alert alert-info">Toutes vos classes doivent être dans le package <tt>fr.uge.jee.servlet.rectangle</tt>.</p>
+
+<p>Dans cette exercice, on veut réaliser un servlet qui quand fait un requête GET sur la route <tt>App/rectangle</tt> renvoie un formulaire qui demande la longueur et la hauteur du rectangle.</p>
+
+<img src="./td HttpServlets ex1_files/rectangle-form.png">
+
+<p> Quand on envoie les données de ce formulaire, on veut voir s'afficher l'aire du rectangle.</p>
+
+<img src="./td HttpServlets ex1_files/rectangle-out.png">
+
+<p class="question">Réaliser votre servlet et déployé le sur Tomcat.</p>
+
+<p class="attention alert alert-warning">Plutôt que d'écrire le code HTML de <a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td03/rectangle-form.html">la page avec le formulaire</a> dans votre servlet, mettez la dans le répertoire <tt>webapp/WEB-INF/templates/rectangle-form.html</tt>. Dans votre servlet, vous pourrez y accéder en utilisant:</p>
+<pre class="prettyprint prettyprinted" style=""><span class="typ">InputStream</span><span class="pln"> inputStream </span><span class="pun">=</span><span class="pln"> getServletContext</span><span class="pun">().</span><span class="pln">getResourceAsStream</span><span class="pun">(</span><span class="str">"/WEB-INF/templates/rectangle-form.html"</span><span class="pun">);</span></pre>
+<p>Cette méthode renvoie un <code>InputStream</code> sur le fichier. Pour obtenir la String correspondante, vous pouver utiliser la méthode suivante:</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> readFromInputStream</span><span class="pun">(</span><span class="typ">InputStream</span><span class="pln"> inputStream</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">throws</span><span class="pln"> </span><span class="typ">IOException</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> lines </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">BufferedReader</span><span class="pun">(</span><span class="kwd">new</span><span class="pln"> </span><span class="typ">InputStreamReader</span><span class="pun">(</span><span class="pln">inputStream</span><span class="pun">,</span><span class="pln"> </span><span class="typ">StandardCharsets</span><span class="pun">.</span><span class="pln">UTF_8</span><span class="pun">)).</span><span class="pln">lines</span><span class="pun">();</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> lines</span><span class="pun">.</span><span class="pln">collect</span><span class="pun">(</span><span class="typ">Collectors</span><span class="pun">.</span><span class="pln">joining</span><span class="pun">(</span><span class="str">"\n"</span><span class="pun">));</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p class="attention alert alert-warning">On ne veut pas aller relire la ressource <tt>"/WEB-INF/templates/rectangle-form.html"</tt> à chaque requête. Regardez la méthode <code>init</code>
+de <code>HttpServlet</code>.</p>
+
+<p class="question">Que se passe-t-il si l'utilisateur ne rentre pas des nombres ?</p>
+
+<p class="question"><strong>Bonus</strong>Modifier votre code pour que dans ce cas, l'utilisateur retourne sur le formulaire avec les valeurs qu'il a donné et un petit message lui indiquant le problème.</p>
+
+</div>
+
+<div class="tab-pane fade" id="exercice3">
+
+<h2>Hello avec de la mémoire</h2>
+
+<p class="info alert alert-info">Toutes vos classes doivent être dans le package <tt>fr.uge.jee.servlet.hellosession</tt>.</p>
+
+<p>Dans cet exercice, on veux écrire un servlet qui lorsque l'on fait une requête GET sur la route <tt>/hellosession</tt>, va afficher <tt>Bonjour pour la i-ème fois</tt> où <i>i</i> est le nombre de fos que ce visiteur à accéder à cette ressource.</p>
+
+<p class="question">Ecrivez votre servlet <code>HelloSessionBetter</code> en implémentant <strong>à la main</strong> la gestion du token de session comme expliqué en cours.</p>
+
+<p class="attention alert alert-warning">Rappelez vous les servlets doivent être thread-safe. Il peut être intéressant de créer une classe thread-safe qui a pour rôle de gérer les tokens de session.</p>
+
+<p class="question">Testez votre servlet avec deux navigateurs différents ou avec une fenêtre privée pour vérifier que vous identifiez correctement les visiteurs.</p>
+
+<p>En pratique, il n'est pas nécessaire de gérer la session à la main. La classe <code>HttpSession</code> permet de le faire pour nous.<br>
+On peut récupérer ou créer la session à partir de la <span class="blue"><code>HttpServletRequest request</code></span> avec
+<code>request.getSession(true)</code>. Ensuite l'objet
+<code>HttpSession</code> peut être utilisé comme une table de hachage de String vers Object grâce aux méthodes: 
+<code>httpSession.getAttribute(String name)</code> et
+<code>httpSession.setAttribute(String name,Object value)</code>.</p>
+
+<p class="question">Récrivez le servlet <code>HelloSession</code> dans une classe <code>HelloSessionBetter</code> en utilisant les <code>HttpSession</code>. La route de ce nouveau servlet sera <tt>/hellosessionbetter</tt></p>
+
+<p class="question">Dans votre navigateur, récupérer votre token de session.
+Sur Firefox, cela se fait en ouvrant les outils développeurs et en examinant la réponse du serveur à notre requête GET. Dans le header de la réponse, vous devriez voir un cookie du genre <tt>JSESSIONID=0964C16E166EF0347296B2812F4</tt>.</p>
+
+<p class="question">Depuis un terminal, utilisez la commande curl suivant pour envoyer une requête GET avec le même token que cela de votre navigateur:</p>
+
+<pre class="console">curl -X GET -i -b JSESSIONID=0964C16E166EF0347296B2812F4 http://localhost:8080/App/hellosessionbetter
+</pre>
+
+<p>Vous devriez voir le conteneur du navigateur incrémenté de 1.</p>
+
+<p class="question">Essayez un requête curl avec un token arbitraire comme <tt>FFFFFFFF</tt>. Que fait le servlet dans ce cas ?</p> 
+
+</div>
+ <!-- End of the exercise -->
+
+
+</div> <!-- End of div tab-content -->
+	  
+
+</body></html>

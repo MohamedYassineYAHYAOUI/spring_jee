@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<!-- saved from url=(0058)https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td04.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<!-- Required meta tags -->
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Javascripts --> 
+	<script type="text/javascript" src="./TD -- Spring MVC ex3_files/prettify.js.téléchargement"></script>
+	<script type="text/javascript" src="./TD -- Spring MVC ex3_files/jquery-3.2.1.slim.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./TD -- Spring MVC ex3_files/popper.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./TD -- Spring MVC ex3_files/bootstrap.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./TD -- Spring MVC ex3_files/hack.js.téléchargement"></script>
+
+	<!-- Bootstrap CSS -->
+
+	<link href="./TD -- Spring MVC ex3_files/bootstrap.css" type="text/css" rel="stylesheet">
+
+   <!-- Syntaxt highlighter CSS -->
+   
+	<link href="./TD -- Spring MVC ex3_files/prettify.css" type="text/css" rel="stylesheet">
+
+	<!-- Fonts for the icons -->
+
+   <link href="./TD -- Spring MVC ex3_files/fontawesome-all.min.css" rel="stylesheet">
+
+<title>TD -- Spring MVC</title>
+  </head>
+  <body onload="prettyPrint()">
+
+
+<!-- Title of the exercice sheet
+ 
+<h1>
+		TITLE
+		<a href="index.html" style="float:right"><span class="fa fa-home"></span></a>
+ </h1>
+ -->
+
+<h1>
+	Spring MVC
+	<a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/index.html" style="float:right"><span class="fa fa-home"></span></a>
+</h1>
+
+
+   
+   
+<!-- TABLE OF CONTENT OF THE EXERCICES
+ 
+ <ul class="nav nav-tabs">
+ <li class="nav-item">
+ <a class="nav-link active" data-toggle="tab" href="#exercice1">Exercice 1</a>
+ </li>
+ <li class="nav-item">
+ <a class="nav-link" data-toggle="tab" href="#exercice2">Exercice 2</a>
+ </li>
+ </ul>
+
+   -->
+
+
+<!---
+
+					TABLE OF CONTENT
+					
+-->
+
+<ul class="nav nav-tabs">
+  
+<li class="nav-item">
+	<a class="nav-link" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td04.html#exercice1">Exercice 1</a>
+</li>
+
+<li class="nav-item">
+	<a class="nav-link" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td04.html#exercice2">Exercice 2</a>
+</li>
+
+<li class="nav-item">
+	<a class="nav-link active show" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td04.html#exercice3">Exercice 3</a>
+</li>
+
+</ul>
+
+
+
+<div id="myTabContent" class="tab-content">
+
+<div class="tab-pane fade" id="exercice1">
+<h2>Hello</h2>
+<!---
+
+					EXERCICE 2
+
+-->
+<p class="info alert alert-info">Toutes vos classes doivent être dans le package <tt>fr.uge.jee.springmvc.hello</tt>.</p>
+
+<p class="question">Créez un projet Maven avec ce <a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td04/pom.xml"><tt>pom.xml</tt></a>.</p>
+
+<p class="question">Créer une application qui affiche Bonjour quand on demande la ressource <tt>/hello</tt>.</p>
+<!--
+<p class="question">Rajoutez une image à votre page.</p>
+-->
+
+</div>
+
+
+ <!-- End of the exercise -->
+<div class="tab-pane fade" id="exercice2">
+<h2>Rectangle</h2>
+
+<p class="info alert alert-info">Toutes vos classes doivent être dans le package <tt>fr.uge.jee.springmvc.rectangle</tt>.</p>
+
+<p>Dans cette exercice, on veut réaliser un servlet qui quand fait un requête GET sur la route <tt>/rectangle</tt> renvoie un formulaire qui demande la longueur et la hauteur du rectangle.</p>
+
+<img src="./TD -- Spring MVC ex3_files/rectangle-form.png">
+
+<p> Quand on envoie les données de ce formulaire, on veut voir s'afficher l'aire du rectangle.</p>
+
+<img src="./TD -- Spring MVC ex3_files/rectangle-out.png">
+
+<p class="question">Rajouter un controleur gérer la route <tt>/rectangle</tt>.</p>
+
+<p class="question">Modifier votre code pour que si l'utilisateur rentre des valeurs érronnées, l'utilisateur retourne sur le formulaire avec les valeurs qu'il a donné et un petit message lui indiquant le problème.</p>
+
+<p class="attention alert alert-warning">Vous utiliserez la validation automation de Spring MVC. Pour une introduction rapide, allez <a href="https://spring.io/guides/gs/validating-form-input/">ici</a>. Pour plus d'informations, allez voir la documentation de Spring MVC.</p>
+</div>
+
+<div class="tab-pane fade active show" id="exercice3">
+
+<h2>Rectangle avec mémoire</h2>
+
+<p class="info alert alert-info">Toutes vos classes doivent être dans le package <tt>fr.uge.jee.servlet.rectanglesession</tt>.</p>
+
+<p>Dans cet exercice, on veux enrichir l'application de l'exercice précédent pour qu'elle liste tous les caculs d'aire déjà fait par ce client en dessous du formulaire.</p>
+
+<p class="question">Copiez vos fichiers dans le nouveau package et enrichissez l'application.</p>
+
+<p class="attention alert alert-warning">Il y a plusieurs manière d'accéder à la session HTTP en Spring MVC. Regardez la documentation.</p>
+</div>
+ <!-- End of the exercise -->
+
+
+</div> <!-- End of div tab-content -->
+	  
+
+</body></html>

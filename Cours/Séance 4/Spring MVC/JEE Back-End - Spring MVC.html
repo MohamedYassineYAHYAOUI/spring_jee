@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<!-- saved from url=(0069)https://igm.univ-mlv.fr//~carayol/coursJEEM2/slides/spring-mvc.html#/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+<title>JEE Back-End - Spring MVC</title>
+
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="./JEE Back-End - Spring MVC_files/reveal.css">
+<link rel="stylesheet" href="./JEE Back-End - Spring MVC_files/white.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="./JEE Back-End - Spring MVC_files/zenburn.css">
+<link rel="stylesheet" href="./JEE Back-End - Spring MVC_files/reveal-override.css">
+<link href="./JEE Back-End - Spring MVC_files/prettify.css" type="text/css" rel="stylesheet">
+<!-- Printing and PDF exports -->
+<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script><link rel="stylesheet" type="text/css" href="./JEE Back-End - Spring MVC_files/paper.css">
+<script type="text/javascript" src="./JEE Back-End - Spring MVC_files/prettify.js.téléchargement"></script>
+<style type="text/css">
+.reveal h2 {
+	color: steelblue;
+}
+
+.reveal h1 {
+	color: steelblue;
+}
+
+.reveal p {
+	text-align: left;
+}
+
+.reveal lu {
+	text-align: left;
+	list-style-position: inside;
+}
+
+.reveal span.red {
+	color: salmon;
+}
+
+.reveal p.red {
+	color: salmon;
+}
+
+.reveal span.blue,.reveal p.blue {
+	color: steelblue;
+}
+</style>
+<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+</head>
+
+<body onload="prettyPrint()">
+
+
+	<div class="reveal slide center" role="application" data-transition-speed="default" data-background-transition="fade">
+
+<div class="footer"><p>
+    <a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/index.html"><img src="./JEE Back-End - Spring MVC_files/home.png" width="30em"></a></p>
+      </div>
+
+		<!-- Any section element inside of this container is displayed as a slide -->
+		<div class="slides" style="width: 960px; height: 700px; zoom: 0.853714;">
+			<section style="top: 211.5px; display: block;" class="present">
+
+				<h1>JEE Back-end</h1>
+				
+				<h2>Spring MVC</h2>
+			</section>
+
+			<section style="top: 124.5px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Spring MVC</h2>
+
+<ul>
+	<li><span class="red">Spring MVC</span> est un framework pour écrire des applications Web</li>
+
+	<li>Il est basé sur le pattern <span class="blue">Modèle-Vue-Controller</span> (d'où le nom).</li>
+
+	<li><div><p>Il va simplifier l'écriture des <span class="blue">HttpServlet</span>:</p>
+<ul>
+	<li>la <span class="red">conversion des données des requêtes HTTP</span> en objets Java;
+	</li>
+	<li>la <span class="red">production du HTML</span>: pour cela il utilise un moteur de templates. 
+	</li>
+</ul></div>
+	</li>
+</ul>
+
+			</section>
+
+<section style="top: 0px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Architecture de Spring</h2>
+
+<img src="./JEE Back-End - Spring MVC_files/mvc.png">
+
+<p style="align-right">Source: Documentation de Spring MVC</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>La vie d'une requête</h2>
+
+<ul>
+<li>La requête HTTP arrive sur le <span class="red">Front controller</span> (qui est un Servlet). Elle est dispatchée sur le <span class="red">Controlleur</span> pour cette route.
+</li>
+
+<li>Le <span class="red">Controlleur</span> ne recoit pas directement la requête mais <span class="blue">un objet Java dont les champs sont remplis à partir de la requête</span>.<br>
+<div style="font-size: 24px;">
+Il est possible d'avoir la <span class="blue">HTTPServletRequest</span> mais ce n'est pas l'utilisation standard.
+</div></li>
+
+<li>Le <span class="red">Controlleur</span> remplit le <span class="red">Model</span> (i.e. une <span class="blue"><code>Map&lt;String,Object&gt;</code></span>) avec les informations qu'il veut voir afficher. Il ne renvoie pas du code HTML mais le nom d'un template HTML</li>
+
+<li>Le<span class="red"> moteur de template</span> (i.e., <span class="red">View</span>) reçoit donc le <span class="blue">nom de la vue</span> et le <span class="red">Model</span>. C'est lui qui produit le <span class="blue">HTML</span> qui est renvoyé au client par le <span class="red">Front controller</span>.</li>
+</ul>
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Mon premier Controlleur</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Controller</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">HelloController</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@GetMapping</span><span class="pun">(</span><span class="str">"/hello"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> greeting</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> name</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Model</span><span class="pln"> model</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        model</span><span class="pun">.</span><span class="pln">addAttribute</span><span class="pun">(</span><span class="str">"name"</span><span class="pun">,</span><span class="pln"> </span><span class="str">"Arnaud"</span><span class="pun">);</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"hello"</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+ </span><span class="pun">}</span></pre>
+
+<ul>
+	<li>Moralement, chaque <span class="red">méthode</span> correspond à un <span class="blue">servlet</span>.</li>
+	<li>La route de <span class="blue"><code>greeting</code></span> est <span class="blue"><tt>/hello</tt></span>. Il ne traitera que les requêtes <span class="blue">GET</span>.</li>
+	<li>La méthode <span class="blue"><code>greeting</code></span> renvoie le <span class="red">nom de la vue</span> qui doit être utilisée.</li>
+</ul>
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Ma première vue <tt>hello.html</tt> (Thymleaf)</h2>
+<pre class="prettyprint prettyprinted" style=""><span class="dec">&lt;!DOCTYPE HTML&gt;</span><span class="pln">
+</span><mark><span class="tag">&lt;html</span><span class="pln"> </span><span class="atn">xmlns:th</span><span class="pun">=</span><span class="atv">"http://www.thymeleaf.org"</span><span class="tag">&gt;</span></mark><span class="pln">
+</span><span class="tag">&lt;head&gt;</span><span class="pln">
+    </span><span class="tag">&lt;title&gt;</span><span class="pln">Hello Spring-MVC</span><span class="tag">&lt;/title&gt;</span><span class="pln">
+    </span><span class="tag">&lt;meta</span><span class="pln"> </span><span class="atn">http-equiv</span><span class="pun">=</span><span class="atv">"Content-Type"</span><span class="pln"> </span><span class="atn">content</span><span class="pun">=</span><span class="atv">"text/html; charset=UTF-8"</span><span class="pln"> </span><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;/head&gt;</span><span class="pln">
+</span><span class="tag">&lt;body&gt;</span><span class="pln">
+</span><span class="tag">&lt;p</span><span class="pln"> </span><mark><span class="atn">th:text</span></mark><span class="pun">=</span><span class="atv">"</span><mark><span class="atv">'Hello, ' + ${name} + '!'</span></mark><span class="atv">"</span><span class="pln"> </span><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;/body&gt;</span><span class="pln">
+</span><span class="tag">&lt;/html&gt;</span><span class="pln">	</span></pre>	
+
+<ul>
+
+	<li>Il existe de nombreux <span class="blue">moteurs de templates</span> (Thymleaf,Faces,...). Nous allons utiliser <span class="red">Thymleaf</span> mais n'hésitez pas à changer pour le projet.</li>
+<li><span class="red">Thymleaf</span> reçoit le nom de la vue <span class="blue"><tt>hello</tt></span> et un modèle contenant l'association <span class="blue"><code>["name" -&gt; "Arnaud]</code></span>.</li>
+<li>Sans la première ligne, <span class="red">Thymleaf</span> ne reconnaitra pas votre template.</li>
+</ul>
+</section>
+
+
+
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+	<h2>Spring Boot</h2>
+
+<p>Pour simplifier, la gestion des dépendances, la configuration de Spring et l'injection de tous ces composants, nous allons utiliser <span class="red">Spring Boot</span>.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@SpringBootApplication</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Application</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> main</span><span class="pun">(</span><span class="typ">String</span><span class="pun">[]</span><span class="pln"> args</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="typ">SpringApplication</span><span class="pun">.</span><span class="pln">run</span><span class="pun">(</span><span class="typ">Application</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">,</span><span class="pln"> args</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+</span><span class="pun">}</span></pre>
+
+<ul>
+<li>L'annotation <span class="blue"><code>@SpringBootApplication</code></span> est équivalente à <span class="blue"><code>@Configuration</code></span>, <span class="blue"><code>@EnableAutoConfiguration</code></span> et <span class="blue"><code>@ComponentScan</code></span>.</li>	
+<li>Le démarrage de l'application dans Maven va lancer un serveur Tomcat et faire le déploiement.</li>
+</ul>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Thymleaf est très puissant (1/2)</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@GetMapping</span><span class="pun">(</span><span class="str">"/shopping"</span><span class="pun">)</span><span class="pln">
+   </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> greeting</span><span class="pun">(</span><span class="typ">Model</span><span class="pln"> model</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+       model</span><span class="pun">.</span><span class="pln">addAttribute</span><span class="pun">(</span><span class="str">"groceries"</span><span class="pun">,</span><span class="pln"> </span><span class="typ">List</span><span class="pun">.</span><span class="pln">of</span><span class="pun">(</span><span class="str">"Potatoes"</span><span class="pun">,</span><span class="str">"Milk"</span><span class="pun">,</span><span class="str">"Sugar"</span><span class="pun">));</span><span class="pln">
+       </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"shopping"</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">	</span></pre>
+
+<pre class="prettyprint prettyprinted" style=""><span class="tag">&lt;body&gt;</span><span class="pln">
+</span><span class="tag">&lt;h2&gt;</span><span class="pln">My grocery list</span><span class="tag">&lt;/h2&gt;</span><span class="pln">
+</span><span class="tag">&lt;ul&gt;</span><span class="pln">
+    </span><span class="tag">&lt;li</span><span class="pln"> </span><span class="atn">th:each</span><span class="pun">=</span><span class="atv">"item : ${groceries}"</span><span class="pln"> </span><span class="atn">th:text</span><span class="pun">=</span><span class="atv">"${item}"</span><span class="tag">&gt;&lt;/li&gt;</span><span class="pln">
+</span><span class="tag">&lt;/ul&gt;</span><span class="pln">
+</span><span class="tag">&lt;/body&gt;</span><span class="pln">    </span></pre>
+
+<p>Le HTML produit contient une liste de tous les éléments 
+de l'attribut <span class="blue"><tt>groceries</tt></span> du <span class="red">Model</span>.</p>
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+	<h2>Thymleaf est très puissant (2/2)</h2>
+
+<p>Thymleaf peut injecter la valeur par défaut des champs d'un formulaire à partir d'un objet du <span class="red">Model</span>.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@GetMapping</span><span class="pun">(</span><span class="str">"/rectangledefault"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> rectangleDefault</span><span class="pun">(</span><span class="typ">Model</span><span class="pln"> model</span><span class="pun">){</span><span class="pln">
+        </span><span class="kwd">var</span><span class="pln"> rectangle </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">Rectangle</span><span class="pun">();</span><span class="pln">
+        rectangle</span><span class="pun">.</span><span class="pln">setWidth</span><span class="pun">(</span><span class="lit">10</span><span class="pun">);</span><span class="pln">
+        rectangle</span><span class="pun">.</span><span class="pln">setHeight</span><span class="pun">(</span><span class="lit">15</span><span class="pun">);</span><span class="pln">
+        model</span><span class="pun">.</span><span class="pln">addAttribute</span><span class="pun">(</span><span class="str">"rectangle"</span><span class="pun">,</span><span class="pln">rectangle</span><span class="pun">);</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"rectangledefault"</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">	</span></pre>
+
+<pre class="prettyprint prettyprinted" style="">
+</pre>
+
+
+	<p><span class="red">Lisez la documentation</span> pour voir tout ce que thymleaf sait faire.</p>
+
+</section>
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>@GetMapping (1/2)</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@GetMapping</span><span class="pun">(</span><span class="str">"/goodbye/{name}/{uid}"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> goodbye</span><span class="pun">(</span><span class="lit">@PathVariable</span><span class="pun">(</span><span class="str">"name"</span><span class="pun">)</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> </span><mark><span class="pln">username</span></mark><span class="pun">,</span><span class="pln">
+                          </span><span class="lit">@PathVariable</span><span class="pun">(</span><span class="str">"uid"</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> </span><mark><span class="pln">uid</span></mark><span class="pun">,</span><span class="pln"> 
+                          </span><span class="typ">Model</span><span class="pln"> model</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        model</span><span class="pun">.</span><span class="pln">addAttribute</span><span class="pun">(</span><span class="str">"name"</span><span class="pun">,</span><span class="pln"> username</span><span class="pun">);</span><span class="pln">
+        model</span><span class="pun">.</span><span class="pln">addAttribute</span><span class="pun">(</span><span class="str">"uid"</span><span class="pun">,</span><span class="pln">uid</span><span class="pun">);</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"goodbye"</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">	</span></pre>
+
+<p>Les paramètres <span class="blue"><code>name</code></span> et <span class="red">uid</span> sont extraits de la route: <br>
+<span class="blue">Exemple:</span> <tt>http://localhost:8080/goodbye/<span class="red">Arnaud</span>/<span class="blue">42</span></tt>
+</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>@GetMapping (2/2)</h2>
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@GetMapping</span><span class="pun">(</span><span class="str">"/square"</span><span class="pun">)</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> goodbye</span><span class="pun">(</span><span class="lit">@RequestParam</span><span class="pun">(</span><span class="pln">name</span><span class="pun">=</span><span class="str">"number"</span><span class="pun">,</span><span class="pln"> required</span><span class="pun">=</span><span class="kwd">true</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> n</span><span class="pun">,</span><span class="pln">
+                      </span><span class="typ">Model</span><span class="pln"> model</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    model</span><span class="pun">.</span><span class="pln">addAttribute</span><span class="pun">(</span><span class="str">"number"</span><span class="pun">,</span><span class="pln"> n</span><span class="pun">);</span><span class="pln">
+    model</span><span class="pun">.</span><span class="pln">addAttribute</span><span class="pun">(</span><span class="str">"numberSquared"</span><span class="pun">,</span><span class="pln"> n</span><span class="pun">*</span><span class="pln">n</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"square"</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">	</span></pre>
+<p>Le paramètre <span class="blue"><code>number</code></span> est extrait de la requête HTTP GET: <br>
+<span class="blue">Exemple:</span> <tt>http://localhost:8080/square<span class="blue">?number=42</span></tt>
+</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>@PostMapping (1/2)</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Controller</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">RectangleController</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@GetMapping</span><span class="pun">(</span><span class="str">"/rectangle"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> rectangleForm</span><span class="pun">(){</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"rectangle"</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p><span class="red">View</span> : <span class="blue"><tt>rectangle.html</tt></span></p>
+<pre class="prettyprint prettyprinted" style=""><span class="tag">&lt;form</span><span class="pln"> </span><mark><span class="atn">th:action</span><span class="pun">=</span><span class="atv">"@{/rectangle}"</span></mark><span class="pln"> </span><span class="atn">method</span><span class="pun">=</span><span class="atv">"post"</span><span class="tag">&gt;</span><span class="pln">
+    </span><span class="tag">&lt;h2&gt;</span><span class="pln">Rectangle area calculator</span><span class="tag">&lt;/h2&gt;</span><span class="pln">
+    </span><span class="tag">&lt;div&gt;&lt;label</span><span class="pln"> </span><span class="atn">for</span><span class="pun">=</span><span class="atv">"h"</span><span class="tag">&gt;</span><span class="pln">Height:</span><span class="tag">&lt;/label&gt;</span><span class="pln">
+        </span><span class="tag">&lt;input</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"h"</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text"</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"height"</span><span class="tag">&gt;&lt;/div&gt;</span><span class="pln">
+
+    </span><span class="tag">&lt;div&gt;&lt;label</span><span class="pln"> </span><span class="atn">for</span><span class="pun">=</span><span class="atv">"w"</span><span class="tag">&gt;</span><span class="pln">Width:</span><span class="tag">&lt;/label&gt;</span><span class="pln">
+        </span><span class="tag">&lt;input</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text"</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"w"</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"width"</span><span class="tag">&gt;&lt;/div&gt;</span><span class="pln">
+
+    </span><span class="tag">&lt;div&gt;&lt;button</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"submit"</span><span class="tag">&gt;</span><span class="pln">Compute</span><span class="tag">&lt;/button&gt;&lt;/div&gt;</span><span class="pln">
+</span><span class="tag">&lt;/form&gt;</span><span class="pln">	</span></pre>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>@PostMapping (2/2)</h2>
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Rectangle</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> width</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> height</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> area</span><span class="pun">(){</span><span class="kwd">return</span><span class="pln"> width</span><span class="pun">*</span><span class="pln">height</span><span class="pun">;}</span><span class="pln">
+
+    </span><span class="com">// getters and setters</span><span class="pln">
+</span><span class="pun">}</span></pre>
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@PostMapping</span><span class="pun">(</span><span class="str">"/rectangle"</span><span class="pun">)</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> processForm</span><span class="pun">(</span><span class="lit">@ModelAttribute</span><span class="pun">(</span><span class="str">"rectangle"</span><span class="pun">)</span><span class="pln"> </span><span class="typ">Rectangle</span><span class="pln"> rectangle</span><span class="pun">,</span><span class="pln">
+                          </span><span class="typ">Model</span><span class="pln"> model</span><span class="pun">){</span><span class="pln">
+   model</span><span class="pun">.</span><span class="pln">addAttribute</span><span class="pun">(</span><span class="str">"area"</span><span class="pun">,</span><span class="pln"> param</span><span class="pun">.</span><span class="pln">area</span><span class="pun">());</span><span class="pln">
+   </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"rectangle-result"</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<div style="font-size: 24px;">
+<p>L'annotation <span class="blue"><code>@ModelAttribute("rectangle") Rectangle param</code></span> dit à Spring-MVC de récupérer le <span class="blue"><code>param</code></span> dans <span class="red">Model</span> avec l'attribut <span class="blue"><tt>rectangle</tt></span>. Si il n'y a pas d'attribut de ce nom (c'est notre cas), il va:</p>
+	<ul>
+		<li>
+ créer <span class="blue"><code><span class="blue">param</span></code></span>  à partir des paramètres de la requête avec les setter de <span class="blue"><code>Rectange</code></span>. Il se base sur les noms des paramètres pour trouver le bon setter.</li>
+ <li>mettre un attribut <span class="blue"><tt>rectangle</tt></span> avec le <span class="blue"><code>Rectangle param</code></span> dans le <span class="red">Model</span>.</li>
+</ul>
+</div>
+	</section>
+
+<section style="top: 63px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Validation des formulaires</h2>
+
+<p><span class="red">Règle d'or de la sécurité:</span> Never trust the user!</p>
+
+<p>On valide toujours tous les champs de tous les formulaires.</p>
+
+<p>Dans la version actuelle, si un utilisateur rentre une chaîne de caractère comme <span class="blue"><tt>"toto"</tt></span>, on a une exception.<br>
+Le framework n'arrive pas à convertir la String <span class="blue"><tt>"toto"</tt></span> en un nombre.</p><p>
+
+</p><p>Si on rajoute du javascript dans la page html qui grise le bouton d'envoie tant que les champs ne sont pas valide, est-ce qu'on a résolu le problème ?</p>
+
+</section>
+
+<section style="top: 36px; display: block;" hidden="" aria-hidden="true" class="future">
+	<h2>Validation</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@PostMapping</span><span class="pun">(</span><span class="str">"/rectanglebetter"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> processForm</span><span class="pun">(</span><span class="lit">@ModelAttribute</span><span class="pun">(</span><span class="str">"parameter"</span><span class="pun">)</span><span class="pln"> </span><span class="typ">Rectangle</span><span class="pln"> parameter</span><span class="pun">,</span><span class="pln">
+                              </span><span class="typ">BindingResult</span><span class="pln"> result</span><span class="pun">,</span><span class="pln"> 
+                              </span><span class="typ">Model</span><span class="pln"> model</span><span class="pun">){</span><span class="pln">
+        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">result</span><span class="pun">.</span><span class="pln">hasErrors</span><span class="pun">()){</span><span class="pln">
+            </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"error"</span><span class="pun">;</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">parameter</span><span class="pun">.</span><span class="pln">getWidth</span><span class="pun">()&lt;</span><span class="lit">0</span><span class="pln"> </span><span class="pun">||</span><span class="pln"> parameter</span><span class="pun">.</span><span class="pln">getHeight</span><span class="pun">()&lt;</span><span class="lit">0</span><span class="pun">){</span><span class="pln">
+            </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"error"</span><span class="pun">;</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+        model</span><span class="pun">.</span><span class="pln">addAttribute</span><span class="pun">(</span><span class="str">"area"</span><span class="pun">,</span><span class="pln"> parameter</span><span class="pun">.</span><span class="pln">area</span><span class="pun">());</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"parameter-result"</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span></pre>
+
+<p>Au lieu de lever une exception, les erreurs de convertion sont stocker dans <span class="blue"><code>BindingResult result</code></span>.</p>
+
+<p>Cela devient vite fastidieux ...</p>
+
+</section>
+
+<section style="top: 135px; display: block;" hidden="" aria-hidden="true" class="future">
+	<h2>Validation automatique</h2>
+
+<p>On peut valider automatique les champs d'un formulaire avec <span class="blue">@Valid</span> et des annotations dans <span class="blue">Rectangle</span>.</p>
+
+<p>Thymleaf permet d'incorporer directement les messages d'erreurs dans le formulaire.</p>
+
+<p>On verra cela dans les exercices.</p>
+</section>
+
+
+</div>
+
+	<div class="backgrounds"><div class="slide-background present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div></div><div class="progress" style="display: block;"><span style="width: 0px;"></span></div><aside class="controls" style="display: block;"><div class="navigate-left"></div><div class="navigate-right enabled"></div><div class="navigate-up"></div><div class="navigate-down"></div></aside><div class="slide-number"></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px);">
+
+				JEE Back-end
+				
+				Spring MVC
+			</div></div>
+
+
+
+	<script src="./JEE Back-End - Spring MVC_files/head.min.js.téléchargement"></script>
+	<script src="./JEE Back-End - Spring MVC_files/reveal.js.téléchargement"></script>
+
+	<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script><script type="text/javascript" src="./JEE Back-End - Spring MVC_files/zoom.js.téléchargement"></script><script type="text/javascript" src="./JEE Back-End - Spring MVC_files/notes.js.téléchargement"></script>
+
+
+
+</body></html>

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<!-- saved from url=(0066)https://igm.univ-mlv.fr//~carayol/coursJEEM2/slides/servlet.html#/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+<title>JEE Back-End - Rappels HTTP et Servlet</title>
+
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="./JEE Back-End - Rappels HTTP et Servlet_files/reveal.css">
+<link rel="stylesheet" href="./JEE Back-End - Rappels HTTP et Servlet_files/white.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="./JEE Back-End - Rappels HTTP et Servlet_files/zenburn.css">
+<link rel="stylesheet" href="./JEE Back-End - Rappels HTTP et Servlet_files/reveal-override.css">
+<link href="./JEE Back-End - Rappels HTTP et Servlet_files/prettify.css" type="text/css" rel="stylesheet">
+<!-- Printing and PDF exports -->
+<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script><link rel="stylesheet" type="text/css" href="./JEE Back-End - Rappels HTTP et Servlet_files/paper.css">
+<script type="text/javascript" src="./JEE Back-End - Rappels HTTP et Servlet_files/prettify.js.téléchargement"></script>
+<style type="text/css">
+.reveal h2 {
+	color: steelblue;
+}
+
+.reveal h1 {
+	color: steelblue;
+}
+
+.reveal p {
+	text-align: left;
+}
+
+.reveal lu {
+	text-align: left;
+	list-style-position: inside;
+}
+
+.reveal span.red {
+	color: salmon;
+}
+
+.reveal p.red {
+	color: salmon;
+}
+
+.reveal span.blue,.reveal p.blue {
+	color: steelblue;
+}
+</style>
+<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+</head>
+
+<body onload="prettyPrint()">
+
+
+	<div class="reveal slide center" role="application" data-transition-speed="default" data-background-transition="fade">
+
+<div class="footer"><p>
+    <a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/index.html"><img src="./JEE Back-End - Rappels HTTP et Servlet_files/home.png" width="30em"></a></p>
+      </div>
+
+		<!-- Any section element inside of this container is displayed as a slide -->
+		<div class="slides" style="width: 960px; height: 700px; zoom: 0.853714;">
+			<section style="top: 211.5px; display: block;" class="present">
+
+				<h1>JEE Back-end</h1>
+				
+				<h2>Rappels HTTP et Servlet</h2>
+			</section>
+
+			<section style="top: 155.5px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Les contrôleurs</h2>
+
+<p>Les <span class="red">contrôleurs</span> gérent la communication avec les <span class="blue">clients</span>.</p>
+	<ul>
+		<li>contrôleurs <span class="blue">Web</span></li>
+		<li>contrôleurs <span class="blue">Rest</span></li>
+	</ul>
+
+<p>La communication se fait en utilisant le <span class="blue">protocole HTTP</span>.</p>
+			</section>
+
+<section style="top: 135px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Dans cette partie ...</h2>
+
+<p>Nous allons brièvement rappeler le fonctionnement du protocole HTTP.</p>
+
+<p>Ensuite nous verrons comment les <span class="blue"><code>Servlet</code></span> permettent d'écrire des serveurs Web en Java.</p>
+
+<p>Il ne sont pas directement manipulés en Spring mais ils seront présents sous le capeau.</p> 
+</section>
+
+
+		<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+				<h2>Rappels HTTP</h2>
+
+<p>Le <span class="blue">protocole HTTP</span> fonctionne sur un principe <span class="red">requête-réponse</span>.</p>
+
+<ul>
+<li>Le <span class="red">client</span> envoie une <span class="blue">requête</span> au serveur</li>
+<li>Le <span class="red">serveur</span> renvoie sa <span class="blue">réponse</span></li>
+</ul>
+			
+<p>Le protocole HTTP est<span class="red"> <i>stateless</i></span>. C'est à dire qu'il ne conserve aucune information sur les requêtes précédentes.</p>
+
+			</section>
+
+			<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+				<h2>HTTP Request</h2>
+
+<pre class="console"><mark>GET /toto.html HTTP/1.1</mark>
+Host: localhost:8989
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:93.0) Gecko/20100101 Firefox/93.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Cookie: username-localhost-8888="2|1:0|10:1635022841...
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1	
+</pre>
+
+<p>Structure de la requête:</p>
+<ul>
+	<li><span class="blue">Request-line</span> : Method Ressource HTTP-Version</li>
+	<li> <span class="blue">Header</span> : Suite lignes au format "<span class="red">clé</span> : <span class="blue">valeur</span>"</li>
+	<li><span class="blue">Body</span> : Suite d'octets (possiblement vide)</li>
+</ul>
+
+<p>Le header contient les informations nécessaires pour décoder le body.</p>
+
+<p>Plusieurs <span class="red">méthodes possibles</span> : <span class="blue">GET</span>, <span class="blue">POST</span>, <span class="blue">PUT</span>, <span class="blue">PATCH</span>, <span class="blue">DELETE</span> ...</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>HTTP Response (1/2)</h2>
+<p><tt>$curl -i -X GET http://www.google.com/</tt></p>
+
+<pre class="console"><mark>HTTP/1.1 200 OK</mark>
+Date: Mon, 25 Oct 2021 22:36:26 GMT
+Expires: -1
+Cache-Control: private, max-age=0
+Content-Type: text/html; charset=ISO-8859-1
+P3P: CP="This is not a P3P policy! See g.co/p3phelp for more info."
+Server: gws
+X-XSS-Protection: 0
+X-Frame-Options: SAMEORIGIN
+Set-Cookie: NID=511=As...ODLU; path=/; domain=.google.com; HttpOnly
+Accept-Ranges: none
+Vary: Accept-Encoding
+Transfer-Encoding: chunked
+
+&lt;!doctype html&gt;&lt;html itemscope="" itemtype="http://schema.org/WebPage"...
+</pre>	
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>HTTP Response (2/2)</h2>
+<p>Structure de la réponse:</p>
+<ul>
+	<li><span class="blue">Status-line</span> : HTTP-Version Code Message</li>
+	<li> <span class="blue">Header</span> : Suite lignes au format "<span class="red">clé</span> : <span class="blue">valeur</span>"</li>
+	<li><span class="blue">Body</span> : Suite d'octets (possiblement vide)</li>
+</ul>
+
+<p>Exemples:</p>
+<ul>
+	<li><span class="blue">200</span> OK</li>
+	<li><span class="blue">404</span> NOT FOUND</li>
+	<li>...</li>
+</ul>
+
+</section>
+			
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>HTTP dans le browser (1/3)</h2>
+
+<img src="./JEE Back-End - Rappels HTTP et Servlet_files/get-exemple.png">
+
+<ul>
+	<li>le navigateur établit une connexion avec le serveur web <span class="blue"><tt>www.univ-gustave-eiffel.fr</tt></span></li>
+	<li>il envoie la requête suivante:
+<pre class="console"><mark>GET /universite/qui-sommes-nous/ HTTP/1.1</mark>
+Host: www.univ-gustave-eiffel.fr
+User-Agent: ...
+</pre>
+	</li>
+	<li>Le serveur renvoie un réponse contenant la page à afficher.</li>
+</ul>
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>HTTP dans le browser (2/3)</h2>
+
+<img src="./JEE Back-End - Rappels HTTP et Servlet_files/post-exemple.png">
+
+<p>Quand on clique sur le bouton <span class="blue">Compute</span>, le navigateur envoie la requête POST suivante:</p>
+<pre class="console"><mark>POST /App/rectangle HTTP/1.1</mark>
+...
+content-length : 17
+content-type : application/x-www-form-urlencoded
+
+height=15&amp;width=5
+</pre>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>HTTP dans le browser (3/3)</h2>
+
+<p>Les données du formulaire sont encodées dans le body
+de la requête.</p>
+<pre class="console">POST <mark>/App/rectangle</mark> HTTP/1.1
+...
+<mark>height</mark>=15&amp;<mark>width</mark>=5
+</pre>
+
+<p>La <span class="blue">ressource</span> du POST et les <span class="blue">noms des champs</span> viennent du formulaire.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="tag">&lt;form</span><span class="pln"> </span><span class="atn">action</span><span class="pun">=</span><span class="atv">"</span><mark><span class="atv">/App/rectangle</span></mark><span class="atv">"</span><span class="pln"> </span><span class="atn">method</span><span class="pun">=</span><span class="atv">"post"</span><span class="tag">&gt;</span><span class="pln">
+</span><span class="tag">&lt;h2&gt;</span><span class="pln">Rectangle area calculator</span><span class="tag">&lt;/h2&gt;</span><span class="pln">
+    </span><span class="tag">&lt;div&gt;&lt;label</span><span class="pln"> </span><span class="atn">for</span><span class="pun">=</span><span class="atv">"h"</span><span class="tag">&gt;</span><span class="pln">Height:</span><span class="tag">&lt;/label&gt;</span><span class="pln">
+        </span><span class="tag">&lt;input</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"h"</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text"</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"</span><mark><span class="atv">height</span></mark><span class="atv">"</span><span class="tag">&gt;&lt;/div&gt;</span><span class="pln">
+
+    </span><span class="tag">&lt;div&gt;&lt;label</span><span class="pln"> </span><span class="atn">for</span><span class="pun">=</span><span class="atv">"w"</span><span class="tag">&gt;</span><span class="pln">Width:</span><span class="tag">&lt;/label&gt;</span><span class="pln">
+        </span><span class="tag">&lt;input</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text"</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"w"</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"</span><mark><span class="atv">width</span></mark><span class="atv">"</span><span class="tag">&gt;&lt;/div&gt;</span><span class="pln">
+
+    </span><span class="tag">&lt;div&gt;&lt;button</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"submit"</span><span class="tag">&gt;</span><span class="pln">Compute</span><span class="tag">&lt;/button&gt;&lt;/div&gt;</span></pre>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Serveur WEB en JEE</h2>
+
+<p>La classe <span class="blue"><code>Servlet</code></span> de JEE permet d'écrire le code qui transforme une requête HTTP en la réponse correspondante.</p>
+
+<p>JEE donne une spécification que doivent respecter les serveurs Web qui exécutent ce code. La version courante de la spécification est <a href="https://jakarta.ee/specifications/servlet/5.0/jakarta-servlet-spec-5.0.html">Jakarta Servlet Specification, Version 5.0</a></p>
+
+<p>Attention, depuis 2018, <span class="red">Java EE</span> est devenu <span class="blue">Jakarta EE</span> car Oracle possède la trademark sur le nom Java.</p>
+
+<p>Ils existent plusieurs <span class="red">serveurs web</span> respectant la <span class="red">Jakarta Servlet Specification</span>: Tomcat, JBoss, Glassfish ... </p>
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+	<h2>Mon premier servlet</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@WebServlet</span><span class="pun">(</span><span class="str">"/hello"</span><span class="pun">)</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">HelloServlet</span><span class="pln"> </span><span class="kwd">extends</span><span class="pln"> </span><span class="typ">HttpServlet</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@Override</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> doGet</span><span class="pun">(</span><span class="typ">HttpServletRequest</span><span class="pln"> request</span><span class="pun">,</span><span class="pln"> </span><span class="typ">HttpServletResponse</span><span class="pln"> response</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">throws</span><span class="pln"> </span><span class="typ">IOException</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="typ">PrintWriter</span><span class="pln"> writer </span><span class="pun">=</span><span class="pln"> response</span><span class="pun">.</span><span class="pln">getWriter</span><span class="pun">();</span><span class="pln">
+        writer</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="str">"&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;h1&gt;Hello world!&lt;/h1&gt;&lt;/html&gt;"</span><span class="pun">);</span><span class="pln">
+        writer</span><span class="pun">.</span><span class="pln">flush</span><span class="pun">();</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<ul>
+<li><span class="blue"><code>HttpServletRequest</code></span> représent la <span class="red">requête entrante</span> et <span class="blue"><code>HttpServletResponse</code></span> représente la <span class="red">réponse sortante</span>.</li> 
+<li>L'annotation <span class="blue"><code>@WevServlet("/hello")</code></span> spécifie la <span class="red">route</span> des requêtes qui vont être traitées par ce <span class="blue"><code>Servlet</code></span>.</li>
+
+<li>Ce servlet ne traite que le requête HTTP GET. Pour les requêtes POST, il faudrait redéfinir <span class="blue"><code>doPost</code></span>.</li>
+</ul>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>La réponse vue par le navigateur ? (1/2)</h2>
+
+<p>Il faut bien se souvenir que le <span class="red">body</span> de notre réponse n'est <span class="blue">qu'une suite d'octets</span>. Le navigateur regarde dans les headers de la réponse (i.e., <tt>Content-Type</tt>) pour savoir comment l'interpréter.</p>
+
+<p><span class="red">Quand il n'y pas d'information</span>, il devine:</p>
+<ul>
+<li><span class="blue">Firefox</span> devine que c'est du HTML,</li>
+<li><span class="blue">Chrome</span> l'affiche comme du texte.</li>
+</ul>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>La réponse vue par le navigateur ? (2/2)</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@WebServlet</span><span class="pun">(</span><span class="str">"/hello"</span><span class="pun">)</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">HelloServlet</span><span class="pln"> </span><span class="kwd">extends</span><span class="pln"> </span><span class="typ">HttpServlet</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@Override</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> doGet</span><span class="pun">(</span><span class="typ">HttpServletRequest</span><span class="pln"> request</span><span class="pun">,</span><span class="pln"> </span><span class="typ">HttpServletResponse</span><span class="pln"> response</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">throws</span><span class="pln"> </span><span class="typ">IOException</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><mark><span class="pln">response</span><span class="pun">.</span><span class="pln">setContentType</span><span class="pun">(</span><span class="str">"text/html ; charset=utf-8"</span><span class="pun">);</span></mark><span class="pln">
+        </span><mark><span class="pln">response</span><span class="pun">.</span><span class="pln">setCharacterEncoding</span><span class="pun">(</span><span class="str">"utf-8"</span><span class="pun">);</span></mark><span class="pln">
+        </span><span class="typ">PrintWriter</span><span class="pln"> writer </span><span class="pun">=</span><span class="pln"> response</span><span class="pun">.</span><span class="pln">getWriter</span><span class="pun">();</span><span class="pln">
+        writer</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="str">"&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;h1&gt;Hello world!&lt;/h1&gt;&lt;/html&gt;"</span><span class="pun">);</span><span class="pln">
+        writer</span><span class="pun">.</span><span class="pln">flush</span><span class="pun">();</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<ul>
+	<li>La première ligne sert à indiquer <span class="blue">dans le header</span> de la réponse que le body est du <span class="red">HTML</span> encodé en <span class="red">UTF-8</span>.</li>
+	<li>La seconde ligne dit à notre Servlet d'écrire le body <span class="red">encodé en UTF-8</span>.
+	</li>
+	<li><span class="red">Il faut les deux lignes !</span></li>
+</ul>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+	<h2>Mais où est le serveur dans tout cela ?</h2>
+
+<ul>
+<li>Il faut installer <span class="red">un serveur compatible</span> avec la <span class="red">Jakarta Servlet Specification</span>. Dans notre cas (et pour Spring par défaut), nous utiliserons Tomcat 10.</li>
+<li>Il faut démarrer le serveur !</li>
+<li>Il faut <span class="blue">compiler</span> notre servlet et le <span class="blue">packager</span> dans un <span class="blue">App.war</span> (similaire au jar).</li>
+<li>Il faut copier le <span class="blue">war</span> dans le dossier <span class="blue"><tt>webapps</tt></span> de Tomcat. </li>
+<li>Enfin on peut se connecter à Tomcat sur <span class="blue"><tt>localhost:8080</tt></span>
+et en demandant la resource <span class="red"><tt>/App/hello</tt></span>, on parle avec notre <span class="blue">HelloServlet</span>.</li>
+</ul>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Les servlets doivent être thread-safe.</h2>
+
+<p>La spécification dit qu'une seule Servlet est instanciée par le serveur (i.e. Tomcat ici).</p>
+
+<p>Donc toutes les requêtes sur la route <span class="red"><tt>/hello</tt></span> sont traitées par le même objet <span class="blue"><code>HelloServlet</code></span>.</p>
+
+<p>Par contre, les requêtes vont être traitées dans <span class="red">des threads différents!</span></p>
+
+<p>Donc l'objet <span class="blue">HelloServlet</span> doit être <span class="red">thread-safe</span>.</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Exemple non thread-safe</h2>
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@WebServlet</span><span class="pun">(</span><span class="str">"/hellocount"</span><span class="pun">)</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">HelloCountServletWrong</span><span class="pln"> </span><span class="kwd">extends</span><span class="pln"> </span><span class="typ">HttpServlet</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> count </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="lit">@Override</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> doGet</span><span class="pun">(</span><span class="typ">HttpServletRequest</span><span class="pln"> request</span><span class="pun">,</span><span class="pln"> </span><span class="typ">HttpServletResponse</span><span class="pln"> response</span><span class="pun">)</span><span class="pln">
+            </span><span class="kwd">throws</span><span class="pln"> </span><span class="typ">IOException</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        count</span><span class="pun">++;</span><span class="pln">
+        response</span><span class="pun">.</span><span class="pln">setContentType</span><span class="pun">(</span><span class="str">"text/html ; charset=utf-8"</span><span class="pun">);</span><span class="pln">
+        response</span><span class="pun">.</span><span class="pln">setCharacterEncoding</span><span class="pun">(</span><span class="str">"utf-8"</span><span class="pun">);</span><span class="pln">
+        </span><span class="typ">PrintWriter</span><span class="pln"> writer </span><span class="pun">=</span><span class="pln"> response</span><span class="pun">.</span><span class="pln">getWriter</span><span class="pun">();</span><span class="pln">
+        writer</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="str">"&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;h1&gt;Hello world! ("</span><span class="pun">+</span><span class="pln">count</span><span class="pun">+</span><span class="str">"th times)&lt;/h1&gt;&lt;/html&gt;"</span><span class="pun">);</span><span class="pln">
+        writer</span><span class="pun">.</span><span class="pln">flush</span><span class="pun">();</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+</span><span class="pun">}</span><span class="pln">	</span></pre>	
+<p><span class="red">Data-race</span> sur le champ <span class="blue"><code>count</code></span>!</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Exemple thread-safe</h2>
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@WebServlet</span><span class="pun">(</span><span class="str">"/hellocount"</span><span class="pun">)</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">HelloCountServlet</span><span class="pln"> </span><span class="kwd">extends</span><span class="pln"> </span><span class="typ">HttpServlet</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span class="typ">Object</span><span class="pln"> </span><span class="kwd">lock</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">Object</span><span class="pun">();</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> count </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="lit">@Override</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> doGet</span><span class="pun">(</span><span class="typ">HttpServletRequest</span><span class="pln"> request</span><span class="pun">,</span><span class="pln"> </span><span class="typ">HttpServletResponse</span><span class="pln"> response</span><span class="pun">)</span><span class="pln">
+            </span><span class="kwd">throws</span><span class="pln"> </span><span class="typ">IOException</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">var</span><span class="pln"> countSnaptshot</span><span class="pun">=</span><span class="lit">0</span><span class="pun">;</span><span class="pln">
+        </span><span class="kwd">synchronized</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">lock</span><span class="pun">){</span><span class="pln">
+            countSnaptshot</span><span class="pun">=++</span><span class="pln">count</span><span class="pun">;</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+        response</span><span class="pun">.</span><span class="pln">setContentType</span><span class="pun">(</span><span class="str">"text/html ; charset=utf-8"</span><span class="pun">);</span><span class="pln">
+        response</span><span class="pun">.</span><span class="pln">setCharacterEncoding</span><span class="pun">(</span><span class="str">"utf-8"</span><span class="pun">);</span><span class="pln">
+        </span><span class="typ">PrintWriter</span><span class="pln"> writer </span><span class="pun">=</span><span class="pln"> response</span><span class="pun">.</span><span class="pln">getWriter</span><span class="pun">();</span><span class="pln">
+        writer</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="str">"&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;h1&gt;Hello world! ("</span><span class="pun">+</span><span class="pln">countSnaptshot</span><span class="pun">+</span><span class="str">"th times)&lt;/h1&gt;&lt;/html&gt;"</span><span class="pun">);</span><span class="pln">
+        writer</span><span class="pun">.</span><span class="pln">flush</span><span class="pun">();</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+</span><span class="pun">}</span></pre>
+<p>Pourquoi faire un snapshot ne pas garder le lock pendant l'appel à <span class="blue"><code>writer.println</code></span> ?
+</p></section>
+
+<section style="top: 103.5px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>HTTP est stateless</h2>
+
+<p><span class="blue">Stateless</span> veut dire <span class="red">qu'aucune information</span> sur les requêtes précédentes n'est stockée par le protocole.<br>
+<span class="red">Toute est dans la requête !</span></p>
+
+<p>Alors comment s'avoir:</p>
+<ul>
+<li>si un utilisateur est authentifié ?</li>
+<li>quels sont les objets du panier d'un utilisateur ?</li>
+<li>...</li>
+</ul>
+</section>
+
+<section style="top: 51.5px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Cookies !</h2>
+
+<p>On utilise <span class="blue"><tt>Cookie</tt></span> qui est un champ des headers qui est une suite d'association clé=valeur séparées par des point-virgules.</p>
+
+<pre class="console"></pre>
+
+<p>Si dans une <span class="red">réponse</span> HTTP, on inclue un header un champ:</p>
+
+<pre class="console">...
+Set-Cookie: montokenamoi=AZADAZEZFSDFSD
+...
+</pre>
+
+<p>Le navigateur web qui a reçu cette réponse, mettra ce cookie dans le champ dans <span class="blue">ses prochaines requêtes</span> vers cette application.</p>
+
+<pre class="console">...
+Cookie: montokenamoi=AZADAZEZFSDFSD
+...
+</pre>
+
+</section>
+
+<section style="top: 0px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>En pratique ...</h2>
+
+<p>Le <span class="blue">Servlet</span> garde l'association entre les tokens qu'il a déjà donné et les infos de ce visiteurs. <br>
+Soit dans une <span class="red">Hashmap</span> du Servlet soit en <span class="blue">BD</span> (sur une deploiement distribué pas le choix BD).</p>
+
+<p>Quand un requête arrive:</p>
+<ul>
+<li>Si elle a un token dans ses cookies et que le token est connu, on retrouve les infos du visiteurs!</li>
+<li>Si elle n'a pas de token, on tire au hasard un nouveau token par exemple avec <span class="blue"><code>UUID.randomUUID</code></span> jusqu'à avoir un token qu'on n'a pas déjà donné et on le met le champ Cookie de la réponse.</li> 
+<li>Si elle a un token dans ses cookies et que le token est connu, on lui donne un <span class="red">nouveau token</span> comme si c'était un nouveau client. </li>
+</ul>
+
+<p>Pourquoi pas des tokens séquentiels ?</p>
+</section>
+</div>
+
+	<div class="backgrounds"><div class="slide-background present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div></div><div class="progress" style="display: block;"><span style="width: 0px;"></span></div><aside class="controls" style="display: block;"><div class="navigate-left"></div><div class="navigate-right enabled"></div><div class="navigate-up"></div><div class="navigate-down"></div></aside><div class="slide-number"></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px);">
+
+				JEE Back-end
+				
+				Rappels HTTP et Servlet
+			</div></div>
+
+
+
+	<script src="./JEE Back-End - Rappels HTTP et Servlet_files/head.min.js.téléchargement"></script>
+	<script src="./JEE Back-End - Rappels HTTP et Servlet_files/reveal.js.téléchargement"></script>
+
+	<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script><script type="text/javascript" src="./JEE Back-End - Rappels HTTP et Servlet_files/zoom.js.téléchargement"></script><script type="text/javascript" src="./JEE Back-End - Rappels HTTP et Servlet_files/notes.js.téléchargement"></script>
+
+
+
+</body></html>

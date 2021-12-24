@@ -1,0 +1,225 @@
+
+<!-- saved from url=(0062)https://igm.univ-mlv.fr//~carayol/coursJEEM2/slides/aop.html#/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="stylesheet" type="text/css" href="./JEE Back-End - Aspect Oriented Programming_files/paper.css"></head><body onload="prettyPrint()">@
+
+
+
+
+
+<title>JEE Back-End - Aspect Oriented Programming</title>
+
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="./JEE Back-End - Aspect Oriented Programming_files/reveal.css">
+<link rel="stylesheet" href="./JEE Back-End - Aspect Oriented Programming_files/white.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="./JEE Back-End - Aspect Oriented Programming_files/zenburn.css">
+<link rel="stylesheet" href="./JEE Back-End - Aspect Oriented Programming_files/reveal-override.css">
+<link href="./JEE Back-End - Aspect Oriented Programming_files/prettify.css" type="text/css" rel="stylesheet">
+<!-- Printing and PDF exports -->
+<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+<script type="text/javascript" src="./JEE Back-End - Aspect Oriented Programming_files/prettify.js.téléchargement"></script>
+<style type="text/css">
+.reveal h2 {
+	color: steelblue;
+}
+
+.reveal h1 {
+	color: steelblue;
+}
+
+.reveal p {
+	text-align: left;
+}
+
+.reveal lu {
+	text-align: left;
+	list-style-position: inside;
+}
+
+.reveal span.red {
+	color: salmon;
+}
+
+.reveal p.red {
+	color: salmon;
+}
+
+.reveal span.blue,.reveal p.blue {
+	color: steelblue;
+}
+</style>
+<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+
+
+
+
+
+	<div class="reveal slide center" role="application" data-transition-speed="default" data-background-transition="fade">
+
+<div class="footer"><p>
+    <a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/index.html"><img src="./JEE Back-End - Aspect Oriented Programming_files/home.png" width="30em"></a></p>
+      </div>
+
+		<!-- Any section element inside of this container is displayed as a slide -->
+		<div class="slides" style="width: 960px; height: 700px; zoom: 0.776571;">
+			<section style="top: 211.5px; display: block;" class="present">
+
+				<h1>JEE Back-end</h1>
+				
+				<h2>Spring Core : Aspect Oriented Programming</h2>
+				
+				
+			</section>
+
+		<section style="top: 114.5px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Aspect Oriented Programming (AOP)</h2>
+
+<p>L'<span class="blue">AOP</span> consiste à injecter du code <span class="red">avant</span>, <span class="red">après</span> ou <span class="red">autour</span> des appels à certaines méthodes.</p>
+
+<p>L'<span class="blue">AOP</span> est utilisé pour gérer des aspects transversaux de l'application: logging, caching, timing ...</p>
+
+<p><span class="blue">Plusieurs frameworks</span> permettent de faire de l'AOP: <span class="red">Spring AOP</span>, <span class="red">AspectJ</span>, ...</p>
+
+	</section>
+
+
+<section style="top: 92.5px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>AOP en Spring</h2>
+
+<p><span class="blue">En Spring</span>, cette injection de code se fait à <span class="red">runtime</span> et uniquement sur des objets gérés par le conteneur IoC.</p>
+
+<p><span class="blue"><code>AspectJ</code></span> réalise cette injection (aussi appelé tissage) au moment de la compilation. On peut configurer Spring réaliser le tissage en utilisant AspectJ mais nous allons utiliser <span class="blue"><code>Spring AOP</code></span> ici.</p>
+
+<p>Spring crée à l'exécution un <span class="blue">proxy</span> pour le bean dans lequel on veut injecter le code.</p>  
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+    <h2>Injection @Before une méthode</h2>
+
+<pre class="prettyprint prettyprinted" style="font-size: 16px;"><span class="lit">@Aspect</span><span class="pln">
+</span><span class="lit">@Component</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">MyAspect</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@Before</span><span class="pun">(</span><span class="str">"execution(* fr.uge.jee.aop.Database.add*(..))"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> beforeAdd</span><span class="pun">(</span><span class="typ">JoinPoint</span><span class="pln"> jp</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">throws</span><span class="pln"> </span><span class="typ">Throwable</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="str">"This is printed before the method call"</span><span class="pun">)</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p>Le code de <span class="blue"><code>beforeAdd</code></span> sera injecté avant l'appel à toute méthode d'un bean de type <span class="blue"><code>fr.uge.jee.aop.Database</code></span> dont le nom commence par <span class="blue"><code>add</code></span>.</p>
+
+
+<p> L'objet <span class="blue"><code>JoinPoint</code></span> représente le point d'injection. C'est à dire la méthode où le code va être injecter.</p>
+
+</section>
+
+<section style="top: 139px; display: block;" hidden="" aria-hidden="true" class="future">
+    <h2>Injection @AfterReturning une méthode</h2>
+
+<pre class="prettyprint prettyprinted" style="font-size: 16px;"><span class="lit">@Aspect</span><span class="pln">
+</span><span class="lit">@Component</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">MyAspect</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@AfterReturning</span><span class="pun">(</span><span class="pln">value</span><span class="pun">=</span><span class="str">"execution(* fr.uge.jee.aop.Database.add*(..))"</span><span class="pun">,</span><span class="pln">returning</span><span class="pun">=</span><span class="str">"value"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> aferAdd</span><span class="pun">(</span><span class="typ">JoinPoint</span><span class="pln"> jp</span><span class="pun">,</span><span class="typ">Object</span><span class="pln"> value</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">throws</span><span class="pln"> </span><span class="typ">Throwable</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="str">"This is printed after the method call with returned "</span><span class="pun">+</span><span class="pln">value</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p>On a accès à la valeur de retour de la méthode avec <span class="blue">value</span>.</p>
+
+
+</section>
+
+<section style="top: 89px; display: block;" hidden="" aria-hidden="true" class="future">
+    <h2>Injection @Around une méthode</h2>
+
+<pre class="prettyprint prettyprinted" style="font-size: 16px;"><span class="lit">@Aspect</span><span class="pln">
+</span><span class="lit">@Component</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">MyAspect</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@Around</span><span class="pun">(</span><span class="pln">value</span><span class="pun">=</span><span class="str">"execution(* fr.uge.jee.aop.Database.add*(..))"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">Object</span><span class="pln"> aferAdd</span><span class="pun">(</span><span class="typ">ProceedingJoinPoint</span><span class="pln"> pjp</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">throws</span><span class="pln"> </span><span class="typ">Throwable</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="str">"This is printed before the method"</span><span class="pun">);</span><span class="pln">
+        </span><span class="kwd">var</span><span class="pln"> ret </span><span class="pun">=</span><span class="pln"> pjp</span><span class="pun">.</span><span class="pln">proceed</span><span class="pun">();</span><span class="pln"> </span><span class="com">// call the method</span><span class="pln">
+        </span><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="str">"This is printed after the method"</span><span class="pun">);</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> ret</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p>Le <span class="blue"><code>ProceedingJoinPoint</code></span> représente l'appel qui va se faire à la méthode.</p>
+
+
+</section>
+
+
+<section style="top: 203.5px; display: block;" hidden="" aria-hidden="true" class="future">
+ <h2>Configuration with Aspects</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Configuration</span><span class="pln">
+</span><span class="lit">@ComponentScan</span><span class="pln">
+</span><span class="lit">@EnableAspectJAutoProxy</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Config</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+
+</section>
+		</div>
+
+	<div class="backgrounds"><div class="slide-background present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div></div><div class="progress" style="display: block;"><span style="width: 0px;"></span></div><aside class="controls" style="display: block;"><div class="navigate-left"></div><div class="navigate-right enabled"></div><div class="navigate-up"></div><div class="navigate-down"></div></aside><div class="slide-number"></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px);">
+
+				JEE Back-end
+				
+				Spring Core : Aspect Oriented Programming
+				
+				
+			</div></div>
+
+
+
+	<script src="./JEE Back-End - Aspect Oriented Programming_files/head.min.js.téléchargement"></script>
+	<script src="./JEE Back-End - Aspect Oriented Programming_files/reveal.js.téléchargement"></script>
+
+	<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script><script type="text/javascript" src="./JEE Back-End - Aspect Oriented Programming_files/zoom.js.téléchargement"></script><script type="text/javascript" src="./JEE Back-End - Aspect Oriented Programming_files/notes.js.téléchargement"></script>
+
+
+
+</body></html>
