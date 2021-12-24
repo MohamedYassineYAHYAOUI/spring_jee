@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<!-- saved from url=(0058)https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td06.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<!-- Required meta tags -->
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Javascripts --> 
+	<script type="text/javascript" src="./Installation serveur BD H2 ex1_files/prettify.js.téléchargement"></script>
+	<script type="text/javascript" src="./Installation serveur BD H2 ex1_files/jquery-3.2.1.slim.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./Installation serveur BD H2 ex1_files/popper.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./Installation serveur BD H2 ex1_files/bootstrap.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./Installation serveur BD H2 ex1_files/hack.js.téléchargement"></script>
+
+	<!-- Bootstrap CSS -->
+
+	<link href="./Installation serveur BD H2 ex1_files/bootstrap.css" type="text/css" rel="stylesheet">
+
+   <!-- Syntaxt highlighter CSS -->
+   
+	<link href="./Installation serveur BD H2 ex1_files/prettify.css" type="text/css" rel="stylesheet">
+
+	<!-- Fonts for the icons -->
+
+   <link href="./Installation serveur BD H2 ex1_files/fontawesome-all.min.css" rel="stylesheet">
+
+<title>TP Hibernate </title>
+  </head>
+  <body onload="prettyPrint()">
+
+
+<!-- Title of the exercice sheet
+ 
+<h1>
+		TITLE
+		<a href="index.html" style="float:right"><span class="fa fa-home"></span></a>
+ </h1>
+ -->
+
+<h1>
+	Introduction à Hibernate
+	<a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/index.html" style="float:right"><span class="fa fa-home"></span></a>
+</h1>
+
+
+   
+   
+<!-- TABLE OF CONTENT OF THE EXERCICES
+ 
+ <ul class="nav nav-tabs">
+ <li class="nav-item">
+ <a class="nav-link active" data-toggle="tab" href="#exercice1">Exercice 1</a>
+ </li>
+ <li class="nav-item">
+ <a class="nav-link" data-toggle="tab" href="#exercice2">Exercice 2</a>
+ </li>
+ </ul>
+
+   -->
+
+
+<!---
+
+					TABLE OF CONTENT
+					
+-->
+
+<ul class="nav nav-tabs">
+  
+<li class="nav-item">
+	<a class="nav-link" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td06.html#exercice1">Installation serveur BD H2</a>
+</li>
+
+
+
+<li class="nav-item">
+	<a class="nav-link active show" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td06.html#exercice2">Premiers pas avec Hibernate</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td06.html#exercicebonus">Logging des requêtes SQL</a>
+</li>
+
+
+<li class="nav-item">
+	<a class="nav-link" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td06.html#exercice3">CRUD (Create, Read, Update, and Delete)</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td06.html#exercice4">Premier mapping complexe</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td06.html#exercice5">Mappings bi-directionnels</a>
+</li>
+
+</ul>
+
+<div id="myTabContent" class="tab-content">
+
+<div class="tab-pane fade active show" id="exercice1">
+
+<!---
+
+                    EXERCICE 1
+
+-->
+<h2>Installation serveur BD H2</h2>
+
+<p class="info alert alert-info">Dans un premier temps, nous allons installer un système de gestion de  bases de données. Pour palier à tous les problèmes de configuration, nous allons utiliser H2 qui est un serveur de BD très léger qui stocke la BD dans un fichier. 
+<br>
+Si vous avez déjà un serveur de base de données, vous pouvez l'utiliser mais il faudra adapter par vous-même les fichiers de configuration d'<code>Hibernate</code> et les dépendences du fichier <tt>pom.xml</tt>.</p>
+
+<p class="question">Télécharger le jar de la dernière version de H2 (1.4.200) <a href="https://mvnrepository.com/artifact/com.h2database/h2">ici</a>.
+</p>
+
+<p class="question">Dans un terminal et dans le répertoire contenant le jar de H2, lancez le serveur H2 avec la ligne ci-dessous:</p>
+
+<pre class="console">$ java -cp h2-1.4.200.jar org.h2.tools.Server -ifNotExists &amp;
+</pre>
+
+<p> En plus du serveur de BD, vous démarrer une console permettant d'inspecter les DB accessible depuis votre navigateur.<br>
+Si tout va bien, cela une fenêtre sur la console H2 doit s'ouvrir. Si ce n'est pas le cas, vous pouvez accéder à la console en allant sur <a href="http://localhost:8082/"><tt>http://localhost:8082/</tt></a>.</p>
+
+<p class="attention alert alert-warning">Pour l'instant, il n'y a aucune BD. Le serveur est configuré créer un BD vide à chaque tentative de connexion. C'est très pratique pour les tests mais à ne surtout jamais utiliser en production.</p>
+
+</div>
+
+
+ <!-- End of the exercise -->
+<div class="tab-pane fade" id="exercice2">
+
+<h2>Premiers pas avec Hibernate</h2>
+
+<p class="question">Créez un nouveau projet Maven. Faites attention de ne sélectionner que le SDK 8,11 ou 13.</p>
+
+<p class="question">Dans le fichier <code><tt>pom.xml</tt></code>, ajoutez les dépendances sur <code>Hibernate</code> ainsi qu'une dépendance un <i>connecteur</i> pour H2.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="tag">&lt;dependencies&gt;</span><span class="pln">
+    </span><span class="tag">&lt;dependency&gt;</span><span class="pln">
+        </span><span class="tag">&lt;groupId&gt;</span><span class="pln">org.hibernate</span><span class="tag">&lt;/groupId&gt;</span><span class="pln">
+        </span><span class="tag">&lt;artifactId&gt;</span><span class="pln">hibernate-core</span><span class="tag">&lt;/artifactId&gt;</span><span class="pln">
+        </span><span class="tag">&lt;version&gt;</span><span class="pln">5.6.1.Final</span><span class="tag">&lt;/version&gt;</span><span class="pln">
+    </span><span class="tag">&lt;/dependency&gt;</span><span class="pln">
+
+    </span><span class="tag">&lt;dependency&gt;</span><span class="pln">
+        </span><span class="tag">&lt;groupId&gt;</span><span class="pln">com.h2database</span><span class="tag">&lt;/groupId&gt;</span><span class="pln">
+        </span><span class="tag">&lt;artifactId&gt;</span><span class="pln">h2</span><span class="tag">&lt;/artifactId&gt;</span><span class="pln">
+        </span><span class="tag">&lt;version&gt;</span><span class="pln">1.4.200</span><span class="tag">&lt;/version&gt;</span><span class="pln">
+        </span><span class="tag">&lt;scope&gt;</span><span class="pln">runtime</span><span class="tag">&lt;/scope&gt;</span><span class="pln">
+    </span><span class="tag">&lt;/dependency&gt;</span><span class="pln">
+</span><span class="tag">&lt;/dependencies&gt;</span></pre>
+
+
+<p class="question">Dans le répertoire <code>resources</code>, créez un répertoire <code><tt>META-INF</tt></code>.
+    Dans ce répertoire, rajoutez le fichier <code><tt>persistence.xml</tt></code> ci-dessous:</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="tag">&lt;persistence</span><span class="pln"> </span><span class="atn">xmlns</span><span class="pun">=</span><span class="atv">"http://xmlns.jcp.org/xml/ns/persistence"</span><span class="pln">
+             </span><span class="atn">xmlns:xsi</span><span class="pun">=</span><span class="atv">"http://www.w3.org/2001/XMLSchema-instance"</span><span class="pln"> </span><span class="atn">version</span><span class="pun">=</span><span class="atv">"2.2"</span><span class="pln">
+             </span><span class="atn">xsi:schemaLocation</span><span class="pun">=</span><span class="atv">"http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd"</span><span class="tag">&gt;</span><span class="pln">
+
+    </span><span class="tag">&lt;persistence-unit</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"main-persistence-unit"</span><span class="tag">&gt;</span><span class="pln">
+        </span><span class="tag">&lt;provider&gt;</span><span class="pln">org.hibernate.jpa.HibernatePersistenceProvider</span><span class="tag">&lt;/provider&gt;</span><span class="pln">
+        </span><span class="tag">&lt;exclude-unlisted-classes&gt;</span><span class="pln">false</span><span class="tag">&lt;/exclude-unlisted-classes&gt;</span><span class="pln">
+
+        </span><span class="tag">&lt;properties&gt;</span><span class="pln">
+            </span><span class="com">&lt;!-- database connection --&gt;</span><span class="pln">
+            </span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"javax.persistence.jdbc.driver"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"org.h2.Driver"</span><span class="pln"> </span><span class="tag">/&gt;</span><span class="pln">
+            </span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"javax.persistence.jdbc.url"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"jdbc:h2:tcp://localhost/~/h2DB"</span><span class="pln"> </span><span class="tag">/&gt;</span><span class="pln">
+            </span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"javax.persistence.jdbc.user"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"sa"</span><span class="pln"> </span><span class="tag">/&gt;</span><span class="pln">
+            </span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"javax.persistence.jdbc.password"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">""</span><span class="pln"> </span><span class="tag">/&gt;</span><span class="pln">
+            </span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"hibernate.show_sql"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"true"</span><span class="pln"> </span><span class="tag">/&gt;</span><span class="pln">
+            </span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"hibernate.dialect"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"org.hibernate.dialect.H2Dialect"</span><span class="pln"> </span><span class="tag">/&gt;</span><span class="pln">
+            </span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"hibernate.hbm2ddl.auto"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"create"</span><span class="tag">/&gt;</span><span class="pln">
+        </span><span class="tag">&lt;/properties&gt;</span><span class="pln">
+    </span><span class="tag">&lt;/persistence-unit&gt;</span><span class="pln">
+</span><span class="tag">&lt;/persistence&gt;</span></pre>
+
+<div class="attention alert alert-warning">
+<p> Le fichier <code><tt>persistence.xml</tt></code> définit une <code><tt>persistence-unit</tt></code> nommée
+    <tt>main-persistence-unit</tt>.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="tag">&lt;provider&gt;</span><span class="pln">org.hibernate.jpa.HibernatePersistenceProvider</span><span class="tag">&lt;/provider&gt;</span><span class="pln">
+</span><span class="tag">&lt;exclude-unlisted-classes&gt;</span><span class="pln">false</span><span class="tag">&lt;/exclude-unlisted-classes&gt;</span></pre>
+
+<p>Le code ci-dessus indique que la persistence sera gérée par <code>Hibernate</code> et qu'il faut créer un mapping dans la BD pour toutes les classes annotées par <code>@Entity</code>.</p> 
+
+<pre class="prettyprint prettyprinted" style=""><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"javax.persistence.jdbc.driver"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"org.h2.Driver"</span><span class="pln"> </span><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"javax.persistence.jdbc.url"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"jdbc:h2:tcp://localhost/~/h2DB"</span><span class="pln"> </span><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"javax.persistence.jdbc.user"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"sa"</span><span class="pln"> </span><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"javax.persistence.jdbc.password"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">""</span><span class="pln"> </span><span class="tag">/&gt;</span><span class="pln">    </span></pre>
+
+<p>Le code ci-dessus donne les paramètres nécessaire à JDBC pour qu'il puisse se connecter à notre serveur de BD.
+Remarquez que l'on va se connecter à la BD correspondant au fichier <code><tt>~/h2DB</tt></code>. Comme la base n'existe pas, H2 va la créer vide à notre première connexion et donner comme propriétaire l'utilisateur <code><tt>sa</tt></code>.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"hibernate.dialect"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"org.hibernate.dialect.H2Dialect"</span><span class="pln"> </span><span class="tag">/&gt;</span><span class="pln">    
+</span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"hibernate.show_sql"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"true"</span><span class="pln"> </span><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"hibernate.hbm2ddl.auto"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"create"</span><span class="tag">/&gt;</span></pre>
+
+<p> Les propriétés ci-dessus sont destinées à Hibernate. La propriété <code><tt>hibernate.dialect</tt></code> donne le dialect du server de BD. La propriété <code><tt>hibernate.show_sql</tt></code> demande à Hibernate d'afficher les requêtes qu'il va produire. La propriété <code><tt>hbm2ddl.auto=create</tt></code> indique à Hibernate de détruire toutes les tables et les recrée au démarrage de l'application. C'est très utile pendant le développement mais bien sûr, ce n'est pas utilisé pendant la production.
+
+</p></div>
+
+<p class="question">Ecrivez un classe <code>Employee.java</code> dans le package <code>fr.uge.jee.hibernate.employees</code> qui complète le squelette ci-dessous avec les constructeurs, getters
+et setters <strong>nécéssaires</strong> ainsi que les méthodes <code>toString</code>.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Employee</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> id</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> firstName</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> lastName</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> salary</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="pun">...</span><span class="pln">
+
+</span><span class="pun">}</span></pre>
+
+<p class="question">Completez la classe <code>Employee</code> pour quelle décrive le mapping dans la BD. On veut
+    que la table correspondante s'appelle <code><tt>Employees</tt></code> et est le schéma donné ci-dessous:
+</p>
+
+<img width="50%" src="./Installation serveur BD H2 ex1_files/table-example.png">
+
+<p class="warning">H2 convertit tous les noms de tables et de colonnes en majuscules.</p>
+
+<p class="question">Ecrivez une classe <code>Application</code> qui dans son <code>main</code>, ajoute un <code>Employee</code> Harry Potter payé 1000 euros par mois dans la BD.</p>
+
+<p class="question">Utiliser la console de H2 pour vérifier que la table à bien été remplie.</p>
+
+<img width="70%" src="./Installation serveur BD H2 ex1_files/db-1.png">
+
+<img width="70%" src="./Installation serveur BD H2 ex1_files/db-2.png">
+
+
+</div>
+
+<div class="tab-pane fade" id="exercicebonus">
+
+<h2>Logging des requêtes SQL (à la maison)</h2>
+
+<p class="info alert alert-info">La propriété <code>hibernate.show_sql=true</code> demande à Hibernate d'afficher les requêtes SQL produit. Pour des raisons de sécurité, les paramètres des requêtes ne sont pas mis dans les logs. Pour un e (à la maison)nvironement de production, c'est une bonne chose car sinon les logs contiendraient des données personnelles de nos clients. Pour le développement de l'application, il peut être pratique d'avoir accès à la totalité des requêtes SQL. Pour ce faire, nous allons passer par un proxy JDBC qui va afficher les requêtes SQL avec leur intégralité avec les paramètres.</p>
+
+<p>Il faut tout d'abord rajouter le proxy <a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td06.html">P6Spy</a> comme dépendance à notre projet Maven en mettant la dépendance ci-dessous dans le fichier <span class="blue"><tt>pom.xml</tt></span>.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="tag">&lt;dependency&gt;</span><span class="pln">
+    </span><span class="tag">&lt;groupId&gt;</span><span class="pln">p6spy</span><span class="tag">&lt;/groupId&gt;</span><span class="pln">
+    </span><span class="tag">&lt;artifactId&gt;</span><span class="pln">p6spy</span><span class="tag">&lt;/artifactId&gt;</span><span class="pln">
+    </span><span class="tag">&lt;version&gt;</span><span class="pln">3.9.1</span><span class="tag">&lt;/version&gt;</span><span class="pln">
+</span><span class="tag">&lt;/dependency&gt;</span></pre> 
+
+<p>Dans le répertoire <tt>ressources</tt>, il faut rajouter le fichier <tt>spy.properties</tt> ci-dessous. Ce fichier donne la classe du <i>driver</i> pour JDBC (ici <code>org.h2.Driver</code>) et configure l'affichage des requêtes SQL dans les logs.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="pln">driverlist</span><span class="pun">=</span><span class="pln">org</span><span class="pun">.</span><span class="pln">h2</span><span class="pun">.</span><span class="typ">Driver</span><span class="pln">
+appender</span><span class="pun">=</span><span class="pln">com</span><span class="pun">.</span><span class="pln">p6spy</span><span class="pun">.</span><span class="pln">engine</span><span class="pun">.</span><span class="pln">spy</span><span class="pun">.</span><span class="pln">appender</span><span class="pun">.</span><span class="typ">StdoutLogger</span><span class="pln">
+logMessageFormat</span><span class="pun">=</span><span class="pln">com</span><span class="pun">.</span><span class="pln">p6spy</span><span class="pun">.</span><span class="pln">engine</span><span class="pun">.</span><span class="pln">spy</span><span class="pun">.</span><span class="pln">appender</span><span class="pun">.</span><span class="typ">CustomLineFormat</span><span class="pln">
+customLogMessageFormat</span><span class="pun">=%(</span><span class="pln">category</span><span class="pun">)|%(</span><span class="pln">sql</span><span class="pun">)</span><span class="pln">    </span></pre>
+
+<p>Enfin, il faut modifier le fichier <tt>persistence.xml</tt> pour utiliser <span class="blue"><code>P6Spy</code></span>
+comme ci-dessous.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"javax.persistence.jdbc.driver"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"com.p6spy.engine.spy.P6SpyDriver"</span><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"javax.persistence.jdbc.url"</span><span class="atn">value</span><span class="pun">=</span><span class="atv">"jdbc:p6spy:h2:tcp://localhost/~/h2DB"</span><span class="pln"> </span><span class="tag">/&gt;</span></pre>
+
+<p>Si vous avez bien suivi les instructions, vous devriez avoir les requêtes SQL complètes dans la console.</p>
+
+</div>
+
+<div class="tab-pane fade" id="exercice3">
+
+<h2>CRUD (Create, Read, Update, and Delete)</h2>
+
+<p> On veut maintenant réaliser une classe pour réaliser les opérations de base de persistence pour nos objets de la classe <code>Employee</code>.
+Cette classe <code>EmployeeRepository</code> contient les méthodes suivantes:
+</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">EmployeeRepository</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span class="typ">EntityManagerFactory</span><span class="pln"> entityManagerFactory </span><span class="pun">=</span><span class="pln"> </span><span class="pun">...</span><span class="pln">
+
+    </span><span class="com">/**
+     * Create an employee with the given information
+     * @param firstName
+     * @param lastName
+     * @param salary
+     * @return the id of the newly created employee
+     */</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> create</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> firstName</span><span class="pun">,</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> lastName</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> salary</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="com">// TODO</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="com">/**
+     * Remove the employee with the given id from the DB
+     * @param id
+     * @return true if the removal was successful
+     */</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">boolean</span><span class="pln"> </span><span class="kwd">delete</span><span class="pun">(</span><span class="kwd">long</span><span class="pln"> id</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="com">// TODO</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="com">/**
+     * Update the salary of the employee with the given id
+     * @param id
+     * @param salary
+     * @return true if the removal was successful
+     */</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">boolean</span><span class="pln"> update</span><span class="pun">(</span><span class="kwd">long</span><span class="pln"> id</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> salary</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="com">//TODO</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="com">/**
+     * Retrieve the employee with the given id
+     * @param id
+     * @return the employee wrapped in an {@link Optional}
+     */</span><span class="pln">
+    
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">Optional</span><span class="pun">&lt;</span><span class="typ">Employee</span><span class="pun">&gt;</span><span class="pln"> </span><span class="kwd">get</span><span class="pun">(</span><span class="kwd">long</span><span class="pln"> id</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+       </span><span class="com">// TODO</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="com">/**
+     * Return the list of the employee in the DB
+     */</span><span class="pln">
+    
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">List</span><span class="pun">&lt;</span><span class="typ">Employee</span><span class="pun">&gt;</span><span class="pln"> getAll</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="com">// TODO</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+</span><span class="pun">}</span></pre>
+
+<p class="question"> Complétez la classe <code>EmployeeRepository</code>.</p>
+
+<p class="attention alert alert-warning">Toutes les méthodes de la classe <span class="blue"><code>EmployeeRepository</code></span> vont partager énormément de code (i.e., le code créant l'<span class="blue"><code>EntityManager</code></span>, la transaction, ... Il peut être intéressant de définir des méthodes utilitaires comme ci-dessous:</p>
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">PersistenceUtils</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span class="typ">EntityManagerFactory</span><span class="pln"> ENTITY_MANAGER_FACTORY </span><span class="pun">=</span><span class="pln"> </span><span class="typ">Persistence</span><span class="pun">.</span><span class="pln">createEntityManagerFactory</span><span class="pun">(</span><span class="str">"main-persistence-unit"</span><span class="pun">);</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="typ">EntityManagerFactory</span><span class="pln"> getEntityManagerFactory</span><span class="pun">(){</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> ENTITY_MANAGER_FACTORY</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> inTransaction</span><span class="pun">(</span><span class="typ">Consumer</span><span class="pun">&lt;</span><span class="typ">EntityManager</span><span class="pun">&gt;</span><span class="pln"> consumer</span><span class="pun">){</span><span class="pln">
+        </span><span class="pun">...</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="pun">&lt;</span><span class="pln">T</span><span class="pun">&gt;</span><span class="pln"> T inTransaction</span><span class="pun">(</span><span class="typ">Function</span><span class="pun">&lt;</span><span class="typ">EntityManager</span><span class="pun">,</span><span class="pln">T</span><span class="pun">&gt;</span><span class="pln"> action</span><span class="pun">){</span><span class="pln">
+        </span><span class="pun">...</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">    </span></pre>
+
+<p class="question"> Ecrivez une classe <code>Application</code> qui:
+</p><ul>
+    <li>crée 5 employés dans le DB: Bob Moran (500), Bob Dylan (600), Lisa Simpson (100), Marge Simpson (1000) et Homer Simpson (450),</li>
+    <li>supprime Lisa Simpsom de BD,</li>
+    <li>augmente le salaire de Homer Simpson de 100,</li>
+    <li>enfin affiche tous les employées dans la base de données.</li>
+</ul>
+<p></p>
+
+<p class="question"> Proposez une nouvelle signature pour la méthode <code>updateSalary</code> qui permette de réasiler simplement:
+</p><ul>
+    <li>l'augmentation du salaire de 10%,</li>
+    <li>ajout de 100 euros si le salaire est inférieur à 1000 euros.</li>
+</ul>
+Dans votre classe <code>Application</code>, rajoutez 100 euros à tous les employés qui gagnent moins de 550 euros.
+<p></p>
+
+
+<p class="question"> Rajoutez dans la classe  <code>EmployeeRepository</code>  une méthode
+<code>List&lt;Employee&gt; getAllByFirstName(String firstName)</code>  qui renvoie la liste des employés ayant un prénom donné. <br>
+Vous utiliserez un requête JPQL et veuillerez à ne pas être vulnérable aux attaques par injection.</p>
+</div>
+
+
+<div class="tab-pane fade" id="exercice4">
+<h2>Mappings uni-directionnels</h2>
+
+<p class="attention alert alert-warning">Dans cet exercice, on ne vous demande de faire que des mappings uni-directionnels.</p>
+
+<p class="question">Ecrire et faire persister une classe <code>Student</code> qui contient:</p>
+<ul>
+<li>Une adresse représentée par une classe <code>Address</code></li>
+<li>Une univeristé représentée par une classe <code>University</code></li>
+<li>Une liste commentaires sur l'étudiant représentée par 
+    <code>List&lt;Comment&gt;</code>.</li>
+<li>L'ensemble des cours suivis par cet étudiant représenté par <code>Set&lt;Lecture&gt;</code>
+</li></ul>
+
+<p class="question">Ecrivrez des interfaces CRUD (similaires à l'exercice précédent) qui permettent:
+</p><ul>
+    <li>Créer et détruire des universités et des cours</li>
+    <li>Rajouter un cours à un étudiant</li>
+    <li>Changer l'université et l'adresse d'un étudiant</li>
+    <li>Rajouter ou supprimer des commentaires sur un étudiant</li>
+    <li>Pour un cours renvoyer la liste des étudiants qui le suive.</li>
+    <li>Pour un étudiant renvoyer la liste de ses cours.</li>
+</ul>
+<p></p>
+
+
+
+<p class="attention alert alert-warning">Chaque classe va avoir besoin de sa classe Repository, il va y avoir beaucoup de duplication de code si vous ne faites pas attention.</p>
+
+</div>
+
+<div class="tab-pane fade" id="exercice5">
+<h2>Mappings uni-directionnels</h2>
+
+<p class="question">Reprenez le code de l'exercice précédent et transformer les mapping vers les commentaires, l'université et les cours en des mappings bi-directionnels.</p>
+
+</div>
+
+
+</div> <!-- End of div tab-content -->
+      
+
+
+
+
+</body></html>
