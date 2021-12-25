@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<!-- saved from url=(0069)https://igm.univ-mlv.fr//~carayol/coursJEEM2/slides/springdata.html#/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+<title>JEE Back-End - Spring et JPA</title>
+
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="./JEE Back-End - Spring et JPA_files/reveal.css">
+<link rel="stylesheet" href="./JEE Back-End - Spring et JPA_files/white.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="./JEE Back-End - Spring et JPA_files/zenburn.css">
+<link rel="stylesheet" href="./JEE Back-End - Spring et JPA_files/reveal-override.css">
+<link href="./JEE Back-End - Spring et JPA_files/prettify.css" type="text/css" rel="stylesheet">
+<!-- Printing and PDF exports -->
+<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script><link rel="stylesheet" type="text/css" href="./JEE Back-End - Spring et JPA_files/paper.css">
+<script type="text/javascript" src="./JEE Back-End - Spring et JPA_files/prettify.js.téléchargement"></script>
+<style type="text/css">
+.reveal h2 {
+	color: steelblue;
+}
+
+.reveal h1 {
+	color: steelblue;
+}
+
+.reveal p {
+	text-align: left;
+}
+
+.reveal lu {
+	text-align: left;
+	list-style-position: inside;
+}
+
+.reveal span.red {
+	color: salmon;
+}
+
+.reveal p.red {
+	color: salmon;
+}
+
+.reveal span.blue,.reveal p.blue {
+	color: steelblue;
+}
+</style>
+<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+</head>
+
+<body onload="prettyPrint()">
+
+
+	<div class="reveal slide center" role="application" data-transition-speed="default" data-background-transition="fade">
+
+<div class="footer"><p>
+    <a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/index.html"><img src="./JEE Back-End - Spring et JPA_files/home.png" width="30em"></a></p>
+      </div>
+
+		<!-- Any section element inside of this container is displayed as a slide -->
+		<div class="slides" style="width: 960px; height: 700px; zoom: 0.9;">
+			<section style="top: 211px; display: block;" class="present">
+
+				<h1>JEE Back-end</h1>
+				
+				<h2>Spring Data</h2>
+			</section>
+
+<section style="top: 65.5px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Big Picture</h2>
+
+	
+			<img src="./JEE Back-End - Spring et JPA_files/jee-big-picture.png" width="80%" style="border:0;box-shadow:none">
+			
+</section>
+
+
+<section style="top: 63.5px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Spring Data</h2> 
+
+<p>L'intégration de JPA en Spring se fait grâce au module Spring Data.</p>
+
+<p>Par rapport à travailler avec <span class="blue">Hibernate</span> en JPA, on va obtenir plusieurs simplifications dans notre code:</p>
+
+<ul>
+	<li><span class="red">gestion automatique des transactions,</span></li>
+	<li><span class="red">écriture automatique des CRUD Repository,</span></li>
+	<li>...</li>
+</ul>
+
+<p>Pas vraiment de nouveaux concepts par rapport à ce qu'on a vu précédemment.</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Configuration avec Spring Boot</h2>
+
+<p>Il faut inclure la dépendance Maven:</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="tag">&lt;dependency&gt;</span><span class="pln">
+    </span><span class="tag">&lt;groupId&gt;</span><span class="pln">org.springframework.boot</span><span class="tag">&lt;/groupId&gt;</span><span class="pln">
+    </span><span class="tag">&lt;artifactId&gt;</span><span class="pln">spring-boot-starter-data-jpa</span><span class="tag">&lt;/artifactId&gt;</span><span class="pln">
+</span><span class="tag">&lt;/dependency&gt;</span><span class="pln">    </span></pre>
+
+<p>Il faut un bean <span class="blue"><code>DataSource</code></span> dans une classe de configuration qui décrit les paramètres d'accès à la BD pour JDBC.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Bean</span><span class="pln">
+</span><span class="typ">DataSource</span><span class="pln"> getDataSource</span><span class="pun">(){</span><span class="pln">
+    </span><span class="typ">DataSourceBuilder</span><span class="pln"> dataSourceBuilder </span><span class="pun">=</span><span class="pln"> </span><span class="typ">DataSourceBuilder</span><span class="pun">.</span><span class="pln">create</span><span class="pun">();</span><span class="pln">
+    dataSourceBuilder</span><span class="pun">.</span><span class="pln">driverClassName</span><span class="pun">(</span><span class="str">"com.p6spy.engine.spy.P6SpyDriver"</span><span class="pun">);</span><span class="pln">
+    dataSourceBuilder</span><span class="pun">.</span><span class="pln">url</span><span class="pun">(</span><span class="str">"jdbc:p6spy:h2:tcp://localhost/~/h2DB"</span><span class="pun">);</span><span class="pln">
+    dataSourceBuilder</span><span class="pun">.</span><span class="pln">username</span><span class="pun">(</span><span class="str">"sa"</span><span class="pun">);</span><span class="pln">
+    dataSourceBuilder</span><span class="pun">.</span><span class="pln">password</span><span class="pun">(</span><span class="str">""</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> dataSourceBuilder</span><span class="pun">.</span><span class="pln">build</span><span class="pun">();</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p>Les paramètres additionnels de configuration de Hibernate iront dans le fichier <span class="blue"><tt>application.properties</tt></span>.</p>
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Repository de Spring (1)</h2>
+
+<p>Les <span class="blue"><code>Repository</code></span> sont codés automatiquement. Il suffit de déclarer leur interface.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Entity</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Pokemon</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@Id</span><span class="pln">
+    </span><span class="lit">@GeneratedValue</span><span class="pln">
+    </span><span class="typ">Long</span><span class="pln"> id</span><span class="pun">;</span><span class="pln">
+    </span><span class="typ">String</span><span class="pln"> name</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">int</span><span class="pln"> score</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="lit">@Repository</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">interface</span><span class="pln"> </span><span class="typ">PokemonRepository</span><span class="pln"> </span><span class="kwd">extends</span><span class="pln"> </span><span class="typ">CrudRepository</span><span class="pun">&lt;</span><span class="typ">Pokemon</span><span class="pun">,</span><span class="typ">Long</span><span class="pun">&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+</span><span class="pun">}</span><span class="pln">    </span></pre>
+
+<p>Spring va créer un bean du type <span class="blue"><code>PokemonRepository</code></span> en codant toutes les méthodes de l'interface &lt;code&gt;CrudRepository&lt;Pokemon,Long&gt;&lt;/code&gt; pour vous.</p>
+
+</section>
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Repository de Spring (2)</h2>
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Repository</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">interface</span><span class="pln"> </span><span class="typ">PokemonRepository</span><span class="pln"> </span><span class="kwd">extends</span><span class="pln"> </span><span class="typ">CrudRepository</span><span class="pun">&lt;</span><span class="typ">Pokemon</span><span class="pun">,</span><span class="typ">Long</span><span class="pun">&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="typ">Pokemon</span><span class="pln"> findByName</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> name</span><span class="pun">);</span><span class="pln">
+    </span><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">Pokemon</span><span class="pun">&gt;</span><span class="pln"> findAllByNameOrderByScoreAsc</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> name</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p>Spring construit les méthodes <span class="red">à partir de leur nom</span>!</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="pln">	</span><span class="lit">@Query</span><span class="pun">(</span><span class="str">"SELECT p FROM Pokemon p WHERE p.score &gt; :score"</span><span class="pun">)</span><span class="pln">
+	</span><span class="typ">Set</span><pokemon><span class="pln"> findPokemonsWithHighScores</span><span class="pun">(</span><span class="kwd">int</span><span class="pln"> score</span><span class="pun">);</span></pokemon></pre>
+
+<p>On peut aussi definir une méthode <span class="blue">d'une requête JPQL</span>.</p>
+</section>
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>PokemonService</h2>
+<p>La pratique consiste à écrire les <span class="blue">méthodes complexes</span> qui manipule des <span class="blue"><code>Pokemon</code></span>
+	dans un classe <span class="blue"><code>PokemonService</code></span> qui
+va utiliser <span class="blue"><code>PokemonRepository</code></span>.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Service</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">PokemonService</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@Autowired</span><span class="pln">
+    </span><span class="typ">PokemonRepository</span><span class="pln"> pokemonRepository</span><span class="pun">;</span><span class="pln">
+
+	</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> incrementWrong</span><span class="pun">(</span><span class="typ">Long</span><span class="pln"> id</span><span class="pun">){</span><span class="pln">
+        </span><span class="kwd">var</span><span class="pln"> pokemon </span><span class="pun">=</span><span class="pln"> pokemonRepository</span><span class="pun">.</span><span class="pln">findById</span><span class="pun">(</span><span class="pln">id</span><span class="pun">).</span><span class="pln">orElseThrow</span><span class="pun">();</span><span class="pln">
+        pokemon</span><span class="pun">.</span><span class="pln">setScore</span><span class="pun">(</span><span class="pln">pokemon</span><span class="pun">.</span><span class="pln">getScore</span><span class="pun">()+</span><span class="lit">1</span><span class="pun">);</span><span class="pln">
+        pokemonRepository</span><span class="pun">.</span><span class="pln">update</span><span class="pun">(</span><span class="pln">pokemon</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p><span class="red">Attention</span>, cela crée deux transactions !</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>@Transactional</h2>
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Service</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">PokemonService</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@Autowired</span><span class="pln">
+    </span><span class="typ">PokemonRepository</span><span class="pln"> pokemonRepository</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="lit">@Transactional</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> incrementWrong</span><span class="pun">(</span><span class="typ">Long</span><span class="pln"> id</span><span class="pun">){</span><span class="pln">
+        </span><span class="kwd">var</span><span class="pln"> pokemon </span><span class="pun">=</span><span class="pln"> pokemonRepository</span><span class="pun">.</span><span class="pln">findById</span><span class="pun">(</span><span class="pln">id</span><span class="pun">).</span><span class="pln">orElseThrow</span><span class="pun">();</span><span class="pln">
+        pokemon</span><span class="pun">.</span><span class="pln">setScore</span><span class="pun">(</span><span class="pln">pokemon</span><span class="pun">.</span><span class="pln">getScore</span><span class="pun">()+</span><span class="lit">1</span><span class="pun">);</span><span class="pln">
+        pokemonRepository</span><span class="pun">.</span><span class="pln">update</span><span class="pun">(</span><span class="pln">pokemon</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p>L'annotation <span class="blue"><code>@Transactional</code></span> créer un transaction avant l'appel à <span class="blue"><code>incrementWrong</code></span> 
+et faire un commit après l'appel.</p>
+
+<p>Il y a bien une seule transaction!</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>@Transactional (2)</h2>
+
+<ul>
+<li>On ne peut annoter par <span class="blue"><code>@Transactional</code></span> que des <span class="blue">méthodes publiques</span>.</li>
+<li>Si une méthode appelle une méthode de la même classe annotée <span class="blue"><code>@Transactional</code></span>, l'annotation de la seconde méthode est ignorée.<br>
+En effet, l'ajout des transactions se fait par un <span class="red">proxy</span>.
+</li>
+</ul>
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>@PersistenceContext et @PersitenceUnit</h2>
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Service</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">PokemonService</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@Autowired</span><span class="pln">
+    </span><span class="typ">PokemonRepository</span><span class="pln"> pokemonRepository</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="lit">@PersistenceUnit</span><span class="pln">
+    </span><span class="typ">EntityManagerFactory</span><span class="pln"> emf</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="lit">@PersistenceContext</span><span class="pln">
+    </span><span class="typ">EntityManager</span><span class="pln"> em</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<ul>
+<li><span class="blue"><code>EntityManager</code></span> est en fait un <span class="blue"><code>SharedEntityManager</code></span> qui est récupérer à partir de la transaction courante.</li>
+<li>On ne peut pas s'en servir pour créer de nouvelles transactions.</li>
+<li>On pourrait géner les transactions à la main comme on l'a fait dans les cours précédents.</li>
+<ul>
+</ul></ul></section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Problème de concurrence</h2>
+
+<p>Si <span class="red">deux threads</span> (i.e. <span class="red">deux visiteurs</span> sur votre site) appellent au même moment
+	la méthode incrementWrong, on peut obtenir un seul incrément en BD.</p>
+
+<p>Il y a <span class="blue">3 leviers</span> pour résoudre les problèmes de concurrence.</p>
+
+<ul>
+	<li>Le niveau d'isolation des requêtes,</li>
+	<li>Les locks pessimistes,</li>
+	<li>Les locks optimistes.</li>
+</ul>
+
+<p>Dans notre cas particulier, on peut faire un <span class="blue"><code>UPDATE</code></span> atomique.</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Niveau d'isolation</h2>
+
+<p>Il existe plusieurs niveaux d'isolation dans le standard SQL.</p>
+
+<ul>
+<li><span class="blue">READ UNCOMMITTED</span></li>
+<li><span class="blue">READ COMMITTED</span> (interdit les dirty reads)</li>
+<li><span class="blue">REPEATABLE READ</span> (interdit les dirty et les non-repeatable reads)</li>
+<li><span class="blue">SERIALIZABLE</span> (interdit les dirty, non-repeatable reads et les phantom reads)</li>
+</ul>
+
+<pre class="prettyprint prettyprinted" style=""><span class="pln">    </span><span class="lit">@Transactional</span><span class="pun">(</span><span class="pln">isolation </span><span class="pun">=</span><span class="pln"> </span><span class="typ">Isolation</span><span class="pun">.</span><span class="pln">SERIALIZABLE</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> incrementScoreWithSerialization</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> name</span><span class="pun">){</span><span class="pln">
+        </span><span class="kwd">var</span><span class="pln"> pokemon </span><span class="pun">=</span><span class="pln"> pokemonRepository</span><span class="pun">.</span><span class="pln">findByName</span><span class="pun">(</span><span class="pln">name</span><span class="pun">);</span><span class="pln">
+        pokemon</span><span class="pun">.</span><span class="pln">incrementScore</span><span class="pun">();</span><span class="pln">
+        pokemonRepository</span><span class="pun">.</span><span class="pln">save</span><span class="pun">(</span><span class="pln">pokemon</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span></pre>
+
+<p>Si la transaction n'a pas pu s'exécutée avec la sémantique demandée,
+	une exception:</p>
+<pre class="prettyprint prettyprinted" style=""><span class="pln">org</span><span class="pun">.</span><span class="pln">springframework</span><span class="pun">.</span><span class="pln">dao</span><span class="pun">.</span><span class="typ">CannotAcquireLockException</span></pre>
+<p>est levée.</p>
+
+<p><span class="blue">Malheureusement</span> H2 que nous utilisons pour les TPs n'implémente pas l'isolation au niveau des transactions. Pour tester, il vous faudra installer une autre BD.</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Locks pessimistes</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Transactional</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> incrementScoreWithPessimisticLock</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> name</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> pokemonToUpdate</span><span class="pun">=</span><span class="pln">em</span><span class="pun">.</span><span class="pln">find</span><span class="pun">(</span><span class="typ">Pokemon</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">,</span><span class="pln">name</span><span class="pun">,</span><span class="pln"> </span><span class="typ">LockModeType</span><span class="pun">.</span><span class="pln">PESSIMISTIC_WRITE</span><span class="pun">);</span><span class="pln">
+    pokemonToUpdate</span><span class="pun">.</span><span class="pln">setScore</span><span class="pun">(</span><span class="pln">pokemonToUpdate</span><span class="pun">.</span><span class="pln">getScore</span><span class="pun">()+</span><span class="lit">1</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p>Un <span class="red">lock</span> est pris sur la <span class="blue">BD</span> qui empèche les modifications, suppressions, et lectures sur cette ligne.</p>
+
+<p>Il existe d'autre locks dans la JPA.</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Locks optimistes (1)</h2>
+
+<p>On stocke en <span class="blue">BD</span> un numéro de version pour chaque enregistrement.</p>
+
+<p>Quand l'ORM récupère un enregistrement, il récupère son numéro de version. Au moment de mettre à jour l'enregistrement en DB, il vérifie que le numéro de version est le même qu'au moment de la lecture.</p>
+
+<p>Si ce n'est pas le cas, une exception:</p>
+<pre class="prettyprint prettyprinted" style=""><span class="pln">org</span><span class="pun">.</span><span class="pln">springframework</span><span class="pun">.</span><span class="pln">orm</span><span class="pun">.</span><span class="typ">ObjectOptimisticLockingFailureException</span></pre>
+<p>
+est levée et la transaction et la transaction est  <span class="blue">rollback</span>.</p>
+
+<p><span class="red">Si c'est le cas,</span> il suffit de retenter la transaction.</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Locks optimistes (2)</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Entity</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Pokemon</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@Id</span><span class="pln">
+    </span><span class="lit">@GeneratedValue</span><span class="pln">
+    </span><span class="typ">Long</span><span class="pln"> id</span><span class="pun">;</span><span class="pln">
+    </span><span class="typ">String</span><span class="pln"> name</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">int</span><span class="pln"> score</span><span class="pun">;</span><span class="pln">
+    </span><span class="lit">@Version</span><span class="pln">
+    </span><span class="typ">Long</span><span class="pln"> version</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">	</span></pre>
+
+<p>Il n'y a rien d'autre à faire à part gérer l'exception.</p>
+</section>
+
+<section style="top: 35.5px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Locks optimistes (2)</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> incrementScoreWithOptimisticLock</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> name</span><span class="pun">){</span><span class="pln">
+  </span><span class="kwd">var</span><span class="pln"> </span><span class="kwd">retry</span><span class="pun">=</span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+  </span><span class="kwd">while</span><span class="pun">(</span><span class="kwd">retry</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      </span><span class="kwd">retry</span><span class="pun">=</span><span class="kwd">false</span><span class="pun">;</span><span class="pln">
+      </span><span class="kwd">try</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+          incrementScore</span><span class="pun">(</span><span class="pln">name</span><span class="pun">);</span><span class="pln">
+      </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">catch</span><span class="pln"> </span><span class="pun">(</span><span class="pln">org</span><span class="pun">.</span><span class="pln">springframework</span><span class="pun">.</span><span class="pln">orm</span><span class="pun">.</span><span class="typ">ObjectOptimisticLockingFailureException</span><span class="pln"> e</span><span class="pun">){</span><span class="pln">
+          </span><span class="kwd">retry</span><span class="pun">=</span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+      </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="lit">@Transactional</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> incrementScore</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> name</span><span class="pun">){</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> pokemon </span><span class="pun">=</span><span class="pln"> pokemonRepository</span><span class="pun">.</span><span class="pln">findByName</span><span class="pun">(</span><span class="pln">name</span><span class="pun">);</span><span class="pln">
+    pokemon</span><span class="pun">.</span><span class="pln">incrementScore</span><span class="pun">();</span><span class="pln">
+    pokemonRepository</span><span class="pun">.</span><span class="pln">save</span><span class="pun">(</span><span class="pln">pokemon</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">}</span></pre>
+<p>Ce code ne marche pas, pourquoi ?</p>
+</section>
+
+<section style="top: 25px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Locks optimistes (3)</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Transactional</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> incrementScoreWithOptimisticLock</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> name</span><span class="pun">){</span><span class="pln">
+  </span><span class="kwd">var</span><span class="pln"> </span><span class="kwd">retry</span><span class="pun">=</span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+  </span><span class="kwd">while</span><span class="pun">(</span><span class="kwd">retry</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      </span><span class="kwd">retry</span><span class="pun">=</span><span class="kwd">false</span><span class="pun">;</span><span class="pln">
+      </span><span class="kwd">try</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+          incrementScore</span><span class="pun">(</span><span class="pln">name</span><span class="pun">);</span><span class="pln">
+      </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">catch</span><span class="pln"> </span><span class="pun">(</span><span class="pln">org</span><span class="pun">.</span><span class="pln">springframework</span><span class="pun">.</span><span class="pln">orm</span><span class="pun">.</span><span class="typ">ObjectOptimisticLockingFailureException</span><span class="pln"> e</span><span class="pun">){</span><span class="pln">
+          </span><span class="kwd">retry</span><span class="pun">=</span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+      </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="lit">@Transactional</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> incrementScore</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> name</span><span class="pun">){</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> pokemon </span><span class="pun">=</span><span class="pln"> pokemonRepository</span><span class="pun">.</span><span class="pln">findByName</span><span class="pun">(</span><span class="pln">name</span><span class="pun">);</span><span class="pln">
+    pokemon</span><span class="pun">.</span><span class="pln">incrementScore</span><span class="pun">();</span><span class="pln">
+    pokemonRepository</span><span class="pun">.</span><span class="pln">save</span><span class="pun">(</span><span class="pln">pokemon</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">}</span></pre>
+<p>Ce code ne marche pas, non plus, pourquoi ?</p>
+</section>
+
+<section style="top: 0px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Locks optimistes (4)</h2>
+
+<pre class="prettyprint prettyprinted" style="font-size: 14px;"><span class="lit">@Service</span><span class="pln"> 
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">PokemonService</span><span class="pun">{</span><span class="pln">
+	</span><span class="lit">@Autowired</span><span class="pln">
+	</span><span class="typ">PokemonServiceWithFailure</span><span class="pln"> pokemonServiceWithFailure</span><span class="pun">;</span><span class="pln">
+	</span><span class="pun">...</span><span class="pln">
+	</span><span class="lit">@Transactional</span><span class="pln">
+	</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> incrementScoreWithOptimisticLock</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> name</span><span class="pun">){</span><span class="pln">
+ 	 	</span><span class="kwd">var</span><span class="pln"> </span><span class="kwd">retry</span><span class="pun">=</span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+  		</span><span class="kwd">while</span><span class="pun">(</span><span class="kwd">retry</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      		</span><span class="kwd">retry</span><span class="pun">=</span><span class="kwd">false</span><span class="pun">;</span><span class="pln">
+      		</span><span class="kwd">try</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+          		pokemonServiceWithFailure</span><span class="pun">.</span><span class="pln">incrementScoreWrong</span><span class="pun">(</span><span class="pln">name</span><span class="pun">);</span><span class="pln">
+      		</span><span class="pun">}</span><span class="pln"> </span><span class="kwd">catch</span><span class="pln"> </span><span class="pun">(</span><span class="pln">org</span><span class="pun">.</span><span class="pln">springframework</span><span class="pun">.</span><span class="pln">orm</span><span class="pun">.</span><span class="typ">ObjectOptimisticLockingFailureException</span><span class="pln"> e</span><span class="pun">){</span><span class="pln">
+          		</span><span class="kwd">retry</span><span class="pun">=</span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+      		</span><span class="pun">}</span><span class="pln">
+ 		 </span><span class="pun">}</span><span class="pln">
+	</span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="lit">@Service</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">PokemonServiceWithFailure</span><span class="pun">{</span><span class="pln">
+	</span><span class="pun">...</span><span class="pln">
+	</span><span class="lit">@Transactional</span><span class="pln">
+	</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> incrementScoreWrong</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> name</span><span class="pun">){</span><span class="pln">
+    	</span><span class="kwd">var</span><span class="pln"> pokemon </span><span class="pun">=</span><span class="pln"> pokemonRepository</span><span class="pun">.</span><span class="pln">findByName</span><span class="pun">(</span><span class="pln">name</span><span class="pun">);</span><span class="pln">
+    	pokemon</span><span class="pun">.</span><span class="pln">incrementScore</span><span class="pun">();</span><span class="pln">
+    	pokemonRepository</span><span class="pun">.</span><span class="pln">save</span><span class="pun">(</span><span class="pln">pokemon</span><span class="pun">);</span><span class="pln">	
+	</span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+<p><span class="red">Solution</span> : mettre les deux méthodes dans des <span class="blue">classes différentes</span>.<br>On peut utiliser aussi <span class="blue">Spring Retry</span> mais c'est moins drôle!</p>
+</section>
+
+</div>
+
+
+
+	<div class="backgrounds"><div class="slide-background present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div></div><div class="progress" style="display: block;"><span style="width: 0px;"></span></div><aside class="controls" style="display: block;"><div class="navigate-left"></div><div class="navigate-right enabled"></div><div class="navigate-up"></div><div class="navigate-down"></div></aside><div class="slide-number"></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px);">
+
+				JEE Back-end
+				
+				Spring Data
+			</div></div>
+
+
+
+	<script src="./JEE Back-End - Spring et JPA_files/head.min.js.téléchargement"></script>
+	<script src="./JEE Back-End - Spring et JPA_files/reveal.js.téléchargement"></script>
+
+	<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script><script type="text/javascript" src="./JEE Back-End - Spring et JPA_files/zoom.js.téléchargement"></script><script type="text/javascript" src="./JEE Back-End - Spring et JPA_files/notes.js.téléchargement"></script>
+
+
+
+</body></html>

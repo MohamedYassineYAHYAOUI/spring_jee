@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<!-- saved from url=(0069)https://igm.univ-mlv.fr//~carayol/coursJEEM2/slides/hibernate2.html#/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+<title>JEE Back-End - Hibernate et JPA</title>
+
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="./JEE Back-End - Hibernate et JPA_files/reveal.css">
+<link rel="stylesheet" href="./JEE Back-End - Hibernate et JPA_files/white.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="./JEE Back-End - Hibernate et JPA_files/zenburn.css">
+<link rel="stylesheet" href="./JEE Back-End - Hibernate et JPA_files/reveal-override.css">
+<link href="./JEE Back-End - Hibernate et JPA_files/prettify.css" type="text/css" rel="stylesheet">
+<!-- Printing and PDF exports -->
+<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script><link rel="stylesheet" type="text/css" href="./JEE Back-End - Hibernate et JPA_files/paper.css">
+<script type="text/javascript" src="./JEE Back-End - Hibernate et JPA_files/prettify.js.téléchargement"></script>
+<style type="text/css">
+.reveal h2 {
+	color: steelblue;
+}
+
+.reveal h1 {
+	color: steelblue;
+}
+
+.reveal p {
+	text-align: left;
+}
+
+.reveal lu {
+	text-align: left;
+	list-style-position: inside;
+}
+
+.reveal span.red {
+	color: salmon;
+}
+
+.reveal p.red {
+	color: salmon;
+}
+
+.reveal span.blue,.reveal p.blue {
+	color: steelblue;
+}
+</style>
+<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+</head>
+
+<body onload="prettyPrint()">
+
+
+	<div class="reveal slide center" role="application" data-transition-speed="default" data-background-transition="fade">
+
+<div class="footer"><p>
+    <a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/index.html"><img src="./JEE Back-End - Hibernate et JPA_files/home.png" width="30em"></a></p>
+      </div>
+
+		<!-- Any section element inside of this container is displayed as a slide -->
+		<div class="slides" style="width: 960px; height: 700px; zoom: 0.9;">
+			<section style="top: 211px; display: block;" class="present">
+
+				<h1>JEE Back-end</h1>
+				
+				<h2>Mappings complexes avec JPA</h2>
+			</section>
+
+<section style="top: 166px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Dans cette séance</h2>
+
+<p><span class="blue">Dans la séance précédente</span>, nous avons vu les <span class="red">concepts de
+base</span> de JPA et comment <span class="red">mapper des classes simples</span>.</p>
+
+<p><span class="blue">Dans cette séance</span>, nous allons voir comment mapper
+des classes qui <span class="red">contiennent d'autres classes</span>.</p>
+
+</section>
+
+<section style="top: 0px; display: block;" hidden="" aria-hidden="true" class="future">
+	<h2>Relations entre les classes (1/4)</h2>
+
+<img src="./JEE Back-End - Hibernate et JPA_files/schema-mapping-complexes.png" style="border:0;box-shadow:none" width="50%">
+
+<p>Le <span class="blue">diagramme UML</span> est un moyen concis de décrire les relations entre les classes.</p>
+
+</section>
+
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+ <h2>Relations entre les classes (2/4)</h2>
+  <div style="width: 100%; overflow: hidden;">
+     <div style="width: 40%; float: left;"> 
+<img src="./JEE Back-End - Hibernate et JPA_files/schema-mapping-complexes.png" style="border:0;box-shadow:none" width="100%">
+      </div>
+     <div style="margin-left: 45%;"> <ul>
+         <li>Un objet <span class="red">A</span> contient plusieurs objets de  <span class="blue"><code>B</code></span>. Un objet de <span class="blue"><code>B</code></span> est contenu dans au plus un objet de <span class="red"><code>A</code></span>.</li>
+         <li>Un objet <span class="red">A</span> contient 0 ou 1 objet de <span class="blue"><code>C</code></span>. Un objet de <span class="blue"><code>C</code></span> peut être contenu dans plusieurs objet de <span class="red"><code>A</code></span>.</li>
+     </ul> </div>
+</div>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+ <h2>Relations entre les classes (3/4)</h2>
+  <div style="width: 100%; overflow: hidden;">
+     <div style="width: 40%; float: left;"> 
+<img src="./JEE Back-End - Hibernate et JPA_files/schema-mapping-complexes.png" style="border:0;box-shadow:none" width="100%">
+      </div>
+     <div style="margin-left: 45%;"> 
+<p>Du point de vue de la classe <span class="red"><code>A</code></span>, </p> 
+        <ul>
+         <li>Le mapping vers la classe <span class="blue"><code>B</code></span> est <span class="red"><code>OneToMany</code></span>.</li>
+         <li>Le mapping vers la classe <span class="blue"><code>C</code></span> est <span class="red">ManyToOne</span></li>
+         <li>Il existe deux autres types de mapping : <span class="red"><code>OneToOne</code></span> et <span class="red"><code>ManyToMany</code></span>.</li>
+     </ul> </div>
+</div>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+ <h2>Relations entre les classes (4/4)</h2>
+
+ <p><span class="red">Agrégation</span> vs <span class="red">Composition</span></p>
+  <div style="width: 100%; overflow: hidden;">
+     <div style="width: 40%; float: left;"> 
+<img src="./JEE Back-End - Hibernate et JPA_files/schema-mapping-complexes.png" style="border:0;box-shadow:none" width="100%">
+      </div>
+     <div style="margin-left: 45%;"> 
+        <ul>
+         <li>Le <span class="blue">losange plein</span> sur la flèche vers <span class="blue"><code>B</code></span> indique une relation de <span class="red">composition</span>. La <span class="blue">destruction</span> (resp. la <span class="blue">création</span>) en BD d'un objet de <span class="blue"><code>A</code></span> implique la destruction (resp. la création) en BD des objets de <span class="blue"><code>B</code></span> qu'il contient.</li>
+         <li>Le <span class="blue">losange vide</span> sur la flèche vers <span class="blue"><code>C</code></span> indique une relation d'<span class="red">agrégation</span>. 
+
+            La <span class="blue">destruction</span> (resp. la <span class="blue">création</span>) en BD d'un objet de <span class="blue"><code>A</code></span> <span class="red">n'implique pas</span> la destruction (resp. la création) en BD des objets de <span class="blue"><code>C</code></span> qu'il contient.</li>
+     </ul> </div>
+</div>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Exemple concret</h2>
+
+<img src="./JEE Back-End - Hibernate et JPA_files/schema-mapping-complexes-example.png" style="border:0;box-shadow:none" width="40%">
+
+<p style="font-size: 25px;">Si l'on retire un étudiant de la BD, on retire ses numéros de téléphones <span class="red">mais pas</span> l'enregistrement qui représente son université.</p>
+
+<p style="font-size: 25px;"><span class="blue">Deux</span> étudiants peuvent avoir <span class="red">le même numéro de téléphone</span>, on dit juste que dans ce cas il y aura deux enregistrements différents en BD pour représenter le même numéro de téléphones.</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Uni-directionnel ou bi-directionnel</h2>
+
+<p>Si un objet de  <span class="red"><code>A</code></span> contient un ou des objets de <span class="blue"><code>B</code></span> mais que les objets de <span class="blue"><code>B</code></span> <span class="red">ne contiennent pas</span> de références sur les objets de <span class="red"><code>A</code></span>.<br>
+On parle de mapping <span class="blue">uni-directionnel</span>.</p>
+
+<p>Dans le cas contraire, on parle de mapping <span class="blue">bi-directionnel</span>.
+</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">PhoneNumber</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> id</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> phoneNumber</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Student</span><span class="pln"> student</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span></pre>
+<p>Dans ce séance, on ne traitera que des mappings <span class="red">uni-directionnels</span>.</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Mapping en JPA</h2>
+
+<p>Pour définir le mapping JPA d'une classe, il faut d'abord trouver le type des mappings (<span class="red">OneToMany</span>, ...) vers les classes qu'il contient.</p>
+
+<p>Il faut aussi se poser la question de savoir si on a affaire à une relation de <span class="red">composition</span> ou d'<span class="red">agrégation</span>.</p>
+
+<p>Il faut savoir si l'on veut un mapping <span class="red">uni-directionnel</span> ou <span class="red">bi-directionnel</span>.</p>
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Retour sur l'exemple</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Entity</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Student</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@Id</span><span class="pln">
+    </span><span class="lit">@GeneratedValue</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> id</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> firstName</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> lastName</span><span class="pun">;</span><span class="pln">
+    </span><span class="lit">@OneToMany</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">PhoneNumber</span><span class="pun">&gt;</span><span class="pln"> phoneNumbers</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">    </span></pre>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2><span class="blue"><code>@OneToMany (1/4)</code></span></h2>
+
+<p>Par défaut, <span class="blue">JPA</span> crée une table de jointure.</p>
+
+<img src="./JEE Back-End - Hibernate et JPA_files/example-onetomany1.png" style="border:0;box-shadow:none" width="80%">
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2><span class="blue"><code>@OneToMany (2/4)</code></span></h2>
+
+<p>On peut spécifier le nom de la table de jointure et de ses colonnes avec l'annotation <span class="blue"><code>@JoinTable</code></span>.</p><p>
+
+</p><pre class="prettyprint prettyprinted" style=""><span class="lit">@Entity</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Student</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@Id</span><span class="pln">
+    </span><span class="lit">@GeneratedValue</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> id</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> firstName</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> lastName</span><span class="pun">;</span><span class="pln">
+    </span><span class="lit">@OneToMany</span><span class="pln">
+    </span><span class="lit">@JoinTable</span><span class="pun">(</span><span class="pln">name</span><span class="pun">=</span><span class="str">"Students_PhoneNumbers"</span><span class="pun">,</span><span class="pln">
+            joinColumns</span><span class="pun">=</span><span class="lit">@JoinColumn</span><span class="pun">(</span><span class="pln">name</span><span class="pun">=</span><span class="str">"Student_Id"</span><span class="pun">),</span><span class="pln">
+            inverseJoinColumns</span><span class="pun">=</span><span class="lit">@JoinColumn</span><span class="pun">(</span><span class="pln">name</span><span class="pun">=</span><span class="str">"PhoneNumber_Id"</span><span class="pun">))</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">PhoneNumber</span><span class="pun">&gt;</span><span class="pln"> phoneNumbers</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">    </span></pre>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2><span class="blue"><code>@OneToMany (3/4)</code></span></h2>
+
+<p>Comme un numéro de téléphone n'est utilisé que par un seul étudiant, on peut se passer de la table de jointure et mettre une colonne dans la table de <span class="blue"><code>PhoneNumber</code></span> avec la clé primaire du <span class="blue"><code>Student</code></span> correspondant.<br>
+Pour cela, on utilise l'annotation <span class="blue"><code>@JoinColumn</code></span>.
+</p><p>
+
+
+</p><pre class="prettyprint prettyprinted" style=""><span class="lit">@Entity</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Student</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@Id</span><span class="pln">
+    </span><span class="lit">@GeneratedValue</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> id</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> firstName</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> lastName</span><span class="pun">;</span><span class="pln">
+    </span><span class="lit">@OneToMany</span><span class="pln">
+    </span><span class="lit">@JoinColumn</span><span class="pun">(</span><span class="pln">name </span><span class="pun">=</span><span class="pln"> </span><span class="str">"Student_Id"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">PhoneNumber</span><span class="pun">&gt;</span><span class="pln"> phoneNumbers</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">    </span></pre>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2><span class="blue"><code>@OneToMany (4/4)</code></span></h2>
+
+<img src="./JEE Back-End - Hibernate et JPA_files/example-onetomany2.png" style="border:0;box-shadow:none" width="100%">
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Exemple de persistence</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Entity</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Student</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="lit">@Id</span><span class="pln">
+    </span><span class="lit">@GeneratedValue</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> id</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> firstName</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> lastName</span><span class="pun">;</span><span class="pln">
+    </span><span class="lit">@OneToMany</span><span class="pun">(</span><span class="pln">cascade </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span class="typ">CascadeType</span><span class="pun">.</span><span class="pln">ALL</span><span class="pun">})</span><span class="pln">
+    </span><span class="lit">@JoinColumn</span><span class="pun">(</span><span class="pln">name </span><span class="pun">=</span><span class="pln"> </span><span class="str">"Student_Id"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">PhoneNumber</span><span class="pun">&gt;</span><span class="pln"> phoneNumbers</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">Student</span><span class="pun">(){}</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">Student</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> firstName</span><span class="pun">,</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> lastName</span><span class="pun">,</span><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">PhoneNumber</span><span class="pun">&gt;</span><span class="pln"> phoneNumbers</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">firstName </span><span class="pun">=</span><span class="pln"> firstName</span><span class="pun">;</span><span class="pln">
+        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">lastName </span><span class="pun">=</span><span class="pln"> lastName</span><span class="pun">;</span><span class="pln">
+        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">phoneNumbers</span><span class="pun">=</span><span class="pln"> </span><span class="typ">Set</span><span class="pun">.</span><span class="pln">copyOf</span><span class="pun">(</span><span class="pln">phoneNumbers</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">     </span></pre>    
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Exemple de persistence</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="typ">PersitenceUtils</span><span class="pun">.</span><span class="pln">inTransaction</span><span class="pun">(</span><span class="pln"> 
+em </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> harry </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">Student</span><span class="pun">(</span><span class="str">"Harry"</span><span class="pun">,</span><span class="str">"Potter"</span><span class="pun">,</span><span class="typ">Set</span><span class="pun">.</span><span class="pln">of</span><span class="pun">(</span><span class="kwd">new</span><span class="pln"> </span><span class="typ">PhoneNumber</span><span class="pun">(</span><span class="str">"0700000000"</span><span class="pun">)));</span><span class="pln">
+    em</span><span class="pun">.</span><span class="pln">persists</span><span class="pun">(</span><span class="pln">harry</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">});</span></pre>
+
+<p>On obtient l'erreur suivante:</p>
+
+<pre class="console">object references an unsaved transient instance - 
+save the transient instance before flushing: 
+fr.uge.jee.hibernate.students.PhoneNumber    
+</pre>
+
+<p>En effet, l'objet <span class="blue"><code>PhoneNumber</code></span> que référence l'objet <span class="blue"><code>Student</code></span> est transient.</p>
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Exemple de persistence</h2>
+
+<p>On peut persister <i>à la main</i> le <span class="blue"><code>PhoneNumber</code></span>.</p> 
+
+<pre class="prettyprint prettyprinted" style=""><span class="typ">PersitenceUtils</span><span class="pun">.</span><span class="pln">inTransaction</span><span class="pun">(</span><span class="pln"> em </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> phoneHarry </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">PhoneNumber</span><span class="pun">(</span><span class="str">"0700000000"</span><span class="pun">);</span><span class="pln">
+    em</span><span class="pun">.</span><span class="pln">persists</span><span class="pun">(</span><span class="pln">phoneHarry</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> harry </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">Student</span><span class="pun">(</span><span class="str">"Harry"</span><span class="pun">,</span><span class="str">"Potter"</span><span class="pun">,</span><span class="typ">Set</span><span class="pun">.</span><span class="pln">of</span><span class="pun">(</span><span class="pln">phoneHarry</span><span class="pun">));</span><span class="pln">
+    em</span><span class="pun">.</span><span class="pln">persists</span><span class="pun">(</span><span class="pln">harry</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">});</span><span class="pln">    </span></pre>
+
+<p>Il existe une meilleure solution. On peut exprimer en JPA <span class="red">la relation de composition</span> de <span class="blue"><code>Student</code></span> vers <span class="blue"><code>PhoneNumber</code></span>. En JPA, on parle de <span class="blue">cascade</span>. <br>
+Intuitivement on veut qu'à chaque fois qu'un <span class="blue"><code>Student</code></span> est inséré en BD, les <span class="blue"><code>PhoneNumber</code></span> qu'il contient qui ne sont pas en BD soit insérer s'ils ne sont pas en BD.</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Cascade</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Entity</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Student</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@Id</span><span class="pln">
+    </span><span class="lit">@GeneratedValue</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> id</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> firstName</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> lastName</span><span class="pun">;</span><span class="pln">
+    </span><span class="lit">@OneToMany</span><span class="pun">(</span><span class="pln">cascade </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span class="typ">CascadeType</span><span class="pun">.</span><span class="pln">PERSIST</span><span class="pun">})</span><span class="pln">
+    </span><span class="lit">@JoinColumn</span><span class="pun">(</span><span class="pln">name </span><span class="pun">=</span><span class="pln"> </span><span class="str">"Student_Id"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">PhoneNumber</span><span class="pun">&gt;</span><span class="pln"> phoneNumbers</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">    </span></pre>
+
+<p>Il existe plusieurs types de <span class="blue">cascades</span> selon le type de l'opération concernée <span class="blue"><code>CascadeType.REMOVE</code></span>, <span class="blue"><code>CascadeType.MERGE</code></span>, ...</p>
+
+<p><span class="blue"><code>CascadeType.ALL</code></span> concerne toutes opérations.</p> 
+
+<p>Dans notre cas, on veut aussi que la destruction d'un <span class="blue"><code>Student</code></span> en BD supprime aussi ses <span class="blue"><code>PhoneNumber</code></span>.</p> 
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Récupération des objets associés (1/3)</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="typ">PersitenceUtils</span><span class="pun">.</span><span class="pln">inTransaction</span><span class="pun">(</span><span class="pln"> em </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> q </span><span class="pun">=</span><span class="pln"> </span><span class="str">"SELECT s FROM Student s WHERE s.firstName='Harry'"</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> query </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">createQuery</span><span class="pun">(</span><span class="pln">q</span><span class="pun">,</span><span class="typ">Student</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> student </span><span class="pun">=</span><span class="pln"> query</span><span class="pun">.</span><span class="pln">getSingleResult</span><span class="pun">();</span><span class="pln">
+    </span><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="pln">student</span><span class="pun">.</span><span class="pln">getPhoneNumbers</span><span class="pun">());</span><span class="pln">
+</span><span class="pun">});</span><span class="pln">   </span></pre>
+
+<p>Tout se passe bien!</p>
+</section>
+
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Récupération des objets associés (2/3)</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="typ">Student</span><span class="pln"> student </span><span class="pun">=</span><span class="pln"> </span><span class="typ">PersitenceUtils</span><span class="pun">.</span><span class="pln">inTransaction</span><span class="pun">(</span><span class="pln"> em </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> q </span><span class="pun">=</span><span class="pln"> </span><span class="str">"SELECT s FROM Student s WHERE s.firstName='Harry'"</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> query </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">createQuery</span><span class="pun">(</span><span class="pln">q</span><span class="pun">,</span><span class="typ">Student</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> res </span><span class="pun">=</span><span class="pln"> query</span><span class="pun">.</span><span class="pln">getSingleResult</span><span class="pun">();</span><span class="pln">
+</span><span class="pun">});</span><span class="pln">
+</span><mark><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="pln">student</span><span class="pun">.</span><span class="pln">getPhoneNumbers</span><span class="pun">());</span></mark>
+</pre>
+
+<p style="font-size:22px">On obtient une exception <span class="blue"><code>org.hibernate.LazyInitializationException</code></span> à la ligne surlignée!</p>
+
+<pre class="console">failed to lazily initialize a collection of role:
+fr.uge.jee.hibernate.students.Student.phoneNumbers, 
+could not initialize proxy - no Session
+</pre>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Récupération des objets associés (3/3)</h2>
+
+<p>Par défaut, <span class="red">Hibernate</span> ne va pas récuperer en BD les <span class="blue"><code>PhoneNumber</code></span> quand il va récupérer un <span class="blue"><code>Student</code></span> en BD.</p>
+
+<p>Moralement, Hibernate renvoie un <span class="red">proxy</span> pour l'objet <span class="blue">Student</span> dans lequel la méthode <span class="blue"><code>getPhoneNumbers</code></span> qui pourrait ressembler à:</p>
+
+<pre class="prettyprint prettyprinted" style="font-size: 16px;"><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">PhoneNumber</span><span class="pun">&gt;</span><span class="pln"> getPhoneNumbers</span><span class="pun">(){</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">phoneNumber</span><span class="pun">==</span><span class="kwd">null</span><span class="pun">){</span><span class="pln">
+        </span><span class="kwd">var</span><span class="pln"> q </span><span class="pun">=</span><span class="pln"> </span><span class="str">"SELECT p FROM Student s LEFT JOIN s.phoneNumbers p WHERE s.id = :id"</span><span class="pun">;</span><span class="pln">
+        </span><span class="kwd">var</span><span class="pln"> query </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">createQuery</span><span class="pun">(</span><span class="pln">q</span><span class="pun">,</span><span class="typ">PhoneNumber</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">).</span><span class="pln">setParameter</span><span class="pun">(</span><span class="str">"id"</span><span class="pun">,</span><span class="pln">id</span><span class="pun">);</span><span class="pln">
+        phoneNumbers</span><span class="pun">=</span><span class="pln">query</span><span class="pun">.</span><span class="pln">getListResult</span><span class="pun">();</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> phoneNumber</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p style="font-size:22px"><span class="blue">La vérité est un peu plus compliquée:</span>  la méthode <span class="blue"><code>getPhoneNumbers()</code></span> renvoie un proxy de <span class="blue"><code>Set&lt;PhoneNumber&gt;</code></span>. Cet ensemble est initialement vide et c'est seulement quand on appel une de ses méthodes qui accède aux données qu'il est rempli en faisant une requête BD.</p>
+<p></p>
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Récupération des objets associés</h2>
+
+
+<pre class="prettyprint prettyprinted" style=""><span class="typ">PersitenceUtils</span><span class="pun">.</span><span class="pln">inTransaction</span><span class="pun">(</span><span class="pln"> em </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> q </span><span class="pun">=</span><span class="pln"> </span><span class="str">"SELECT s FROM Student s WHERE s.firstName='Harry'"</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> query </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">createQuery</span><span class="pun">(</span><span class="pln">q</span><span class="pun">,</span><span class="typ">Student</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> student </span><span class="pun">=</span><span class="pln"> query</span><span class="pun">.</span><span class="pln">getSingleResult</span><span class="pun">();</span><span class="pln">
+    </span><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="pln">student</span><span class="pun">.</span><span class="pln">getPhoneNumbers</span><span class="pun">());</span><span class="pln"> </span><span class="com">// </span><mark><span class="com">pas de pb</span></mark><span class="pln">
+</span><span class="pun">});</span><span class="pln">   </span></pre>
+<p><span class="blue">OK</span></p>
+<pre class="prettyprint prettyprinted" style=""><span class="typ">Student</span><span class="pln"> student </span><span class="pun">=</span><span class="pln"> </span><span class="typ">PersitenceUtils</span><span class="pun">.</span><span class="pln">inTransaction</span><span class="pun">(</span><span class="pln"> em </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> q </span><span class="pun">=</span><span class="pln"> </span><span class="str">"SELECT s FROM Student s WHERE s.firstName='Harry'"</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> query </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">createQuery</span><span class="pun">(</span><span class="pln">q</span><span class="pun">,</span><span class="typ">Student</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> res </span><span class="pun">=</span><span class="pln"> query</span><span class="pun">.</span><span class="pln">getSingleResult</span><span class="pun">();</span><span class="pln">
+</span><span class="pun">});</span><span class="pln">
+</span><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="pln">student</span><span class="pun">.</span><span class="pln">getPhoneNumbers</span><span class="pun">());</span><span class="pln"> </span><span class="com">// </span><mark><span class="com">pas d'EntityManager</span></mark>
+</pre>
+<p><span class="red">KO</span></p>
+<pre class="prettyprint prettyprinted" style=""><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">PhoneNumber</span><span class="pun">&gt;</span><span class="pln"> numbers </span><span class="pun">=</span><span class="pln"> </span><span class="typ">PersitenceUtils</span><span class="pun">.</span><span class="pln">inTransaction</span><span class="pun">(</span><span class="pln"> em </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> q </span><span class="pun">=</span><span class="pln"> </span><span class="str">"SELECT s FROM Student s WHERE s.firstName='Harry'"</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> query </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">createQuery</span><span class="pun">(</span><span class="pln">q</span><span class="pun">,</span><span class="typ">Student</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> res </span><span class="pun">=</span><span class="pln"> query</span><span class="pun">.</span><span class="pln">getSingleResult</span><span class="pun">().</span><span class="pln">getPhoneNumbers</span><span class="pun">();</span><span class="pln">
+</span><span class="pun">});</span><span class="pln">
+</span><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="pln">numbers</span><span class="pun">);</span><span class="pln"> </span><span class="com">// </span><mark><span class="com">le proxy n'est pas rempli et pas d'EntityManager</span></mark>
+</pre>
+<p><span class="red">KO</span></p>
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Solutions (1/3)</h2>
+
+<p>Par défaut, <span class="blue"><code>OneToMany</code></span>,<span class="blue"><code>ManyToMany</code></span> sont paresseux (<i>lazy</i>), les éléments contenus ne sont pas récupérés. </p>
+
+<p>On peut changer ce comportement dans la définition du mapping:</p>
+<pre class="prettyprint prettyprinted" style=""><span class="pln">    </span><span class="lit">@OneToMany</span><span class="pun">(</span><span class="pln">cascade </span><span class="pun">=</span><span class="pln"> </span><span class="typ">CascadeType</span><span class="pun">.</span><span class="pln">ALL</span><span class="pun">,</span><span class="pln"> fetch </span><span class="pun">=</span><span class="pln"> </span><span class="typ">FetchType</span><span class="pun">.</span><span class="pln">EAGER</span><span class="pun">)</span><span class="pln">
+    </span><span class="lit">@JoinColumn</span><span class="pun">(</span><span class="pln">name </span><span class="pun">=</span><span class="pln"> </span><span class="str">"Student_Id"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Set</span><phonenumber><span class="pln"> phoneNumbers</span><span class="pun">;</span></phonenumber></pre>
+
+<p>Sauf dans de rare cas, c'est une <span class="red">mauvaise solution</span> car cela implique qu'on va toujours récupérer les objets contenus même si on en a pas besoin.</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Solutions (2/3)</h2>
+
+<p>On peut forcer l'initialisation du proxy <span class="blue"><code>Set&lt;PhoneNumber&gt;</code></span> dans la transaction.
+</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">PhoneNumber</span><span class="pun">&gt;</span><span class="pln"> numbers </span><span class="pun">=</span><span class="pln"> </span><span class="typ">PersitenceUtils</span><span class="pun">.</span><span class="pln">inTransaction</span><span class="pun">(</span><span class="pln"> em </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> q </span><span class="pun">=</span><span class="pln"> </span><span class="str">"SELECT s FROM Student s WHERE s.firstName='Harry'"</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> query </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">createQuery</span><span class="pun">(</span><span class="pln">q</span><span class="pun">,</span><span class="typ">Student</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> res </span><span class="pun">=</span><span class="pln"> query</span><span class="pun">.</span><span class="pln">getSingleResult</span><span class="pun">().</span><span class="pln">getPhoneNumbers</span><span class="pun">();</span><span class="pln">
+    res</span><span class="pun">.</span><span class="pln">size</span><span class="pun">();</span><span class="pln">  </span><span class="com">// </span><mark><span class="com">pour initialiser le proxy, arg !!!</span></mark><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> res</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">});</span><span class="pln">
+</span><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="pln">numbers</span><span class="pun">);</span><span class="pln"> </span><span class="com">// </span><mark><span class="com">le proxy est initialisé</span></mark>
+</pre>
+
+
+<p><span class="red">Beurk !</span></p>
+
+<p><span class="red">Pire</span> ce code fait deux <span class="blue"><code>SELECT</code></span> distincts.</p>
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Solutions (3/3)</h2>
+<p>La <span class="blue">bonne solution</span> consiste à utiliser <span class="red">JPQL</span> qui permet d'indiquer dans la requête les objets contenu que l'on veut rappatrier.</p>
+
+<pre class="prettyprint prettyprinted" style="font-size: 18px;"><span class="kwd">var</span><span class="pln"> st </span><span class="pun">=</span><span class="pln"> util</span><span class="pun">.</span><span class="pln">inTransaction</span><span class="pun">(</span><span class="pln">
+        em </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">var</span><span class="pln"> q </span><span class="pun">=</span><span class="pln"> </span><span class="str">"SELECT s FROM Student s LEFT JOIN FETCH s.phoneNumbers"</span><span class="pln">
+                    </span><span class="pun">+</span><span class="pln"> </span><span class="str">"WHERE s.firstName='Harry'"</span><span class="pun">;</span><span class="pln">
+            </span><span class="kwd">var</span><span class="pln"> query </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">createQuery</span><span class="pun">(</span><span class="pln">q</span><span class="pun">,</span><span class="typ">Student</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span class="pln">
+            </span><span class="kwd">var</span><span class="pln"> res </span><span class="pun">=</span><span class="pln"> query</span><span class="pun">.</span><span class="pln">getSingleResult</span><span class="pun">();</span><span class="pln">
+            </span><span class="kwd">return</span><span class="pln"> res</span><span class="pun">.</span><span class="pln">getPhoneNumbers</span><span class="pun">();</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">);</span><span class="pln">    </span></pre>
+
+<p>Cette requête ne fait qu'un seul <span class="blue"><code>SELECT</code></span>!</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Suppression (1)</h2>
+<p>Avec la cascade <span class="blue"><code>cascadeType.REMOVE</code></span>, la suppression d'un <span class="blue"><code>Student</code></span> implique la suppression de ses <span class="blue"><code>PhoneNumber</code></span>.</p>
+
+<p>La situation est plus compliquée si l'on veut supprimer un <span class="blue"><code>PhoneNumber</code></span> pour un <span class="blue"><code>Student</code></span>.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">void</span><span class="pln"> removePhoneNumber</span><span class="pun">(</span><span class="kwd">long</span><span class="pln"> studentId</span><span class="pun">,</span><span class="kwd">long</span><span class="pln"> phoneNumberId</span><span class="pun">){</span><span class="pln">
+        </span><span class="typ">PersistenceUtils</span><span class="pun">.</span><span class="pln">inTransaction</span><span class="pun">(</span><span class="pln">em </span><span class="pun">-&gt;{</span><span class="pln">
+            </span><span class="pun">...</span><span class="pln">
+        </span><span class="pun">});</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">    </span></pre>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Suppression (2)</h2>
+
+<p>Si le lien entre les tables <span class="blue"><code>Student</code></span> et <span class="blue"><code>PhoneNumber</code></span> est fait par une <span class="blue"><code>JoinColumn</code></span>, on peut simplement supprimer le <span class="blue"><code>PhoneNumber</code></span></p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">void</span><span class="pln"> removePhoneNumber</span><span class="pun">(</span><span class="kwd">long</span><span class="pln"> studentId</span><span class="pun">,</span><span class="kwd">long</span><span class="pln"> phoneNumberId</span><span class="pun">){</span><span class="pln">
+        util</span><span class="pun">.</span><span class="pln">inTransaction</span><span class="pun">(</span><span class="pln">em </span><span class="pun">-&gt;{</span><span class="pln">
+            </span><span class="kwd">var</span><span class="pln"> phoneNumber </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">find</span><span class="pun">(</span><span class="typ">PhoneNumber</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">,</span><span class="pln">phoneNumberId</span><span class="pun">);</span><span class="pln">
+            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">phoneNumber</span><span class="pun">==</span><span class="kwd">null</span><span class="pun">){</span><span class="pln">
+                </span><span class="kwd">throw</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">IllegalArgumentException</span><span class="pun">();</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln">
+            em</span><span class="pun">.</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">phoneNumber</span><span class="pun">);</span><span class="pln">
+        </span><span class="pun">});</span><span class="pln">
+    </span><span class="pun">}</span></pre>
+
+<p><span class="red">Bilan en BD</span>: un <span class="blue"><code>SELECT</code></span> et un <span class="blue"><code>DELETE</code></span>.</p>  
+
+<p><span class="red">Attention</span>, ce code marche dans ce cadre précis où l'on crée un <span class="blue"><code>EntityManager</code></span>
+avant de faire la transaction. On verra plus tard qu'il ne fonctionne plus si 
+l'<span class="blue"><code>EntityManager</code></span> contient le <span class="blue"><code>Student</code></span> avec <span class="blue"><code>phoneNumber</code></span> dans son ensemble
+<span class="blue"><code>phoneNumbers</code></span>. Dans ce cas, il faudrait enlever <span class="blue"><code>phoneNumber</code></span> de l'ensemble <span class="blue"><code>phoneNumbers</code></span> pour qu'il fonctionne. </p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Suppression (3)</h2>
+
+<p>Si le lien entre les tables <span class="blue"><code>Student</code></span> et <span class="blue"><code>PhoneNumber</code></span> est fait par une <span class="blue"><code>JoinTable</code></span>, le code précédent ne marche pas car il laisserait la BD dans un état incohérent.</p>
+
+<img src="./JEE Back-End - Hibernate et JPA_files/example-onetomanybug.png" style="border:0;box-shadow:none" width="60%">
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Suppression (4)</h2>
+
+<p>Il faut supprimer l'entrée du <span class="blue"><code>PhoneNumber</code></span> dans la table de jointure et dans la table <span class="blue"><code>PhoneNumber</code></span>.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> removePhoneNumber2</span><span class="pun">(</span><span class="kwd">long</span><span class="pln"> studentId</span><span class="pun">,</span><span class="kwd">long</span><span class="pln"> phoneNumberId</span><span class="pun">){</span><span class="pln">
+    </span><span class="typ">PersistenceUtils</span><span class="pun">.</span><span class="pln">inTransaction</span><span class="pun">(</span><span class="pln">em </span><span class="pun">-&gt;{</span><span class="pln">
+        </span><span class="kwd">var</span><span class="pln"> phoneNumber </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">find</span><span class="pun">(</span><span class="typ">PhoneNumber</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">,</span><span class="pln">phoneNumberId</span><span class="pun">);</span><span class="pln">
+        </span><span class="kwd">var</span><span class="pln"> student </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">find</span><span class="pun">(</span><span class="typ">Student</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">,</span><span class="pln">studentId</span><span class="pun">);</span><span class="pln">
+        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">phoneNumber</span><span class="pun">==</span><span class="kwd">null</span><span class="pun">){</span><span class="pln">
+            </span><span class="kwd">throw</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">IllegalArgumentException</span><span class="pun">();</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+        </span><span class="com">// suppression dans la table jointure</span><span class="pln">
+        student</span><span class="pun">.</span><span class="pln">getPhoneNumbers</span><span class="pun">().</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">phoneNumber</span><span class="pun">);</span><span class="pln"> 
+        </span><span class="com">// suppression dans la table PhoneNumber</span><span class="pln">
+        em</span><span class="pun">.</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">phoneNumber</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">});</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">    </span></pre>
+<p><span class="red">Bilan en BD:</span> trois <span class="blue"><code>SELECT</code></span> et deux <span class="blue"><code>DELETE</code></span>.</p>  
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Suppression (5)</h2>
+
+<p>Il <span class="red">faut supprimer</span> l'entrée du <span class="blue"><code>PhoneNumber</code></span> dans la table de jointure <strong>et</strong> dans la table <span class="blue"><code>PhoneNumber</code></span>.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> removePhoneNumber2</span><span class="pun">(</span><span class="kwd">long</span><span class="pln"> studentId</span><span class="pun">,</span><span class="kwd">long</span><span class="pln"> phoneNumberId</span><span class="pun">){</span><span class="pln">
+    </span><span class="typ">PersistenceUtils</span><span class="pun">.</span><span class="pln">inTransaction</span><span class="pun">(</span><span class="pln">em </span><span class="pun">-&gt;{</span><span class="pln">
+        </span><span class="kwd">var</span><span class="pln"> phoneNumber </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">find</span><span class="pun">(</span><span class="typ">PhoneNumber</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">,</span><span class="pln">phoneNumberId</span><span class="pun">);</span><span class="pln">
+        </span><span class="kwd">var</span><span class="pln"> student </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">find</span><span class="pun">(</span><span class="typ">Student</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">,</span><span class="pln">studentId</span><span class="pun">);</span><span class="pln">
+        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">phoneNumber</span><span class="pun">==</span><span class="kwd">null</span><span class="pun">){</span><span class="pln">
+            </span><span class="kwd">throw</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">IllegalArgumentException</span><span class="pun">();</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+        </span><span class="com">// suppression dans la table jointure</span><span class="pln">
+        student</span><span class="pun">.</span><span class="pln">getPhoneNumbers</span><span class="pun">().</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">phoneNumber</span><span class="pun">);</span><span class="pln"> 
+        </span><span class="com">// suppression dans la table PhoneNumber</span><span class="pln">
+        em</span><span class="pun">.</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">phoneNumber</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">});</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">    </span></pre>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Suppression (6)</h2>
+
+<p>Si l'on supprime l'entrée du <span class="blue"><code>PhoneNumber</code></span> dans la table de jointure, le numéro de téléphone reste en base.</p>
+
+<pre class="prettyprint prettyprinted" style="font-size: 16px;"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> removePhoneNumber2</span><span class="pun">(</span><span class="kwd">long</span><span class="pln"> studentId</span><span class="pun">,</span><span class="kwd">long</span><span class="pln"> phoneNumberId</span><span class="pun">){</span><span class="pln">
+    util</span><span class="pun">.</span><span class="pln">inTransaction</span><span class="pun">(</span><span class="pln">em </span><span class="pun">-&gt;{</span><span class="pln">
+        </span><span class="kwd">var</span><span class="pln"> phoneNumber </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">find</span><span class="pun">(</span><span class="typ">PhoneNumber</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">,</span><span class="pln">phoneNumberId</span><span class="pun">);</span><span class="pln">
+        </span><span class="kwd">var</span><span class="pln"> student </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">find</span><span class="pun">(</span><span class="typ">Student</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">,</span><span class="pln">studentId</span><span class="pun">);</span><span class="pln">
+        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">phoneNumber</span><span class="pun">==</span><span class="kwd">null</span><span class="pun">){</span><span class="pln">
+            </span><span class="kwd">throw</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">IllegalArgumentException</span><span class="pun">();</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+        student</span><span class="pun">.</span><span class="pln">getPhoneNumbers</span><span class="pun">().</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">phoneNumber</span><span class="pun">);</span><span class="pln"> 
+    </span><span class="pun">});</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">    </span></pre>
+
+<p>On peut faire en sorte qu'un numéro qui <span class="red">n'est plus référencé dans la table de jointure</span> soit supprimer.</p>
+
+<pre class="prettyprint prettyprinted" style="font-size: 16px;"><span class="lit">@Entity</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Student</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="pun">...</span><span class="pln">
+    </span><span class="lit">@OneToMany</span><span class="pun">(</span><span class="pln">cascade </span><span class="pun">=</span><span class="pln"> </span><span class="typ">CascadeType</span><span class="pun">.</span><span class="pln">ALL</span><span class="pun">,</span><span class="pln">orphanRemoval</span><span class="pun">=</span><span class="kwd">true</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">PhoneNumber</span><span class="pun">&gt;</span><span class="pln"> phoneNumbers</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+
+</section>
+
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Suppression (7)</h2>
+
+<p>On peut faire mieux : avec un <span class="blue"><code>SELECT</code></span> et deux <span class="blue"><code>DELETE</code></span>. </p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> removePhoneNumber2</span><span class="pun">(</span><span class="kwd">long</span><span class="pln"> studentId</span><span class="pun">,</span><span class="kwd">long</span><span class="pln"> phoneNumberId</span><span class="pun">){</span><span class="pln">
+</span><span class="typ">PersistenceUtils</span><span class="pun">.</span><span class="pln">inTransaction</span><span class="pun">(</span><span class="pln">em </span><span class="pun">-&gt;{</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> q </span><span class="pun">=</span><span class="pln"> </span><span class="str">"SELECT s FROM Student s LEFT JOIN FETCH s.phoneNumbers where s.id=:id"</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> query </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">createQuery</span><span class="pun">(</span><span class="pln">q</span><span class="pun">,</span><span class="typ">Student</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span class="pln">
+    query</span><span class="pun">.</span><span class="pln">setParameter</span><span class="pun">(</span><span class="str">"id"</span><span class="pun">,</span><span class="pln">studentId</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> student </span><span class="pun">=</span><span class="pln"> query</span><span class="pun">.</span><span class="pln">getSingleResult</span><span class="pun">();</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">student</span><span class="pun">==</span><span class="kwd">null</span><span class="pun">){</span><span class="pln">
+        </span><span class="kwd">throw</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">IllegalArgumentException</span><span class="pun">();</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> phoneNumber</span><span class="pun">=</span><span class="pln">student</span><span class="pun">.</span><span class="pln">getPhoneNumbers</span><span class="pun">()</span><span class="pln">
+                        </span><span class="pun">.</span><span class="pln">stream</span><span class="pun">()</span><span class="pln">
+                        </span><span class="pun">.</span><span class="pln">filter</span><span class="pun">(</span><span class="pln">p </span><span class="pun">-&gt;</span><span class="pln">p</span><span class="pun">.</span><span class="pln">getId</span><span class="pun">()==</span><span class="pln">phoneNumberId</span><span class="pun">)</span><span class="pln">
+                        </span><span class="pun">.</span><span class="pln">findAny</span><span class="pun">()</span><span class="pln">
+                        </span><span class="pun">.</span><span class="pln">orElseThrow</span><span class="pun">(()</span><span class="pln"> </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">IllegalArgumentException</span><span class="pun">());</span><span class="pln">
+    student</span><span class="pun">.</span><span class="pln">getPhoneNumbers</span><span class="pun">().</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">phoneNumber</span><span class="pun">);</span><span class="pln">
+    em</span><span class="pun">.</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">phoneNumber</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">});</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">    </span></pre>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Suppression (8)</h2>
+
+<p>On peut faire plus efficace, en utilisant le fait que l'<span class="blue"><code>EntityManager</code></span> joue le rôle de cache.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> removePhoneNumber2</span><span class="pun">(</span><span class="kwd">long</span><span class="pln"> studentId</span><span class="pun">,</span><span class="kwd">long</span><span class="pln"> phoneNumberId</span><span class="pun">){</span><span class="pln">
+</span><span class="typ">PersistenceUtils</span><span class="pun">.</span><span class="pln">inTransaction</span><span class="pun">(</span><span class="pln">em </span><span class="pun">-&gt;{</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> q </span><span class="pun">=</span><span class="pln"> </span><span class="str">"SELECT s FROM Student s LEFT JOIN FETCH s.phoneNumbers where s.id=:id"</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> query </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">createQuery</span><span class="pun">(</span><span class="pln">q</span><span class="pun">,</span><span class="typ">Student</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span class="pln">
+    query</span><span class="pun">.</span><span class="pln">setParameter</span><span class="pun">(</span><span class="str">"id"</span><span class="pun">,</span><span class="pln">studentId</span><span class="pun">);</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> student </span><span class="pun">=</span><span class="pln"> query</span><span class="pun">.</span><span class="pln">getSingleResult</span><span class="pun">();</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">student</span><span class="pun">==</span><span class="kwd">null</span><span class="pun">){</span><span class="pln">
+        </span><span class="kwd">throw</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">IllegalArgumentException</span><span class="pun">();</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+    </span><mark><span class="kwd">var</span><span class="pln"> phoneNumber </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">find</span><span class="pun">(</span><span class="typ">PhoneNumber</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">,</span><span class="pln">phoneNumberId</span><span class="pun">);</span></mark><span class="pln"> </span><span class="com">// pas de select :)</span><span class="pln">
+    student</span><span class="pun">.</span><span class="pln">getPhoneNumbers</span><span class="pun">().</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">phoneNumber</span><span class="pun">);</span><span class="pln">
+    em</span><span class="pun">.</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">phoneNumber</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">});</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">    </span></pre>
+</section>
+
+
+<section style="top: 0px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Redéfinir equals ou pas ?</h2>
+
+<p>On manipule des <i>collections</i> (i.e. <span class="blue"><code>Set</code></span>) de <span class="blue"><code>PhoneNumber</code></span> donc il semble évident qu'il faut redéfinir les méthodes <span class="blue"><code>equals</code></span> et <span class="blue"><code>hashCode</code></span> de <span class="blue"><code>PhoneNumber</code></span>.</p>
+
+<p><span class="red">Pb:</span> le champ <span class="blue"><code>id</code></span> est fixé par la BD donc si on s'en sert pour <span class="blue"><code>equals</code></span>, <span class="blue"><code>equals</code></span> est faux pour les objets transients. Si on ne s'en sert pas on a un equals faux si deux objets avec des id différentes, on les mêmes champs sinon.</p>
+
+<p>Tant qu'on utilise le <span class="blue"><code>Set&lt;PhoneNumber&gt;</code></span> avec l'<span class="blue"><code>EntityManager</code></span>, il n'y a aucun problème à ne pas redéfinir <span class="blue"><code>equals</code></span>. L'<span class="blue"><code>EntityManager</code></span> garantie qu'il y a au plus un objet avec une <span class="blue"><code>id</code></span> donnée. Donc le <span class="blue"><code>==</code></span> a effectivement le comportement que l'on attend de <span class="blue"><code>equals</code></span>.</p>
+
+<p>Il n'y a pas de solution parfaite et il faut réfléchir: ne pas surcharger, utiliser l'id, utiliser une clé métier, ...</p>
+</section>
+
+<section style="top: 78.5px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2><span class="blue"><code>@OneToOne</code></span>, <span class="blue"><code>@ManyToOne</code></span> et <span class="blue"><code>@ManyToMany</code></span></h2>
+
+<ul>
+<li>Le <span class="blue"><code>@ManyToOne</code></span> a un fonctionnement symétrique au mapping <span class="blue"><code>@OneToMany</code></span>. <br>
+Une différence majeure est que par défaut ce mapping est par défaut <span class="blue"><code>fetchType.EAGER</code></span> mais on peut le changer. </li>
+<li>Le mapping <span class="blue"><code>@OneToOne</code></span> réalise une colonne de jointure dans la table de la classe.<br>
+Elle semble être <span class="blue"><span class="blue"><code>fetchType.EAGER</code></span></span> par défaut mais on peut le changer.
+</li>
+<li>Le <span class="blue"><code>@ManyToMany</code></span> fait toujours une table de jointure.</li>
+</ul>
+</section>
+
+<section style="top: 36px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>@Embeddable</h2>
+
+<p>On n'est pas nécessairement obligé de créer un table pour chaque objet contenu dans la classe.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">class</span><span class="pln"> </span><span class="typ">Student</span><span class="pun">{</span><span class="pln">
+    </span><span class="pun">...</span><span class="pln">
+    </span><span class="lit">@Embedded</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Address</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="lit">@Embeddable</span><span class="pln">
+</span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Address</span><span class="pun">{</span><span class="pln">
+    </span><span class="pun">...</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> streetNumber</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> street</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p>Les champs de <span class="blue"><code>Address</code></span> sont des colonnes de la table <span class="blue"><code>Student</code></span>.</p>
+
+</section>
+
+</div>
+
+
+
+	<div class="backgrounds"><div class="slide-background present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div></div><div class="progress" style="display: block;"><span style="width: 0px;"></span></div><aside class="controls" style="display: block;"><div class="navigate-left"></div><div class="navigate-right enabled"></div><div class="navigate-up"></div><div class="navigate-down"></div></aside><div class="slide-number"></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px);">
+
+				JEE Back-end
+				
+				Mappings complexes avec JPA
+			</div></div>
+
+
+
+	<script src="./JEE Back-End - Hibernate et JPA_files/head.min.js.téléchargement"></script>
+	<script src="./JEE Back-End - Hibernate et JPA_files/reveal.js.téléchargement"></script>
+
+	<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script><script type="text/javascript" src="./JEE Back-End - Hibernate et JPA_files/zoom.js.téléchargement"></script><script type="text/javascript" src="./JEE Back-End - Hibernate et JPA_files/notes.js.téléchargement"></script>
+
+
+
+</body></html>

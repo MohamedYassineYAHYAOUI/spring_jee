@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<!-- saved from url=(0074)https://igm.univ-mlv.fr//~carayol/coursJEEM2/slides/retours-mapping.html#/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+<title>JEE Back-End - Retours exercices mapping</title>
+
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="./Retours sur les exercices sur les mappings Hibernate_files/reveal.css">
+<link rel="stylesheet" href="./Retours sur les exercices sur les mappings Hibernate_files/white.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="./Retours sur les exercices sur les mappings Hibernate_files/zenburn.css">
+<link rel="stylesheet" href="./Retours sur les exercices sur les mappings Hibernate_files/reveal-override.css">
+<link href="./Retours sur les exercices sur les mappings Hibernate_files/prettify.css" type="text/css" rel="stylesheet">
+<!-- Printing and PDF exports -->
+<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script><link rel="stylesheet" type="text/css" href="./Retours sur les exercices sur les mappings Hibernate_files/paper.css">
+<script type="text/javascript" src="./Retours sur les exercices sur les mappings Hibernate_files/prettify.js.téléchargement"></script>
+<style type="text/css">
+.reveal h2 {
+	color: steelblue;
+}
+
+.reveal h1 {
+	color: steelblue;
+}
+
+.reveal p {
+	text-align: left;
+}
+
+.reveal lu {
+	text-align: left;
+	list-style-position: inside;
+}
+
+.reveal span.red {
+	color: salmon;
+}
+
+.reveal p.red {
+	color: salmon;
+}
+
+.reveal span.blue,.reveal p.blue {
+	color: steelblue;
+}
+</style>
+<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+</head>
+
+<body onload="prettyPrint()">
+
+
+	<div class="reveal slide center" role="application" data-transition-speed="default" data-background-transition="fade">
+
+<div class="footer"><p>
+    <a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/index.html"><img src="./Retours sur les exercices sur les mappings Hibernate_files/home.png" width="30em"></a></p>
+      </div>
+
+		<!-- Any section element inside of this container is displayed as a slide -->
+		<div class="slides" style="width: 960px; height: 700px; zoom: 0.9;">
+			<section style="top: 180.5px; display: block;" class="present">
+
+				<h1>JEE Back-end</h1>
+				
+				<h2>Retours sur les exercices sur les mappings Hibernate</h2>
+				
+				
+			</section>
+
+<section style="top: 0px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Comment factoriser les Repository ?</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">interface</span><span class="pln"> </span><span class="typ">Repository</span><span class="pun">&lt;</span><span class="pln">T</span><span class="pun">,</span><span class="pln">K </span><span class="kwd">extends</span><span class="pln"> </span><span class="typ">Serializable</span><span class="pun">&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+   
+   </span><span class="typ">Class</span><span class="pun">&lt;</span><span class="pln">T</span><span class="pun">&gt;</span><span class="pln"> getClazz</span><span class="pun">();</span><span class="pln">
+   
+   </span><span class="kwd">default</span><span class="pln"> T create</span><span class="pun">(</span><span class="pln">T toBePersisted</span><span class="pun">){</span><span class="pln">
+       </span><span class="kwd">return</span><span class="pln"> inTransaction</span><span class="pun">(</span><span class="pln">em </span><span class="pun">-&gt;{</span><span class="pln">
+           em</span><span class="pun">.</span><span class="pln">persist</span><span class="pun">(</span><span class="pln">toBePersisted</span><span class="pun">);</span><span class="pln">
+           </span><span class="kwd">return</span><span class="pln"> toBePersisted</span><span class="pun">;</span><span class="pln">
+       </span><span class="pun">});</span><span class="pln">
+   </span><span class="pun">}</span><span class="pln">
+   
+   </span><span class="kwd">default</span><span class="pln"> </span><span class="kwd">boolean</span><span class="pln"> </span><span class="kwd">delete</span><span class="pun">(</span><span class="pln">K toBeDeletedId</span><span class="pun">){</span><span class="pln">
+   	</span><span class="pun">...</span><span class="pln">
+   </span><span class="pun">}</span><span class="pln">
+   
+   </span><span class="kwd">default</span><span class="pln"> T update</span><span class="pun">(</span><span class="pln">T toBeUpdated</span><span class="pun">){</span><span class="pln">
+   	</span><span class="pun">...</span><span class="pln">
+   </span><span class="pun">}</span><span class="pln">
+   
+   </span><span class="kwd">default</span><span class="pln"> </span><span class="typ">Optional</span><span class="pun">&lt;</span><span class="pln">T</span><span class="pun">&gt;</span><span class="pln"> </span><span class="kwd">get</span><span class="pun">(</span><span class="pln">K id</span><span class="pun">){</span><span class="pln">
+   	</span><span class="pun">...</span><span class="pln">
+   </span><span class="pun">}</span><span class="pln">
+   
+   </span><span class="kwd">default</span><span class="pln"> </span><span class="typ">List</span><span class="pun">&lt;</span><span class="pln">T</span><span class="pun">&gt;</span><span class="pln"> getAll</span><span class="pun">(){</span><span class="pln">
+   	</span><span class="pun">...</span><span class="pln">
+   </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+</section>
+
+<section style="top: 150.5px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Comment factoriser les Repository ? (2)</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">StudentRepository</span><span class="pln"> </span><span class="kwd">implements</span><span class="pln"> </span><span class="typ">Repository</span><span class="pun">&lt;</span><span class="typ">Student</span><span class="pun">,</span><span class="typ">Long</span><span class="pun">&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@Override</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">Class</span><span class="pun">&lt;</span><span class="typ">Student</span><span class="pun">&gt;</span><span class="pln"> getClazz</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> </span><span class="typ">Student</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="pun">...</span><span class="pln">
+
+</span><span class="pun">}</span></pre>
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Transient vs the world</h2>
+
+<p>Si l'on veut faire les choses proprement, il faut pouvoir distinguer les objets qui n'ont jamais eu de clé en BD (<span class="red">transients</span>) des autres.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Student</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@Id</span><span class="pln">
+    </span><span class="lit">@GeneratedValue</span><span class="pln">
+    </span><mark><span class="kwd">private</span><span class="pln"> </span><span class="typ">Long</span><span class="pln"> id</span><span class="pun">;</span></mark><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> firstName</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> lastName</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p> <span class="red">Transient</span> : <span class="blue"><code><code>id == null</code></code></span>.</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Transient vs the world</h2>
+
+<p>En bonus, on peut faire une implémentation assez satisfaisante (cf. cours précédent) de <span class="blue"><code>equals</code></span> et <span class="blue"><code>hashcode</code></span>.</p>
+
+<p>Les objets <span class="red">transients</span> (i.e., <span class="blue">sans id</span>) sont considérés comme tous différents. Les autres objets sont comparés par leur <span class="blue">id</span>.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Override</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">boolean</span><span class="pln"> equals</span><span class="pun">(</span><span class="typ">Object</span><span class="pln"> o</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">this</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> o</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">return</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(!(</span><span class="pln">o </span><span class="kwd">instanceof</span><span class="pln"> </span><span class="typ">Student</span><span class="pun">))</span><span class="pln"> </span><span class="kwd">return</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="typ">Student</span><span class="pln"> student </span><span class="pun">=</span><span class="pln"> </span><span class="pun">(</span><span class="typ">Student</span><span class="pun">)</span><span class="pln"> o</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">id </span><span class="pun">==</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">return</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> id</span><span class="pun">.</span><span class="pln">equals</span><span class="pun">(</span><span class="pln">student</span><span class="pun">.</span><span class="pln">id</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="lit">@Override</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">int</span><span class="pln"> hashCode</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> id </span><span class="pun">!=</span><span class="pln"> </span><span class="kwd">null</span><span class="pln"> </span><span class="pun">?</span><span class="pln"> id</span><span class="pun">.</span><span class="pln">hashCode</span><span class="pun">()</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">super</span><span class="pun">.</span><span class="pln">hashCode</span><span class="pun">();</span><span class="pln">
+</span><span class="pun">}</span></pre>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Mapping uni-directionnel</h2>
+
+<pre class="prettyprint prettyprinted" style="font-size: 16px;"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Student</span><span class="pln"> </span><span class="kwd">implements</span><span class="pln"> </span><span class="typ">WithId</span><span class="pun">&lt;</span><span class="typ">Long</span><span class="pun">&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@Id</span><span class="pln">
+    </span><span class="lit">@GeneratedValue</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Long</span><span class="pln"> id</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> firstName</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> lastName</span><span class="pun">;</span><span class="pln">
+    </span><span class="lit">@Embedded</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Address</span><span class="pln"> address</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="lit">@OneToOne</span><span class="pun">(</span><span class="pln">cascade </span><span class="pun">=</span><span class="pln"> </span><span class="typ">CascadeType</span><span class="pun">.</span><span class="pln">ALL</span><span class="pun">,</span><span class="pln">fetch </span><span class="pun">=</span><span class="pln"> </span><span class="typ">FetchType</span><span class="pun">.</span><span class="pln">LAZY</span><span class="pun">)</span><span class="pln">
+    </span><span class="lit">@JoinColumn</span><span class="pun">(</span><span class="pln">name </span><span class="pun">=</span><span class="pln"> </span><span class="str">"phoneNumber_id"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">PhoneNumber</span><span class="pln"> phoneNumber</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="lit">@ManyToOne</span><span class="pun">(</span><span class="pln">fetch </span><span class="pun">=</span><span class="pln"> </span><span class="typ">FetchType</span><span class="pun">.</span><span class="pln">LAZY</span><span class="pun">)</span><span class="pln"> </span><span class="com">// </span><mark><span class="com">pq pas de cascade PERSIST ?</span></mark><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">University</span><span class="pln"> university</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="lit">@ManyToMany</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">Lecture</span><span class="pun">&gt;</span><span class="pln">  lectures</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="lit">@OneToMany</span><span class="pun">(</span><span class="pln">cascade </span><span class="pun">=</span><span class="pln"> </span><span class="typ">CascadeType</span><span class="pun">.</span><span class="pln">ALL</span><span class="pun">)</span><span class="pln">
+    </span><span class="lit">@JoinColumn</span><span class="pun">(</span><span class="pln">name </span><span class="pun">=</span><span class="pln"> </span><span class="str">"student_id"</span><span class="pun">)</span><span class="pln">
+    </span><span class="lit">@OrderBy</span><span class="pun">(</span><span class="str">"date"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">List</span><span class="pun">&lt;</span><span class="typ">Remark</span><span class="pun">&gt;</span><span class="pln"> remarks</span><span class="pun">;</span><span class="pln">    
+
+    </span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span></pre>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+	<h2>removeRemark</h2>
+
+<pre class="prettyprint prettyprinted" style="font-size: 14px;"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> removeRemark</span><span class="pun">(</span><span class="typ">Student</span><span class="pln"> student</span><span class="pun">,</span><span class="typ">Remark</span><span class="pln"> remark</span><span class="pun">){</span><span class="pln">
+        </span><span class="typ">Objects</span><span class="pun">.</span><span class="pln">requireNonNull</span><span class="pun">(</span><span class="pln">student</span><span class="pun">.</span><span class="pln">getId</span><span class="pun">());</span><span class="pln">
+        </span><span class="typ">Objects</span><span class="pun">.</span><span class="pln">requireNonNull</span><span class="pun">(</span><span class="pln">remark</span><span class="pun">.</span><span class="pln">getId</span><span class="pun">());</span><span class="pln">
+        inTransaction</span><span class="pun">(</span><span class="pln">em </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">var</span><span class="pln"> q</span><span class="pun">=</span><span class="str">"SELECT s FROM Student s LEFT JOIN FETCH s.remarks WHERE s.id = :id"</span><span class="pun">;</span><span class="pln">
+            </span><span class="kwd">var</span><span class="pln"> query</span><span class="pun">=</span><span class="pln">em</span><span class="pun">.</span><span class="pln">createQuery</span><span class="pun">(</span><span class="pln">q</span><span class="pun">,</span><span class="typ">Student</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span class="pln">
+            query</span><span class="pun">.</span><span class="pln">setParameter</span><span class="pun">(</span><span class="str">"id"</span><span class="pun">,</span><span class="pln">student</span><span class="pun">.</span><span class="pln">getId</span><span class="pun">());</span><span class="pln">
+            </span><span class="kwd">var</span><span class="pln"> studentPersistent </span><span class="pun">=</span><span class="pln"> query</span><span class="pun">.</span><span class="pln">getSingleResult</span><span class="pun">();</span><span class="pln">
+            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">studentPersistent </span><span class="pun">==</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">){</span><span class="pln">
+                </span><span class="kwd">throw</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">IllegalStateException</span><span class="pun">(</span><span class="str">"No student with id "</span><span class="pun">+</span><span class="pln">student</span><span class="pun">.</span><span class="pln">getId</span><span class="pun">());</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln">
+            </span><span class="kwd">var</span><span class="pln"> remarkPersistent </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">find</span><span class="pun">(</span><span class="typ">Remark</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">,</span><span class="pln">remark</span><span class="pun">.</span><span class="pln">getId</span><span class="pun">());</span><span class="pln">
+            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">remarkPersistent</span><span class="pun">==</span><span class="kwd">null</span><span class="pun">){</span><span class="pln">
+                </span><span class="kwd">throw</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">IllegalStateException</span><span class="pun">(</span><span class="str">"No remark with id"</span><span class="pln"> </span><span class="pun">+</span><span class="pln">remark</span><span class="pun">.</span><span class="pln">getId</span><span class="pun">());</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln">
+            em</span><span class="pun">.</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">remarkPersistent</span><span class="pun">);</span><span class="pln">
+            </span><mark><span class="pln">studentPersistent</span><span class="pun">.</span><span class="pln">getRemarks</span><span class="pun">().</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">remarkPersistent</span><span class="pun">);</span></mark><span class="pln">
+
+        </span><span class="pun">});</span><span class="pln">
+</span><span class="pun">}</span></pre>
+<p>Sans la ligne surlignée, il ne se passe rien! <span class="blue">Pourquoi ?</span></p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Une version plus efficace mais subtile</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="typ">Objects</span><span class="pun">.</span><span class="pln">requireNonNull</span><span class="pun">(</span><span class="pln">student</span><span class="pun">.</span><span class="pln">getId</span><span class="pun">());</span><span class="pln">
+</span><span class="typ">Objects</span><span class="pun">.</span><span class="pln">requireNonNull</span><span class="pun">(</span><span class="pln">remark</span><span class="pun">.</span><span class="pln">getId</span><span class="pun">());</span><span class="pln">
+inTransaction</span><span class="pun">(</span><span class="pln">em </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> remarkPersistent </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">find</span><span class="pun">(</span><span class="typ">Remark</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">,</span><span class="pln">remark</span><span class="pun">.</span><span class="pln">getId</span><span class="pun">());</span><span class="pln">
+     </span><span class="pun">...</span><span class="pln">
+     em</span><span class="pun">.</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">remarkPersistent</span><span class="pun">);</span><span class="pln">
+ </span><span class="pun">});</span><span class="pln">    </span></pre>
+
+<p>Elle ne marche que parce que l'<span class="blue"><code>EntityManager</code></span> est vide.</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Problème </h2>
+<pre class="prettyprint prettyprinted" style=""><span class="pln">   </span><span class="kwd">var</span><span class="pln"> emf </span><span class="pun">=</span><span class="pln"> </span><span class="typ">PersistenceUtils</span><span class="pun">.</span><span class="pln">getEntityManagerFactory</span><span class="pun">();</span><span class="pln">
+   </span><span class="kwd">var</span><span class="pln"> em </span><span class="pun">=</span><span class="pln"> emf</span><span class="pun">.</span><span class="pln">createEntityManager</span><span class="pun">();</span><span class="pln">
+
+   em</span><span class="pun">.</span><span class="pln">getTransaction</span><span class="pun">().</span><span class="kwd">begin</span><span class="pun">();</span><span class="pln">
+   </span><span class="kwd">var</span><span class="pln"> q </span><span class="pun">=</span><span class="pln"> </span><span class="str">"SELECT s FROM Student s LEFT JOIN FETCH s.phoneNumbers where s.id=:id"</span><span class="pun">;</span><span class="pln">
+   </span><span class="kwd">var</span><span class="pln"> query </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">createQuery</span><span class="pun">(</span><span class="pln">q</span><span class="pun">,</span><span class="typ">Student</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span class="pln">
+   query</span><span class="pun">.</span><span class="pln">setParameter</span><span class="pun">(</span><span class="str">"id"</span><span class="pun">,</span><span class="pln">studentId</span><span class="pun">);</span><span class="pln">
+   </span><span class="kwd">var</span><span class="pln"> student </span><span class="pun">=</span><span class="pln"> query</span><span class="pun">.</span><span class="pln">getSingleResult</span><span class="pun">();</span><span class="pln"> 
+   em</span><span class="pun">.</span><span class="pln">getTransaction</span><span class="pun">().</span><span class="pln">commit</span><span class="pun">();</span><span class="pln">
+   
+   em</span><span class="pun">.</span><span class="pln">getTransaction</span><span class="pun">().</span><span class="kwd">begin</span><span class="pun">();</span><span class="pln">
+   </span><span class="kwd">var</span><span class="pln"> phoneNumber </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">find</span><span class="pun">(</span><span class="typ">PhoneNumber</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">,</span><span class="pln">phoneNumberId</span><span class="pun">);</span><span class="pln">
+   </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">phoneNumber</span><span class="pun">==</span><span class="kwd">null</span><span class="pun">){</span><span class="pln">
+       </span><span class="kwd">throw</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">IllegalArgumentException</span><span class="pun">();</span><span class="pln">
+   </span><span class="pun">}</span><span class="pln">
+   em</span><span class="pun">.</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">phoneNumber</span><span class="pun">);</span><span class="pln">
+   em</span><span class="pun">.</span><span class="pln">getTransaction</span><span class="pun">().</span><span class="pln">commit</span><span class="pun">();</span></pre>
+
+<p>Il ne se passe rien (juste un select)!</p>
+</section>			 
+			
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+	<h2>Suppression d'un cours FAUX !</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">boolean</span><span class="pln"> deleteWrong</span><span class="pun">(</span><span class="typ">Lecture</span><span class="pln"> lecture</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+				</span><span class="pun">...</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> inTransaction</span><span class="pun">(</span><span class="pln">em </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+           </span><span class="kwd">var</span><span class="pln"> lectureToBeDeleted </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">find</span><span class="pun">(</span><span class="typ">Lecture</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">,</span><span class="pln"> lecture</span><span class="pun">.</span><span class="pln">getId</span><span class="pun">());</span><span class="pln">
+           </span><span class="pun">...</span><span class="pln">
+           </span><span class="kwd">var</span><span class="pln"> q </span><span class="pun">=</span><span class="pln"> </span><span class="str">"SELECT s FROM Student s LEFT JOIN </span><mark><span class="str">FETCH</span></mark><span class="str"> s.lectures l WHERE l.id = :id"</span><span class="pun">;</span><span class="pln">
+           </span><span class="kwd">var</span><span class="pln"> students </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">createQuery</span><span class="pun">(</span><span class="pln">q</span><span class="pun">,</span><span class="typ">Student</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">)</span><span class="pln">
+                                    </span><span class="pun">.</span><span class="pln">setParameter</span><span class="pun">(</span><span class="str">"id"</span><span class="pun">,</span><span class="pln"> lectureToBeDeleted</span><span class="pun">.</span><span class="pln">getId</span><span class="pun">())</span><span class="pln">
+                                    </span><span class="pun">.</span><span class="pln">getResultList</span><span class="pun">();</span><span class="pln">
+           </span><span class="kwd">for</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">var</span><span class="pln"> student </span><span class="pun">:</span><span class="pln"> students</span><span class="pun">){</span><span class="pln">
+               student</span><span class="pun">.</span><span class="pln">getLectures</span><span class="pun">().</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">lectureToBeDeleted</span><span class="pun">);</span><span class="pln">
+           </span><span class="pun">}</span><span class="pln">
+           em</span><span class="pun">.</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">lectureToBeDeleted</span><span class="pun">);</span><span class="pln">
+           </span><span class="kwd">return</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+        </span><span class="pun">});</span><span class="pln">
+    </span><span class="pun">}</span></pre>
+
+<p>Supprime <span class="red">tous les cours</span> des <span class="blue">Student</span> de <span class="blue">lecture</span>.</p>
+<p>La version sans le FETCH est correcte mais fait un <span class="blue">select</span> <span class="blue">par étudiant</span> qui suit le cours.</p>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Suppression d'un cours (2)</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">boolean</span><span class="pln"> </span><span class="kwd">delete</span><span class="pun">(</span><span class="typ">Lecture</span><span class="pln"> lecture</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="typ">Objects</span><span class="pun">.</span><span class="pln">requireNonNull</span><span class="pun">(</span><span class="pln">lecture</span><span class="pun">.</span><span class="pln">getId</span><span class="pun">());</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> inTransaction</span><span class="pun">(</span><span class="pln">em </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">var</span><span class="pln"> lectureToBeDeleted </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">find</span><span class="pun">(</span><span class="typ">Lecture</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">,</span><span class="pln"> lecture</span><span class="pun">.</span><span class="pln">getId</span><span class="pun">());</span><span class="pln">
+            </span><span class="pun">...</span><span class="pln">
+            </span><span class="kwd">var</span><span class="pln"> q </span><span class="pun">=</span><span class="pln"> </span><span class="str">"SELECT s FROM Student s LEFT JOIN FETCH s.lectures WHERE :lecture MEMBER OF s.lectures"</span><span class="pun">;</span><span class="pln">
+            </span><span class="kwd">var</span><span class="pln"> students </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">createQuery</span><span class="pun">(</span><span class="pln">q</span><span class="pun">,</span><span class="typ">Student</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">)</span><span class="pln">
+                    </span><span class="pun">.</span><span class="pln">setParameter</span><span class="pun">(</span><span class="str">"lecture"</span><span class="pun">,</span><span class="pln"> lectureToBeDeleted</span><span class="pun">)</span><span class="pln">
+                    </span><span class="pun">.</span><span class="pln">getResultList</span><span class="pun">();</span><span class="pln">
+            </span><span class="kwd">for</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">var</span><span class="pln"> student </span><span class="pun">:</span><span class="pln"> students</span><span class="pun">){</span><span class="pln">
+                student</span><span class="pun">.</span><span class="pln">getLectures</span><span class="pun">().</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">lectureToBeDeleted</span><span class="pun">);</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln">
+            em</span><span class="pun">.</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">lectureToBeDeleted</span><span class="pun">);</span><span class="pln">
+            </span><span class="kwd">return</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">;</span><span class="pln">
+        </span><span class="pun">});</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">	</span></pre>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+	<h2>A retenir</h2>
+
+<p>La norme JPA impose de toujours maintenir le graphe des objets dans un état cohérent.</p>
+
+</section>
+
+<section style="top: 66px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Mapping bi-directionnel</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="pln">    </span><span class="lit">@OneToOne</span><span class="pun">(</span><span class="pln">cascade </span><span class="pun">=</span><span class="pln"> </span><span class="typ">CascadeType</span><span class="pun">.</span><span class="pln">ALL</span><span class="pun">,</span><span class="pln">fetch </span><span class="pun">=</span><span class="pln"> </span><span class="typ">FetchType</span><span class="pun">.</span><span class="pln">LAZY</span><span class="pun">)</span><span class="pln">
+    </span><span class="lit">@JoinColumn</span><span class="pun">(</span><span class="pln">name </span><span class="pun">=</span><span class="pln"> </span><span class="str">"phoneNumber_id"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">PhoneNumber</span><span class="pln"> phoneNumber</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="lit">@ManyToOne</span><span class="pun">(</span><span class="pln">fetch </span><span class="pun">=</span><span class="pln"> </span><span class="typ">FetchType</span><span class="pun">.</span><span class="pln">LAZY</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">University</span><span class="pln"> university</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="lit">@ManyToMany</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">Lecture</span><span class="pun">&gt;</span><span class="pln">  lectures</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="lit">@OneToMany</span><span class="pun">(</span><span class="pln">cascade </span><span class="pun">=</span><span class="pln"> </span><span class="typ">CascadeType</span><span class="pun">.</span><span class="pln">ALL</span><span class="pun">,</span><span class="pln">mappedBy </span><span class="pun">=</span><span class="pln"> </span><span class="str">"student"</span><span class="pun">)</span><span class="pln">
+    </span><span class="lit">@OrderBy</span><span class="pun">(</span><span class="str">"date"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">List</span><span class="pun">&lt;</span><span class="typ">Remark</span><span class="pun">&gt;</span><span class="pln"> remarks</span><span class="pun">;</span></pre>
+
+<p>La classe <span class="blue"><code>Student</code></span> est responsable de toutes les relations. C'est un choix arbitraire pour <span class="blue"><code>Lecture</code></span>.</p>
+</section>
+
+<section style="top: 161px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>De l'autre coté</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Lecture</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="lit">@Id</span><span class="pln">
+    </span><span class="lit">@GeneratedValue</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Long</span><span class="pln"> id</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> title</span><span class="pun">;</span><span class="pln">
+    </span><span class="lit">@ManyToMany</span><span class="pun">(</span><span class="pln">mappedBy</span><span class="pun">=</span><span class="str">"lectures"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">Student</span><span class="pun">&gt;</span><span class="pln"> students</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">...</span></pre>
+</section>
+
+<section style="top: 0px; display: block;" hidden="" aria-hidden="true" class="future">
+	<h2>Suppresion d'un cours pour un étudiant</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> removeLecture</span><span class="pun">(</span><span class="typ">Student</span><span class="pln"> student</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Lecture</span><span class="pln"> lecture</span><span class="pun">){</span><span class="pln">
+        </span><span class="typ">Objects</span><span class="pun">.</span><span class="pln">requireNonNull</span><span class="pun">(</span><span class="pln">student</span><span class="pun">.</span><span class="pln">getId</span><span class="pun">());</span><span class="pln">
+        </span><span class="typ">Objects</span><span class="pun">.</span><span class="pln">requireNonNull</span><span class="pun">(</span><span class="pln">lecture</span><span class="pun">.</span><span class="pln">getId</span><span class="pun">());</span><span class="pln">
+        inTransaction</span><span class="pun">(</span><span class="pln">em </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">var</span><span class="pln"> q</span><span class="pun">=</span><span class="str">"SELECT s FROM Student s LEFT JOIN FETCH s.lectures WHERE s.id = :id"</span><span class="pun">;</span><span class="pln">
+            </span><span class="kwd">var</span><span class="pln"> query</span><span class="pun">=</span><span class="pln">em</span><span class="pun">.</span><span class="pln">createQuery</span><span class="pun">(</span><span class="pln">q</span><span class="pun">,</span><span class="typ">Student</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">);</span><span class="pln">
+            query</span><span class="pun">.</span><span class="pln">setParameter</span><span class="pun">(</span><span class="str">"id"</span><span class="pun">,</span><span class="pln">student</span><span class="pun">.</span><span class="pln">getId</span><span class="pun">());</span><span class="pln">
+            </span><span class="kwd">var</span><span class="pln"> studentPersistent </span><span class="pun">=</span><span class="pln"> query</span><span class="pun">.</span><span class="pln">getSingleResult</span><span class="pun">();</span><span class="pln">
+            </span><span class="pun">...</span><span class="pln">
+            </span><span class="kwd">var</span><span class="pln"> lecturePersistent </span><span class="pun">=</span><span class="pln"> em</span><span class="pun">.</span><span class="pln">find</span><span class="pun">(</span><span class="typ">Lecture</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">,</span><span class="pln">lecture</span><span class="pun">.</span><span class="pln">getId</span><span class="pun">());</span><span class="pln">
+            </span><span class="pun">...</span><span class="pln">
+            studentPersistent</span><span class="pun">.</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">lecturePersistent</span><span class="pun">);</span><span class="pln">
+            </span><span class="kwd">return</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">;</span><span class="pln">
+        </span><span class="pun">});</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">    </span></pre>	
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Student</span><span class="pun">{</span><span class="pln">
+        </span><span class="pun">...</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> remove</span><span class="pun">(</span><span class="typ">Lecture</span><span class="pln"> lecture</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        lectures</span><span class="pun">.</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">lecture</span><span class="pun">);</span><span class="pln">
+        lecture</span><span class="pun">.</span><span class="pln">getStudents</span><span class="pun">().</span><span class="pln">remove</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+</span><span class="pun">}</span></pre>
+
+</section>
+
+		</div>
+
+	<div class="backgrounds"><div class="slide-background present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div></div><div class="progress" style="display: block;"><span style="width: 0px;"></span></div><aside class="controls" style="display: block;"><div class="navigate-left"></div><div class="navigate-right enabled"></div><div class="navigate-up"></div><div class="navigate-down"></div></aside><div class="slide-number"></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px);">
+
+				JEE Back-end
+				
+				Retours sur les exercices sur les mappings Hibernate
+				
+				
+			</div></div>
+
+
+
+	<script src="./Retours sur les exercices sur les mappings Hibernate_files/head.min.js.téléchargement"></script>
+	<script src="./Retours sur les exercices sur les mappings Hibernate_files/reveal.js.téléchargement"></script>
+
+	<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script><script type="text/javascript" src="./Retours sur les exercices sur les mappings Hibernate_files/zoom.js.téléchargement"></script><script type="text/javascript" src="./Retours sur les exercices sur les mappings Hibernate_files/notes.js.téléchargement"></script>
+
+
+
+</body></html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<!-- saved from url=(0069)https://igm.univ-mlv.fr//~carayol/coursJEEM2/slides/hibernate3.html#/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+<title>JEE Back-End - Hibernate et JPA</title>
+
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="./Mappings bi-directionnels avec JPA_files/reveal.css">
+<link rel="stylesheet" href="./Mappings bi-directionnels avec JPA_files/white.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="./Mappings bi-directionnels avec JPA_files/zenburn.css">
+<link rel="stylesheet" href="./Mappings bi-directionnels avec JPA_files/reveal-override.css">
+<link href="./Mappings bi-directionnels avec JPA_files/prettify.css" type="text/css" rel="stylesheet">
+<!-- Printing and PDF exports -->
+<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script><link rel="stylesheet" type="text/css" href="./Mappings bi-directionnels avec JPA_files/paper.css">
+<script type="text/javascript" src="./Mappings bi-directionnels avec JPA_files/prettify.js.téléchargement"></script>
+<style type="text/css">
+.reveal h2 {
+	color: steelblue;
+}
+
+.reveal h1 {
+	color: steelblue;
+}
+
+.reveal p {
+	text-align: left;
+}
+
+.reveal lu {
+	text-align: left;
+	list-style-position: inside;
+}
+
+.reveal span.red {
+	color: salmon;
+}
+
+.reveal p.red {
+	color: salmon;
+}
+
+.reveal span.blue,.reveal p.blue {
+	color: steelblue;
+}
+</style>
+<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+</head>
+
+<body onload="prettyPrint()">
+
+
+	<div class="reveal slide center" role="application" data-transition-speed="default" data-background-transition="fade">
+
+<div class="footer"><p>
+    <a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/index.html"><img src="./Mappings bi-directionnels avec JPA_files/home.png" width="30em"></a></p>
+      </div>
+
+		<!-- Any section element inside of this container is displayed as a slide -->
+		<div class="slides" style="width: 960px; height: 700px; zoom: 0.9;">
+			<section style="top: 211px; display: block;" class="present">
+
+				<h1>JEE Back-end</h1>
+				
+				<h2>Mappings bi-directionnels avec JPA</h2>
+			</section>
+
+<section style="top: 166px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Dans cette séance</h2>
+
+<p><span class="blue">Dans la séance précédente</span>, nous avons vu en détail les mappings <span class="blue">uni-directionnels</span>.</p>
+
+<p><span class="blue">Dans cette séance</span>, nous allons voir brièvement le cas des mappings <span class="red">bi-directionnels</span>.</p>
+
+</section>
+
+
+<section style="top: 35.5px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Mapping bi-directionnels</h2> 
+
+<p>Il y a un mapping <span class="blue">bi-directionnel</span> si les objets de <span class="red">A</span> contient des objets de <span class="blue">B</span>.</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Student</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Student</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> id</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> firstName</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> lastName</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">PhoneNumber</span><span class="pun">&gt;</span><span class="pln"> phoneNumbers</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">PhoneNumber</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> id</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> phoneNumber</span><span class="pun">;</span><span class="pln">
+    </span><mark><span class="kwd">private</span><span class="pln"> </span><span class="typ">Student</span><span class="pln"> owner</span><span class="pun">;</span></mark><span class="pln">
+    </span><span class="pun">...</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">        </span></pre>
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>@OneToMany and @ManyToOne</h2>
+
+<p>Dans <span class="blue"><code>Student</code></span>, <span class="blue"><code>phoneNumbers</code></span> est un <span class="blue"><code>@OneToMany</code></span>.
+Symétriquement, dans <span class="blue"><code>PhoneNumber</code></span>, <span class="blue"><code>owner</code></span> est un <span class="blue"><code>@ManyToOne</code></span></p>
+
+<p>En JPA, un seul des cotés est <span class="blue"><code>responsable</code></span> de la relation. C'est toujours le <span class="blue"><code>@ManyToOne</code></span>. Le coté qui n'est pas responsable doit faire référence au coté responsable avec l'annotation <span class="blue"><code>mappedBy</code></span>.</p>
+
+<p>Pour une <span class="blue"><code>@ManyToMany</code></span>, il faut choisir un coté comme responsable.</p>
+
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Example (1)</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Entity</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Student</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="lit">@Id</span><span class="pln">
+    </span><span class="lit">@GeneratedValue</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> id</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> firstName</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> lastName</span><span class="pun">;</span><span class="pln">
+    </span><span class="lit">@OneToMany</span><span class="pun">(</span><span class="pln">cascade </span><span class="pun">=</span><span class="pln"> </span><span class="typ">CascadeType</span><span class="pun">.</span><span class="pln">ALL</span><span class="pun">,</span><span class="pln">mappedBy</span><span class="pun">=</span><span class="str">"owner"</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">PhoneNumber</span><span class="pun">&gt;</span><span class="pln"> phoneNumbers</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Entity</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">PhoneNumber</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="lit">@Id</span><span class="pln">
+    </span><span class="lit">@GeneratedValue</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> id</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> phoneNumber</span><span class="pun">;</span><span class="pln">
+    </span><span class="lit">@ManyToOne</span><span class="pun">(</span><span class="pln">fetch </span><span class="pun">=</span><span class="pln"> </span><span class="typ">FetchType</span><span class="pun">.</span><span class="pln">LAZY</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">Student</span><span class="pln"> owner</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">}</span></pre>
+</section>
+<section style="top: 120.5px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Example (2)</h2>
+<ul>
+<li><span class="blue"><code>mappedBy="owner"</code></span> indique que la relation
+<span class="blue"><code>@OneToMany</code></span> est en fait un <i>reflet</i> de la relation <span class="blue"><code>@ManyToOne</code></span> sur le champ <span class="blue"><code>owner</code></span> de <span class="blue"><code>PhoneNumber</code></span>.
+</li>
+<li>La relation de cascade n'est pas symmétrique. Si l'on supprime un <span class="blue"><code>PhoneNumber</code></span>, on ne veut pas supprimer le <span class="blue"><code>Student</code></span>.</li>
+
+<li>On n'oublie pas de changer le <span class="blue"><code>FetchType</code></span> de la relation <span class="blue"><code>ManyToOne</code></span> car il est <span class="blue"><code>EAGER</code></span> par défaut.</li>
+</ul>
+</section>
+
+<section style="top: 9.5px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Relation bi-directionnelle au niveau des objets</h2>
+
+<p>Prenons un <span class="red"><code>Student student</code></span> et un <span class="blue"><code>PhoneNumber phoneNumber</code></span>.</p>
+
+<p>Si <span class="blue"><code>phoneNumber</code></span> appartient à <span class="red"><code>student.phoneNumbers</code></span> alors il faut que <span class="blue"><code>student</code></span><code>==</code><span class="blue"><code>phoneNumber.owner</code></span>.</p>
+
+<p><span class="red">Il n'y a pas de magie</span>, c'est à votre code de maintenir cette contrainte. JPA ne le fera pas pour vous automatiquement. Si vous enlever un <span class="blue"><code>PhoneNumber</code></span> de <span class="red"><code>student.phoneNumbers</code></span>, il faut mettre le champ </p>
+
+<p>La <span class="red">norme JPA</span> indique que si la correspondance entre les objets n'est pas maintenue correctement, le mapping vers la BD peut ne pas être correct.</p>
+</section>
+
+<section style="top: 98px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Example</h2>
+
+<pre class="prettyprint prettyprinted" style=""><span class="kwd">public</span><span class="pln"> </span><span class="typ">Student</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> firstName</span><span class="pun">,</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> lastName</span><span class="pun">,</span><span class="typ">Address</span><span class="pln"> address</span><span class="pun">,</span><span class="typ">Set</span><span class="pun">&lt;</span><span class="typ">PhoneNumber</span><span class="pun">&gt;</span><span class="pln"> phoneNumbers</span><span class="pun">,</span><span class="typ">University</span><span class="pln"> university</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">firstName </span><span class="pun">=</span><span class="pln"> firstName</span><span class="pun">;</span><span class="pln">
+        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">lastName </span><span class="pun">=</span><span class="pln"> lastName</span><span class="pun">;</span><span class="pln">
+        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">phoneNumbers</span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">HashSet</span><span class="pun">&lt;&gt;();</span><span class="pln">
+        </span><span class="kwd">for</span><span class="pln"> </span><span class="pun">(</span><span class="typ">PhoneNumber</span><span class="pln"> phoneNumber </span><span class="pun">:</span><span class="pln"> phoneNumbers</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            addPhoneNumber</span><span class="pun">(</span><span class="pln">phoneNumber</span><span class="pun">);</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">address </span><span class="pun">=</span><span class="pln"> address</span><span class="pun">;</span><span class="pln">
+        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">university </span><span class="pun">=</span><span class="pln"> university</span><span class="pun">;</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> addPhoneNumber</span><span class="pun">(</span><span class="typ">PhoneNumber</span><span class="pln"> phoneNumber</span><span class="pun">){</span><span class="pln">
+        phoneNumbers</span><span class="pun">.</span><span class="pln">add</span><span class="pun">(</span><span class="pln">phoneNumber</span><span class="pun">);</span><span class="pln">
+        phoneNumber</span><span class="pun">.</span><span class="pln">setOwner</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">);</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">    </span></pre>
+</section>
+
+</div>
+
+
+
+	<div class="backgrounds"><div class="slide-background present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div></div><div class="progress" style="display: block;"><span style="width: 0px;"></span></div><aside class="controls" style="display: block;"><div class="navigate-left"></div><div class="navigate-right enabled"></div><div class="navigate-up"></div><div class="navigate-down"></div></aside><div class="slide-number"></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px);">
+
+				JEE Back-end
+				
+				Mappings bi-directionnels avec JPA
+			</div></div>
+
+
+
+	<script src="./Mappings bi-directionnels avec JPA_files/head.min.js.téléchargement"></script>
+	<script src="./Mappings bi-directionnels avec JPA_files/reveal.js.téléchargement"></script>
+
+	<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script><script type="text/javascript" src="./Mappings bi-directionnels avec JPA_files/zoom.js.téléchargement"></script><script type="text/javascript" src="./Mappings bi-directionnels avec JPA_files/notes.js.téléchargement"></script>
+
+
+
+</body></html>

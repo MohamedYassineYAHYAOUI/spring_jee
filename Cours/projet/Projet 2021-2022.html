@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<!-- saved from url=(0069)https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/projet2021-2022.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<!-- Required meta tags -->
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Javascripts --> 
+	<script type="text/javascript" src="./Projet 2021-2022_files/prettify.js.téléchargement"></script>
+	<script type="text/javascript" src="./Projet 2021-2022_files/jquery-3.2.1.slim.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./Projet 2021-2022_files/popper.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./Projet 2021-2022_files/bootstrap.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./Projet 2021-2022_files/hack.js.téléchargement"></script>
+
+	<!-- Bootstrap CSS -->
+
+	<link href="./Projet 2021-2022_files/bootstrap.css" type="text/css" rel="stylesheet">
+
+   <!-- Syntaxt highlighter CSS -->
+   
+	<link href="./Projet 2021-2022_files/prettify.css" type="text/css" rel="stylesheet">
+
+	<!-- Fonts for the icons -->
+
+   <link href="./Projet 2021-2022_files/fontawesome-all.min.css" rel="stylesheet">
+
+<title>Projet 2021-2022</title>
+  </head>
+  <body onload="prettyPrint()">
+
+
+<!-- Title of the exercice sheet
+ 
+<h1>
+		TITLE
+		<a href="index.html" style="float:right"><span class="fa fa-home"></span></a>
+ </h1>
+ -->
+
+<h1>
+	Projet
+	<a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/index.html" style="float:right"><span class="fa fa-home"></span></a>
+</h1>
+
+
+   
+   
+<!-- TABLE OF CONTENT OF THE EXERCICES
+ 
+ <ul class="nav nav-tabs">
+ <li class="nav-item">
+ <a class="nav-link active" data-toggle="tab" href="#exercice1">Exercice 1</a>
+ </li>
+ <li class="nav-item">
+ <a class="nav-link" data-toggle="tab" href="#exercice2">Exercice 2</a>
+ </li>
+ </ul>
+
+   -->
+
+
+<!---
+
+					TABLE OF CONTENT
+					
+-->
+
+<ul class="nav nav-tabs">
+  
+<li class="nav-item">
+	<a class="nav-link active" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/projet2021-2022.html#exercice1">Projet</a>
+</li>
+
+</ul>
+
+
+
+<div id="myTabContent" class="tab-content">
+
+<div class="tab-pane fade show active" id="exercice1">
+
+<!---
+
+					EXERCICE 1
+
+-->
+
+<h2>Sujet</h2>
+
+<p>Le but du projet est de réaliser un forum de discussion qui sera une version simplifiée
+  du site <a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/www.reddit.com">Reddit</a>.</p>
+
+<p>Le principe du site est simple: les utilisateurs peuvent créer des sujets de discussion
+  avec un titre et un texte d'accompagnement. Ils peuvent poster un commentaire en réponse à un sujet ou à un autre commentaire. Attention, un commentaire peut répondre à un commentaire qui répond à un commentaire ... Ils peuvent <i>upvote</i> ou <i>downvote</i> un sujet ou un commentaire. Les textes des sujets de discutions et des commentaires doivent pouvoir contenir du texte en italique, en gras et des liens. Si l'utilisateur clique sur un lien qui sort du site, il devra d'abord être redirigé vers une page de confirmation qui lui indique qu'il s'apprête à quitter le site.</p>
+
+  <p>Le site affiche les sujets et les commentaires par ordre décroissant sur la quantité <i>nombre de upvotes - nombre de downvote</i>.</p>
+
+<p>Pour chaque utilisateur, le site permet d'accéder à la liste de ses commentaires et de ses sujets de discution du plus récent au plus ancien.</p>
+
+<p>Votre site acceptera 3 types de visiteurs: les visiteurs non-authentifiés, les visiteurs authentifiés et les administrateurs.</p>
+
+<p>Les visiteurs non-authentifiés peuvent voir le contenu mais ne peuvent pas voter.</p>
+
+<p>Le site offre la possibilité aux utilisateurs de créer un compte et de s'identifier. Les utilisateurs identifiés peuvent:</p>
+<ul>
+	<li>modifier leur mot de passe,</li>
+	<li>créer des sujets de discussion et des commentaires,</li>
+	<li>supprimer des commentaires,</li>
+	<li>voter sur les sujets de discussion (mais pas leur sujet de discussion).</li>
+</ul>
+
+<p>Il n'y a qu'un seul compte administrateur qui à le login <tt>admin</tt>.L'administrateur, en plus des possibilités d'un utilisateur normal, peut supprimer des sujets de discussion (et tous les commentaires qui s'y rapporte).</p>
+
+<p>Votre site devra:</p>
+
+<ul>
+	<li>être complètement sécurisé,</li>
+	<li>pouvoir être utilisé avec un très grand nombre d'utilisateurs et une large collection de sujets et de commentaires.</li>
+</ul>
+
+<h3>Technologies</h3>
+
+<p>Votre site devra utiliser les technologies suivantes:
+</p><ul>
+	<li> <code>Spring</code> avec les modules <code>Spring Data</code>,<code>Spring MVC</code> et <code>Spring Security</code>;</li>
+	<li><code>Thymleaf</code> comme moteur de templates;</li>
+	<li> Vous pouvez utiliser du JavaScript et du JQuery dans vos templates si vous le souhaitez;</li>
+	<li> Vous pouvez utiliser <code>Spring Boot</code> pour la configuration de <code>Spring</code>;</li>
+	<li> <code>Hibernate</code> comme ORM;</li>
+	<li> <code>H2</code> pour la base de donnée;</li>
+
+</ul>
+
+<p>Votre projet doit utiliser <code>Maven</code> comme outil de build. </p>	
+
+<p>Vous collaborerez sur votre projet en utilisant <code>Git</code>. Une fois votre groupe crée, vous créerez un projet sur <a href="https://gitlab.com/">GitLab</a>. 
+Votre activité sur GitLab sera prise en compte dans votre note finale.</p>
+
+
+
+<h3>Groupes</h3>
+
+<p>Vous devez travailler en groupes de 3 à 5 personnes (pas moins pas plus) du même groupe de cours. Une fois votre groupe crée, vous devez créez votre projet sur <a href="https://gitlab.com/">GitLab</a>. Dans le README du projet, vous mettrez les noms et prénoms des membres du groupe. Vous inviterez ensuite les deux enseignants comme <tt>Maintener</tt> du projet: <tt>@acarayol</tt> et <tt>@cboin-descartes</tt>.</p>
+
+<h3>Modalités du rendu</h3>
+
+<p>TBA</p>
+
+<h3>Dates limites</h3>
+<p>Les dates limites sont fermes: ne rien avoir déposé à cette date ou ne
+pas être présent à la soutenance entraine automatiquement 0 au projet.</p>
+
+<ul>
+<li>Création des groupes et des dépots sur GitLab : <strong>7 Janvier (minuit)</strong></li>
+<li>Rendu : TBA (Début Mars) </li>
+<li>Soutenance : TBA (Mi-Mars)</li>
+</ul>
+
+
+</div>
+
+
+
+
+
+
+ <!-- End of the exercise -->
+
+</div> <!-- End of div tab-content -->
+	  
+
+</body></html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<!-- saved from url=(0067)https://igm.univ-mlv.fr//~carayol/coursJEEM2/slides/securite.html#/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+<title>JEE Back-End - Spring et JPA</title>
+
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+<link rel="stylesheet" href="./Base de la sécurité du back-end_files/reveal.css">
+<link rel="stylesheet" href="./Base de la sécurité du back-end_files/white.css" id="theme">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet" href="./Base de la sécurité du back-end_files/zenburn.css">
+<link rel="stylesheet" href="./Base de la sécurité du back-end_files/reveal-override.css">
+<link href="./Base de la sécurité du back-end_files/prettify.css" type="text/css" rel="stylesheet">
+<!-- Printing and PDF exports -->
+<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script><link rel="stylesheet" type="text/css" href="./Base de la sécurité du back-end_files/paper.css">
+<script type="text/javascript" src="./Base de la sécurité du back-end_files/prettify.js.téléchargement"></script>
+<style type="text/css">
+.reveal h2 {
+	color: steelblue;
+}
+
+.reveal h1 {
+	color: steelblue;
+}
+
+.reveal p {
+	text-align: left;
+}
+
+.reveal lu {
+	text-align: left;
+	list-style-position: inside;
+}
+
+.reveal span.red {
+	color: salmon;
+}
+
+.reveal p.red {
+	color: salmon;
+}
+
+.reveal span.blue,.reveal p.blue {
+	color: steelblue;
+}
+</style>
+<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+</head>
+
+<body onload="prettyPrint()">
+
+
+	<div class="reveal slide center" role="application" data-transition-speed="default" data-background-transition="fade">
+
+<div class="footer"><p>
+    <a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/index.html"><img src="./Base de la sécurité du back-end_files/home.png" width="30em"></a></p>
+      </div>
+
+		<!-- Any section element inside of this container is displayed as a slide -->
+		<div class="slides" style="width: 960px; height: 700px; zoom: 0.9;">
+			<section style="top: 211px; display: block;" class="present">
+
+				<h1>JEE Back-end</h1>
+				
+				<h2>Base de la sécurité du back-end</h2>
+			</section>
+
+
+
+
+<section style="top: 53.5px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Sécurité du back-end</h2>
+
+<p>Cette séance n'est pas un vrai cours de sécurité mais va essayer de vous donner des bases et une culture solide.</p>
+
+<p>Le meilleur moyen de progresser sur les aspects liée à la sécurité c'est de constamment se tenir au courant des failles classiques.</p>
+
+<p>La référence du domaine:</p>
+ <a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/slides/securite.html">https://owasp.org/www-project-top-ten/</a><p></p>
+
+<p>Vous pouvez aussi participer à des <span class="blue">Capture The Flag</span> (CTF). Par exemple, <a href="https://capturetheflag.withgoogle.com/">Google CTF</a>.</p>
+</section>
+
+<section style="top: 0px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>En un slide!</h2>
+
+<span class="red">Never trust user input</span>
+
+<img width="75%" src="./Base de la sécurité du back-end_files/car.jpeg">
+</section>
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Quelques exemples</h2>
+
+<ul>
+	<li><a href="https://blog.cloudflare.com/inside-the-log4j2-vulnerability-cve-2021-44228/">Log4J</a> (il y a quelques jours)</li>
+	<li><a href="https://apisecurity.io/issue-121-vulnerability-chess-com-graphql-security-playground-checklist/">Chess.com</a></li>
+	<li><a href="https://owasp.org/www-community/attacks/xss/">Cross-site scripting</a></li>
+</ul>
+
+</section>
+
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>Vérification des données sur le front-end</h2>
+
+<p>La <span class="red">vérification des données sur le front-end seulement</span> n'apporte aucune garantie.</p>
+
+</section>
+
+
+<section style="top: 330px; display: none;" hidden="" aria-hidden="true" class="future">
+<h2>HTTPS</h2>
+
+<p>Il faut absolument utiliser <span class="blue">HTTPS</span>. Pour le projet ce n'est pas possible car il vous faudrait un nom de domaine fixe.</p>
+
+<p><span class="blue">HTTPS</span> permet:</p>
+<ul>
+<li>d'encrypter la communication entre le serveur et les clients,</li>
+<li>de guarantir au client qu'il parle bien au bon serveur,</li>
+<li>mais cela ne resoud en rien les problèmes vu précédement!</li>
+</ul>
+</section>
+
+<section style="top: 155.5px; display: block;" hidden="" aria-hidden="true" class="future">
+	<h2>Principe de l'authentification</h2>
+
+<p>Les mots de passes sont stockés en BD avec les identifiants</p>
+
+<ul>
+<li>Le client envoie son identifiant et son mot de passe.</li>
+<li>Le serveur vérifie en BD que le mot de passe et correcte.</li>
+<li>Si c'est le cas, il stocke dans la SessionHttp (i.e. avec un Cookie) que l'utilisateur est identifié.</li>
+</ul>
+
+</section>
+
+<section style="top: 114.5px; display: block;" hidden="" aria-hidden="true" class="future">
+<h2>Gestion des mots de passe</h2>
+
+<p>L'idée clé est de minimiser les dégats si votre BD est compromise.</p>
+
+<ul>
+<li>les mots de passes ne doivent pas être stocker en clair,</li>
+<li>il ne suffit pas stocker une version hashée des mots de passe,</li>
+<li>il faut rajouter du <span class="blue">salt</span> pour chaque mot de passe.</li>
+</ul>
+
+<p><span class="blue"><code>Spring Security</code></span> est un module de Spring qui suit toutes les bonnes pratiques et qui permet en plus de gérer le controle d'accès.</p>
+</section>
+
+<section style="top: 207px; display: block;" hidden="" aria-hidden="true" class="future">
+	<h2>Les points de vigilances</h2>
+<ul>
+	<li>Les injections SQL</li>
+	<li>Renvoyer trop de données</li>
+	<li>Cross-site scripting</li>
+</ul>
+</section>
+</div>
+	<div class="backgrounds"><div class="slide-background present" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" style="display: none;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div><div class="slide-background future" data-loaded="true" style="display: block;"></div></div><div class="progress" style="display: block;"><span style="width: 0px;"></span></div><aside class="controls" style="display: block;"><div class="navigate-left"></div><div class="navigate-right enabled"></div><div class="navigate-up"></div><div class="navigate-down"></div></aside><div class="slide-number"></div><div class="pause-overlay"></div><div id="aria-status-div" aria-live="polite" aria-atomic="true" style="position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px);">
+
+				JEE Back-end
+				
+				Base de la sécurité du back-end
+			</div></div>
+
+
+
+	<script src="./Base de la sécurité du back-end_files/head.min.js.téléchargement"></script>
+	<script src="./Base de la sécurité du back-end_files/reveal.js.téléchargement"></script>
+
+	<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script><script type="text/javascript" src="./Base de la sécurité du back-end_files/zoom.js.téléchargement"></script><script type="text/javascript" src="./Base de la sécurité du back-end_files/notes.js.téléchargement"></script>
+
+
+
+</body></html>

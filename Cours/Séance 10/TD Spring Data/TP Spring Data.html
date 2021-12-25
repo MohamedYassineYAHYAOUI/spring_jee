@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<!-- saved from url=(0058)https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td07.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<!-- Required meta tags -->
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Javascripts --> 
+	<script type="text/javascript" src="./TP Spring Data_files/prettify.js.téléchargement"></script>
+	<script type="text/javascript" src="./TP Spring Data_files/jquery-3.2.1.slim.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./TP Spring Data_files/popper.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./TP Spring Data_files/bootstrap.min.js.téléchargement"></script>
+	<script type="text/javascript" src="./TP Spring Data_files/hack.js.téléchargement"></script>
+
+	<!-- Bootstrap CSS -->
+
+	<link href="./TP Spring Data_files/bootstrap.css" type="text/css" rel="stylesheet">
+
+   <!-- Syntaxt highlighter CSS -->
+   
+	<link href="./TP Spring Data_files/prettify.css" type="text/css" rel="stylesheet">
+
+	<!-- Fonts for the icons -->
+
+   <link href="./TP Spring Data_files/fontawesome-all.min.css" rel="stylesheet">
+
+<title>TP Spring Data </title>
+  </head>
+  <body onload="prettyPrint()">
+
+
+<!-- Title of the exercice sheet
+ 
+<h1>
+		TITLE
+		<a href="index.html" style="float:right"><span class="fa fa-home"></span></a>
+ </h1>
+ -->
+
+<h1>
+	Spring MVC
+	<a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/index.html" style="float:right"><span class="fa fa-home"></span></a>
+</h1>
+
+
+   
+   
+<!-- TABLE OF CONTENT OF THE EXERCICES
+ 
+ <ul class="nav nav-tabs">
+ <li class="nav-item">
+ <a class="nav-link active" data-toggle="tab" href="#exercice1">Exercice 1</a>
+ </li>
+ <li class="nav-item">
+ <a class="nav-link" data-toggle="tab" href="#exercice2">Exercice 2</a>
+ </li>
+ </ul>
+
+   -->
+
+
+<!---
+
+					TABLE OF CONTENT
+					
+-->
+
+<ul class="nav nav-tabs">
+  
+<li class="nav-item">
+	<a class="nav-link active" data-toggle="tab" href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td07.html#exercice1">PokeVote   
+    </a>
+</li>
+
+
+</ul>
+
+<div id="myTabContent" class="tab-content">
+
+<div class="tab-pane fade show active" id="exercice1">
+
+<!---
+
+                    EXERCICE 1
+
+-->
+<h2>PokeVote</h2>
+
+<p>Dans cette exercice, on va écrire une application Web très simple qui permet de voter pour un pokémon et qui affiche les 10 pokémons qui ont reçu le plus de vote.</p>
+
+<p>Le but de l'exercice est de se focaliser sur les problèmes liés à la concurrence.</p>
+
+<p><strong>Important:</strong> Votre application ne connaît pas la liste des noms de pokémons et on peut donc voter pour n'importe qui.</p>
+
+<p class="question">Créez un projet Maven en partant de ce <a href="https://igm.univ-mlv.fr//~carayol/coursJEEM2/tds/td07/pom.xml">pom.xml</a>.</p>
+
+<p>Vous allez créer une classe <span class="blue"><code>Pokemon</code></span>, <span class="blue">PokemonRepository</span> et une classe <span class="blue">PokemonService</span>. Pour l'instant, on ne s'intéresse pas aux controlleurs.</p>
+
+<p>La classe <span class="blue"><code>PokemonService</code></span> aura au moins les deux méthodes suivante:</p>
+
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Service</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">PokemonService</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> insertOrIncrementPokemon</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> name</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{...}</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> totalCountVote</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> name</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{...}</span><span class="pln">
+
+</span><span class="pun">}</span><span class="pln">        </span></pre> 
+
+<p>La méthode <code>insertOrIncrementPokemon(String name)</code> doit insérer le pokémon s'il n'est pas en base et incrémenter son score. Vous utiliserez des locks pessimistes.</p>
+
+<p class="question"> Comment allez-vous gérer le cas où deux visiteurs veulent insérer en même temps pokémon ?</p>
+
+<p class="question"> Réaliser les classes demandées.</p>
+
+<p>Vous pouvez tester votre PokemonService avec le <span class="blue"><code>CommandLineRunner</code></span> ci-dessous. Le nombre total de votes devrait être de 10 000. </p>
+<pre class="prettyprint prettyprinted" style=""><span class="lit">@Bean</span><span class="pln">
+</span><span class="kwd">public</span><span class="pln"> </span><span class="typ">CommandLineRunner</span><span class="pln"> cmd</span><span class="pun">(</span><span class="typ">PokemonService</span><span class="pln"> pokemonService</span><span class="pun">){</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> args </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">var</span><span class="pln"> threads </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">ArrayList</span><span class="pun">&lt;</span><span class="typ">Thread</span><span class="pun">&gt;();</span><span class="pln">
+        </span><span class="kwd">for</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">int</span><span class="pln"> i </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln"> i </span><span class="pun">&lt;</span><span class="pln"> </span><span class="lit">100</span><span class="pun">;</span><span class="pln"> i</span><span class="pun">++)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">var</span><span class="pln"> thread</span><span class="pun">=</span><span class="kwd">new</span><span class="pln"> </span><span class="typ">Thread</span><span class="pun">(()</span><span class="pln"> </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                </span><span class="kwd">for</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">int</span><span class="pln"> j </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln"> j </span><span class="pun">&lt;</span><span class="pln"> </span><span class="lit">100</span><span class="pun">;</span><span class="pln"> j</span><span class="pun">++)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                    </span><span class="kwd">var</span><span class="pln"> name </span><span class="pun">=</span><span class="pln"> </span><span class="str">""</span><span class="pun">+</span><span class="pln"> </span><span class="typ">ThreadLocalRandom</span><span class="pun">.</span><span class="pln">current</span><span class="pun">().</span><span class="pln">nextInt</span><span class="pun">(</span><span class="lit">100</span><span class="pun">);</span><span class="pln">
+                        pokemonService</span><span class="pun">.</span><span class="pln">insertOrIncrementPokemon</span><span class="pun">(</span><span class="str">"balbuzar"</span><span class="pun">+</span><span class="pln">name</span><span class="pun">);</span><span class="pln">
+                    </span><span class="pun">}</span><span class="pln">
+            </span><span class="pun">});</span><span class="pln">
+            threads</span><span class="pun">.</span><span class="pln">add</span><span class="pun">(</span><span class="pln">thread</span><span class="pun">);</span><span class="pln">
+            thread</span><span class="pun">.</span><span class="pln">start</span><span class="pun">();</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+        </span><span class="kwd">for</span><span class="pun">(</span><span class="kwd">var</span><span class="pln"> thread </span><span class="pun">:</span><span class="pln"> threads</span><span class="pun">){</span><span class="pln">
+            thread</span><span class="pun">.</span><span class="pln">join</span><span class="pun">();</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+        </span><span class="typ">System</span><span class="pun">.</span><span class="kwd">out</span><span class="pun">.</span><span class="pln">println</span><span class="pun">(</span><span class="pln">pokemonService</span><span class="pun">.</span><span class="pln">totalCountVote</span><span class="pun">());</span><span class="pln">
+    </span><span class="pun">};</span><span class="pln">
+</span><span class="pun">}</span></pre>
+
+<p class="question">Réaliser les classes demandées avec des locks optimistes.</p>
+
+<p class="question">Finissez le site.</p>
+
+</div>
+
+
+
+</div> <!-- End of div tab-content -->
+      
+
+
+
+
+</body></html>
